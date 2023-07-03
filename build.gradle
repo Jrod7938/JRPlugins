@@ -36,15 +36,15 @@ sourceSets {
     }
 }
 
-group = 'com.byronplugins'
+group = 'com.piggyplugins'
 version = '0.2'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.byronplugins.Main'
+        attributes 'Main-Class': 'com.piggyplugins.Main'
     }
-    baseName = 'EthanVannPlugins'
+    baseName = 'PiggyPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude("com/example/hidden")
@@ -53,9 +53,9 @@ task FatJar(type: Jar) {
 
 task FatJarWithHidden(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.byronplugins.Main'
+        attributes 'Main-Class': 'com.piggyplugins.Main'
     }
-    baseName = 'EthanVannPlugins'
+    baseName = 'PiggyPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
