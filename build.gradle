@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id ("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -22,6 +23,7 @@ dependencies {
     testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
     implementation 'org.json:json:20230227'
     implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 }
 sourceSets {
 
@@ -34,13 +36,13 @@ sourceSets {
     }
 }
 
-group = 'com.example'
-version = '4.9'
+group = 'com.byronplugins'
+version = '0.2'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.example.Main'
+        attributes 'Main-Class': 'com.byronplugins.Main'
     }
     baseName = 'EthanVannPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -51,7 +53,7 @@ task FatJar(type: Jar) {
 
 task FatJarWithHidden(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.example.Main'
+        attributes 'Main-Class': 'com.byronplugins.Main'
     }
     baseName = 'EthanVannPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -78,5 +80,11 @@ publishing {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+tasks {
+    shadowJar {
+        archiveFileName.set("${project.name}-${project.version}.jar")
+    }
 }
 targetCompatibility = JavaVersion.VERSION_11
