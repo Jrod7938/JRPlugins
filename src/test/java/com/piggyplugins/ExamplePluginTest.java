@@ -4,9 +4,9 @@ import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
-import com.piggyplugins.JadAutoPrayers.JadAutoPrayers;
+import com.piggyplugins.JadAutoPrayers.JadAutoPrayersPlugin;
 import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.RooftopAgility.RooftopAgility;
+import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
@@ -17,7 +17,7 @@ public class ExamplePluginTest {
 
                 //new stuff
                 ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class, ItemCombinerPlugin.class,
-                SpeedDartMakerPlugin.class, RooftopAgility.class, JadAutoPrayers.class);
+                 RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class, SpeedDartMakerPlugin.class);
         RuneLite.main(args);
     }
 }
