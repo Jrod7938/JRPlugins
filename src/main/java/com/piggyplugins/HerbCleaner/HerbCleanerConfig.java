@@ -4,6 +4,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Keybind;
+import net.runelite.client.config.Range;
 
 @ConfigGroup("HerbCleaner")
 public interface HerbCleanerConfig extends Config {
@@ -25,5 +26,16 @@ public interface HerbCleanerConfig extends Config {
     )
     default HerbType herbType() {
         return HerbType.GUAM;
+    }
+
+    @Range(max = 10)
+    @ConfigItem(
+            keyName = "herbAmount",
+            name = "Herbs per tick",
+            description = "Number of herbs you clean per tick",
+            position = 2
+    )
+    default int herbAmount() {
+        return 10;
     }
 }

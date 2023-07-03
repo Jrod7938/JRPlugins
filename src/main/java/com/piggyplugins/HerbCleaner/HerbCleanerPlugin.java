@@ -33,6 +33,7 @@ import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -165,12 +166,13 @@ public class HerbCleanerPlugin extends Plugin {
     }
 
     private void handleCleanHerb() {
-        Inventory.search()
+        List<Widget> itemList = Inventory.search()
                 .nameContains(config.herbType().getItemName())
-                .result()
-                .forEach(item -> {
-                    InventoryInteraction.useItem(item, "Clean");
-                });
+                .result();
+
+        for (int i = 0; i < config.herbAmount(); i++) {
+            InventoryInteraction.useItem(itemList.get(i), "Clean");
+        }
     }
 
     private boolean hasHerbsInInventory() {
