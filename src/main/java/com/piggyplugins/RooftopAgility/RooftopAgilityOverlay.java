@@ -10,9 +10,9 @@ import java.awt.*;
 
 public class RooftopAgilityOverlay extends OverlayPanel {
 
-    private final RooftopAgility plugin;
+    private final RooftopAgilityPlugin plugin;
     @Inject
-    private RooftopAgilityOverlay(RooftopAgility plugin) {
+    private RooftopAgilityOverlay(RooftopAgilityPlugin plugin) {
         super(plugin);
         this.plugin = plugin;
         setPosition(OverlayPosition.BOTTOM_LEFT);

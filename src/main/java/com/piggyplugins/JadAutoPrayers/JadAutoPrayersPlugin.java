@@ -32,7 +32,7 @@ import java.util.Optional;
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
 @Slf4j
-public class JadAutoPrayers extends Plugin {
+public class JadAutoPrayersPlugin extends Plugin {
 
     @Inject
     private Client client;

@@ -69,7 +69,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
 @Slf4j
-public class RooftopAgility extends Plugin {
+public class RooftopAgilityPlugin extends Plugin {
     private final Set<Integer> inventoryItems = new HashSet<>();
 
     @Inject
