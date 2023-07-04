@@ -1,5 +1,6 @@
 package com.piggyplugins;
 
+import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
@@ -19,7 +20,7 @@ public class ExamplePluginTest {
                 //new stuff
                 ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class, ItemCombinerPlugin.class,
                  RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class, SpeedDartMakerPlugin.class,
-                OneTickSwitcherPlugin.class);
+                OneTickSwitcherPlugin.class, AutoRiftsPlugin.class);
         RuneLite.main(args);
     }
 }

@@ -88,6 +88,15 @@ public class Inventory {
         return false;
     }
 
+    public static boolean containsAny(String ...names) {
+        for (String name : names) {
+            if (getItemAmount(name, true) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Subscribe
     public void onItemContainerChanged(ItemContainerChanged e) {
         client.runScript(6009, 9764864, 28, 1, -1);
