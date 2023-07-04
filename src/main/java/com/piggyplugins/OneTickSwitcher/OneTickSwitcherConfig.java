@@ -9,6 +9,11 @@ import net.runelite.client.config.Keybind;
 @ConfigGroup("OneTickSwitcher")
 public interface OneTickSwitcherConfig extends Config {
 
+    @ConfigItem(keyName = "specToggle", name = "Spec", description = "Toggle to click spec", position = -1)
+    default Keybind specToggle() {
+        return Keybind.NOT_SET;
+    }
+
     @ConfigSection(name = "Gear", description = "Gear two switch", position = 0)
     String gearSection = "Gear";
 

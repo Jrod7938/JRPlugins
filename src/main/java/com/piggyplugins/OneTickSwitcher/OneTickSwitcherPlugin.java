@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 )
 @Slf4j
 public class OneTickSwitcherPlugin extends Plugin {
+
+    private static final int SPEC_BAR = 38862884;
+
     @Inject
     private Client client;
     @Inject
@@ -52,6 +55,7 @@ public class OneTickSwitcherPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
+        keyManager.registerKeyListener(toggleSpecListener);
         keyManager.registerKeyListener(toggleOneListener);
         keyManager.registerKeyListener(toggleTwoListener);
         keyManager.registerKeyListener(toggleThreeListener);
@@ -66,6 +70,7 @@ public class OneTickSwitcherPlugin extends Plugin {
 
     @Override
     protected void shutDown() throws Exception {
+        keyManager.unregisterKeyListener(toggleSpecListener);
         keyManager.unregisterKeyListener(toggleOneListener);
         keyManager.unregisterKeyListener(toggleTwoListener);
         keyManager.unregisterKeyListener(toggleThreeListener);
@@ -103,6 +108,18 @@ public class OneTickSwitcherPlugin extends Plugin {
             InventoryInteraction.useItemNoCase(gearName, "Equip", "Wear", "Wield");
         }
     }
+
+    private void toggleSpec() {
+        MousePackets.queueClickPacket();
+        WidgetPackets.queueWidgetActionPacket(1, SPEC_BAR, -1, -1);
+    }
+
+    private final HotkeyListener toggleSpecListener = new HotkeyListener(() -> config.specToggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggleSpec();
+        }
+    };
 
     private final HotkeyListener toggleOneListener = new HotkeyListener(() -> config.oneToggle()) {
         @Override
