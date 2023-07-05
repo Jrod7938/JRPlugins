@@ -9,7 +9,7 @@ import net.runelite.api.Prayer;
 import java.util.HashMap;
 
 public class PrayerInteraction {
-    public static final HashMap<Prayer, WidgetInfoExtended> prayerMap = new HashMap<Prayer, WidgetInfoExtended>();
+    public static final HashMap<Prayer, WidgetInfoExtended> prayerMap = new HashMap<>();
     static{
         prayerMap.put(Prayer.AUGURY,WidgetInfoExtended.PRAYER_AUGURY);
         prayerMap.put(Prayer.BURST_OF_STRENGTH,WidgetInfoExtended.PRAYER_BURST_OF_STRENGTH);
@@ -41,27 +41,23 @@ public class PrayerInteraction {
         prayerMap.put(Prayer.SUPERHUMAN_STRENGTH,WidgetInfoExtended.PRAYER_SUPERHUMAN_STRENGTH);
         prayerMap.put(Prayer.MYSTIC_WILL,WidgetInfoExtended.PRAYER_MYSTIC_WILL);
     }
-    public static void togglePrayer(Prayer a){
-        if(EthanApiPlugin.getClient().getVarbitValue(a.getVarbit())==0){
-            EthanApiPlugin.getClient().setVarbit(a.getVarbit(),1);
-        }else{
-            EthanApiPlugin.getClient().setVarbit(a.getVarbit(),0);
-        }
+
+    public static int getPrayerWidgetId(Prayer prayer) {
+        return prayerMap.get(prayer).getPackedId();
+    }
+
+    public static boolean isPrayerActive(Prayer prayer) {
+        return EthanApiPlugin.getClient().isPrayerActive(prayer);
+    }
+
+    public static void togglePrayer(Prayer prayer) {
         MousePackets.queueClickPacket();
-        WidgetInfoExtended prayerWidgetExtended = prayerMap.get(a);
-        WidgetPackets.queueWidgetActionPacket(1, prayerWidgetExtended.getPackedId(), -1,-1);
+        WidgetPackets.queueWidgetActionPacket(1, prayerMap.get(prayer).getPackedId(), -1, -1);
     }
-    public static void setPrayerState(Prayer prayer,boolean on){
-        if(EthanApiPlugin.getClient().isPrayerActive(prayer) != on){
+
+    public static void toggleMultiplePrayers(Prayer ...prayers) {
+        for (Prayer prayer : prayers) {
             togglePrayer(prayer);
-        }
-    }
-    public static void flickPrayers(Prayer... prayers){
-        prayerMap.forEach((prayer, widgetInfoExtended) -> {
-            setPrayerState(prayer,false);
-        });
-        for(Prayer prayer : prayers){
-            setPrayerState(prayer,true);
         }
     }
 }

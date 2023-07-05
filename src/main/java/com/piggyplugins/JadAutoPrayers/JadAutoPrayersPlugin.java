@@ -2,6 +2,7 @@ package com.piggyplugins.JadAutoPrayers;
 
 import com.piggyplugins.EthanApiPlugin.Collections.NPCs;
 import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
+import com.piggyplugins.InteractionApi.PrayerInteraction;
 import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.Packets.MousePackets;
 import com.piggyplugins.Packets.MovementPackets;
@@ -77,26 +78,26 @@ public class JadAutoPrayersPlugin extends Plugin {
     }
 
     private void oneTickFlick() {
-        if (EthanApiPlugin.isPrayerActive(shouldPray)) {
-            EthanApiPlugin.togglePrayer(shouldPray);
+        if (PrayerInteraction.isPrayerActive(shouldPray)) {
+            PrayerInteraction.togglePrayer(shouldPray);
         }
-        EthanApiPlugin.togglePrayer(shouldPray);
+        PrayerInteraction.togglePrayer(shouldPray);
     }
 
     private void oneTickMultiFlick() {
         if (config.eagleEye()) {
-            if (EthanApiPlugin.isPrayerActive(shouldPray)) {
-                EthanApiPlugin.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
+            if (PrayerInteraction.isPrayerActive(shouldPray)) {
+                PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
             }
-            EthanApiPlugin.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
+            PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
             return;
         }
 
         if (config.rigour()) {
-            if (EthanApiPlugin.isPrayerActive(shouldPray)) {
-                EthanApiPlugin.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
+            if (PrayerInteraction.isPrayerActive(shouldPray)) {
+                PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
             }
-            EthanApiPlugin.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
+            PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
         }
     }
 

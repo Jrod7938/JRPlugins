@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.InteractionApi.InventoryInteraction;
+import com.piggyplugins.InteractionApi.PrayerInteraction;
 import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.Packets.MousePackets;
 import com.piggyplugins.Packets.WidgetPackets;
@@ -173,21 +174,21 @@ public class OneTickSwitcherPlugin extends Plugin {
     private final HotkeyListener toggleEightListener = new HotkeyListener(() -> config.onePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            EthanApiPlugin.toggleMultiplePrayers(parsePrayers(config.onePrayer()));
+            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.onePrayer()));
         }
     };
 
     private final HotkeyListener toggleNineListener = new HotkeyListener(() -> config.twoPrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            EthanApiPlugin.toggleMultiplePrayers(parsePrayers(config.twoPrayer()));
+            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.twoPrayer()));
         }
     };
 
     private final HotkeyListener toggleTenListener = new HotkeyListener(() -> config.threePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            EthanApiPlugin.toggleMultiplePrayers(parsePrayers(config.threePrayer()));
+            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.threePrayer()));
         }
     };
 

@@ -2,9 +2,8 @@ package com.piggyplugins.EthanApiPlugin;
 
 import com.piggyplugins.EthanApiPlugin.Collections.*;
 import com.piggyplugins.EthanApiPlugin.Collections.query.QuickPrayer;
-import com.piggyplugins.EthanApiPlugin.Utility.PrayerWidgetUtility;
 import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.piggyplugins.Packets.MovementPackets;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -98,6 +97,13 @@ public class EthanApiPlugin extends Plugin {
     public static WorldPoint playerPosition(){
         return client.getLocalPlayer().getWorldLocation();
     }
+
+    public static void moveBy(int x, int y, boolean ctrlDown) {
+        WorldPoint playerPoint = playerPosition();
+        MousePackets.queueClickPacket();
+        MovementPackets.queueMovement(playerPoint.getX() + x, playerPoint.getY() + y, ctrlDown);
+    }
+
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
@@ -146,22 +152,6 @@ public class EthanApiPlugin extends Plugin {
 
     public static boolean isQuickPrayerEnabled() {
         return client.getVarbitValue(QUICK_PRAYER) == 1;
-    }
-
-    public static boolean isPrayerActive(Prayer prayer) {
-        return client.isPrayerActive(prayer);
-    }
-
-    public static void togglePrayer(Prayer prayer) {
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, PrayerWidgetUtility.getPrayerWidgetId(prayer), -1, -1);
-    }
-
-    public static void toggleMultiplePrayers(Prayer ...prayers) {
-        for (Prayer prayer : prayers) {
-            MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, PrayerWidgetUtility.getPrayerWidgetId(prayer), -1, -1);
-        }
     }
 
     @SneakyThrows

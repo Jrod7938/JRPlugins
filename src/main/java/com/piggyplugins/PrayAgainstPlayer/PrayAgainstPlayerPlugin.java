@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
+import com.piggyplugins.InteractionApi.PrayerInteraction;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
@@ -98,8 +98,8 @@ public class PrayAgainstPlayerPlugin extends Plugin {
             return;
         }
 
-        if (!EthanApiPlugin.isPrayerActive(overlay.getPrayerToActivate())) {
-            EthanApiPlugin.togglePrayer(overlay.getPrayerToActivate());
+        if (!PrayerInteraction.isPrayerActive(overlay.getPrayerToActivate())) {
+            PrayerInteraction.togglePrayer(overlay.getPrayerToActivate());
         }
     }
 

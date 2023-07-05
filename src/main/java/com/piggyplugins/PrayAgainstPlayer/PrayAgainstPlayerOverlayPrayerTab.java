@@ -9,7 +9,7 @@ import java.util.ConcurrentModificationException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.piggyplugins.EthanApiPlugin.Utility.PrayerWidgetUtility;
+import com.piggyplugins.InteractionApi.PrayerInteraction;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.api.Prayer;
@@ -68,9 +68,9 @@ class PrayAgainstPlayerOverlayPrayerTab extends Overlay
 
     private void renderPrayerToClick(Graphics2D graphics, Player player)
     {
-        Widget PROTECT_FROM_MAGIC = client.getWidget(PrayerWidgetUtility.getPrayerWidgetId(Prayer.PROTECT_FROM_MAGIC));
-        Widget PROTECT_FROM_RANGED = client.getWidget(PrayerWidgetUtility.getPrayerWidgetId(Prayer.PROTECT_FROM_MISSILES));
-        Widget PROTECT_FROM_MELEE = client.getWidget(PrayerWidgetUtility.getPrayerWidgetId(Prayer.PROTECT_FROM_MELEE));
+        Widget PROTECT_FROM_MAGIC = client.getWidget(PrayerInteraction.getPrayerWidgetId(Prayer.PROTECT_FROM_MAGIC));
+        Widget PROTECT_FROM_RANGED = client.getWidget(PrayerInteraction.getPrayerWidgetId(Prayer.PROTECT_FROM_MISSILES));
+        Widget PROTECT_FROM_MELEE = client.getWidget(PrayerInteraction.getPrayerWidgetId(Prayer.PROTECT_FROM_MELEE));
         Color color = Color.RED;
         if (PROTECT_FROM_MELEE.isHidden())
         {
