@@ -3,7 +3,6 @@ package com.piggyplugins.ChinBreakHandler.ui;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.ChinBreakHandler.util.JMultilineLabel;
 import com.piggyplugins.ChinBreakHandler.util.OnOffToggleButton;
-import com.piggyplugins.ChinBreakHandler.util.ToggleButton;
 import com.piggyplugins.ChinBreakHandler.util.UnitFormatterFactory;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.Units;
@@ -236,8 +235,8 @@ public class ChinBreakHandlerPluginPanel extends JPanel
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        JCheckBox logoutButton = new ToggleButton("Logout");
-        JCheckBox afkButton = new ToggleButton("AFK");
+        JCheckBox logoutButton = new JCheckBox("Logout");
+        JCheckBox afkButton = new JCheckBox("AFK");
 
         boolean logout = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", pluginName + "-logout"));
 

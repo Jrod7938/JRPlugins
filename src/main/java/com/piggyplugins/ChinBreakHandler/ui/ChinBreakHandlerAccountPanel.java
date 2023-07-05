@@ -4,7 +4,6 @@ import com.piggyplugins.ChinBreakHandler.ChinBreakHandler;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.ChinBreakHandler.util.DeferredDocumentChangedListener;
 import com.piggyplugins.ChinBreakHandler.util.ProfilesData;
-import com.piggyplugins.ChinBreakHandler.util.ToggleButton;
 import com.google.inject.Inject;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.events.ConfigChanged;
@@ -64,8 +63,8 @@ public class ChinBreakHandlerAccountPanel extends JPanel
         accountSelection.setBorder(new EmptyBorder(5, 0, 0, 0));
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        JCheckBox manualButton = new ToggleButton("Manual");
-        JCheckBox profilesButton = new ToggleButton("Profiles plugin");
+        JCheckBox manualButton = new JCheckBox("Manual");
+        JCheckBox profilesButton = new JCheckBox("Profiles plugin");
 
         String profilesSalt = configManager.getConfiguration("betterProfiles", "salt");
         boolean profilesSavePasswords = Boolean.parseBoolean(configManager.getConfiguration("betterProfiles", "rememberPassword"));
