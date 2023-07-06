@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id ("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -16,6 +15,7 @@ def runeLiteVersion = '1.10.6'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+    compileOnly group: "net.runelite", name: "jshell", version: runeLiteVersion
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     testImplementation 'junit:junit:4.12'
@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 }
+
 sourceSets {
 
     main {
@@ -37,25 +38,35 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '0.2'
+version = '0.3'
 sourceCompatibility = "11"
 
-task FatJar(type: Jar) {
+task FullJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.piggyplugins.Main'
+        attributes 'Main-Class': 'com.example.Main'
     }
-    baseName = 'PiggyPlugins'
+    baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude("com/example/hidden")
     with jar
 }
 
-task FatJarWithHidden(type: Jar) {
+task EthanJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.piggyplugins.Main'
+        attributes 'Main-Class': 'com.example.Main'
     }
-    baseName = 'PiggyPlugins'
+    baseName = 'ethans-api'
+    exclude("com/piggyplugins")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task PiggyJar(type: Jar) {
+    manifest {
+    }
+    baseName = 'piggy-plugins-no-ethan'
+    exclude("com/example")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
@@ -82,9 +93,4 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-tasks {
-    shadowJar {
-        archiveFileName.set("${project.name}-${project.version}.jar")
-    }
-}
 targetCompatibility = JavaVersion.VERSION_11

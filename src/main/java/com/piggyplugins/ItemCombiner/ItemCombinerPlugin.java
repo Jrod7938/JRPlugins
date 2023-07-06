@@ -1,20 +1,21 @@
 package com.piggyplugins.ItemCombiner;
 
-import com.piggyplugins.EthanApiPlugin.Collections.Bank;
-import com.piggyplugins.EthanApiPlugin.Collections.BankInventory;
-import com.piggyplugins.EthanApiPlugin.Collections.Inventory;
-import com.piggyplugins.EthanApiPlugin.Collections.TileObjects;
-import com.piggyplugins.EthanApiPlugin.Collections.query.TileObjectQuery;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.BankInteraction;
-import com.piggyplugins.InteractionApi.BankInventoryInteraction;
-import com.piggyplugins.InteractionApi.TileObjectInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.MovementPackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.BankInventory;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.BankInteraction;
+import com.example.InteractionApi.BankInventoryInteraction;
+import com.example.InteractionApi.TileObjectInteraction;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.MovementPackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -41,6 +42,7 @@ import java.util.Optional;
 )
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class ItemCombinerPlugin extends Plugin {
     @Inject
@@ -148,7 +150,7 @@ public class ItemCombinerPlugin extends Plugin {
         TileObjects.search()
                 .filter(tileObject -> {
                     ObjectComposition objectComposition = TileObjectQuery.getObjectComposition(tileObject);
-                    return getName().toLowerCase().contains("bank") ||
+                    return objectComposition.getName().toLowerCase().contains("bank") ||
                             Arrays.stream(objectComposition.getActions()).anyMatch(action -> action != null && action.toLowerCase().contains("bank"));
                 })
                 .nearestToPlayer()

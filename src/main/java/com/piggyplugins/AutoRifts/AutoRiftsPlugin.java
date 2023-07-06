@@ -6,20 +6,22 @@ import com.piggyplugins.AutoRifts.data.Altar;
 import com.piggyplugins.AutoRifts.data.Constants;
 import com.piggyplugins.AutoRifts.data.State;
 import com.piggyplugins.AutoRifts.data.Utility;
-import com.piggyplugins.EthanApiPlugin.BreakHandler.ReflectBreakHandler;
-import com.piggyplugins.EthanApiPlugin.Collections.Inventory;
-import com.piggyplugins.EthanApiPlugin.Collections.NPCs;
-import com.piggyplugins.EthanApiPlugin.Collections.TileObjects;
-import com.piggyplugins.EthanApiPlugin.Collections.Widgets;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.InventoryInteraction;
-import com.piggyplugins.InteractionApi.NPCInteraction;
-import com.piggyplugins.InteractionApi.TileObjectInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.MovementPackets;
-import com.piggyplugins.Packets.ObjectPackets;
-import com.piggyplugins.Packets.TileItemPackets;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.ObjectUtil;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.Widgets;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.NPCInteraction;
+import com.example.InteractionApi.TileObjectInteraction;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.MovementPackets;
+import com.example.Packets.ObjectPackets;
+import com.example.Packets.TileItemPackets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -245,7 +247,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private void dropTalisman() {
-        Optional<Widget> itemWidget = Inventory.search().nameContainsNoCase("talisman").first();
+        Optional<Widget> itemWidget = InventoryUtil.nameContainsNoCase("talisman").first();
         if (itemWidget.isEmpty()) {
             return;
         }
@@ -255,7 +257,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private void dropRunes() {
-        Optional<Widget> itemWidget = Inventory.search().nameContainsNoCase("rune").filter(item -> !item.getName().contains("pickaxe")).first();
+        Optional<Widget> itemWidget = InventoryUtil.nameContainsNoCase("rune").filter(item -> !item.getName().contains("pickaxe")).first();
         if (itemWidget.isEmpty()) {
             return;
         }
@@ -322,11 +324,11 @@ public class AutoRiftsPlugin extends Plugin {
             return;
         }
 
-        TileObjects.search().nameContainsNoCase("Guardian of").filter(tileObject -> {
+        ObjectUtil.nameContainsNoCase("Guardian of").filter(tileObject -> {
             return tileObject.getId() == elementalAltar.getId() && accessibleAltars.contains(elementalAltar);
         }).nearestToPlayer().ifPresent(tileObject -> this.elementalAltar = tileObject);
 
-        TileObjects.search().nameContainsNoCase("Guardian of").filter(tileObject -> { // checking by id didn't return far away guardians? weird
+        ObjectUtil.nameContainsNoCase("Guardian of").filter(tileObject -> { // checking by id didn't return far away guardians? weird
             return tileObject.getId() == catalyticAltar.getId() && accessibleAltars.contains(catalyticAltar); // least this works?
         }).nearestToPlayer().ifPresent(tileObject -> this.catalyticAltar = tileObject);
 
@@ -338,7 +340,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private void enterPortal() {
-        Optional<TileObject> tileObject = TileObjects.search().nameContainsNoCase(Constants.PORTAL).filter(to -> to.getWorldLocation().getY() >= Constants.OUTSIDE_BARRIER_Y).nearestToPlayer();
+        Optional<TileObject> tileObject = ObjectUtil.nameContainsNoCase(Constants.PORTAL).filter(to -> to.getWorldLocation().getY() >= Constants.OUTSIDE_BARRIER_Y).nearestToPlayer();
         if (tileObject.isEmpty()) {
             return;
         }
@@ -398,7 +400,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private void mineGameGuardians() {
-        Optional<TileObject> tileObject = TileObjects.search().nameContainsNoCase(Constants.GAME_PARTS).nearestToPlayer();
+        Optional<TileObject> tileObject = ObjectUtil.nameContainsNoCase(Constants.GAME_PARTS).nearestToPlayer();
         if (tileObject.isEmpty()) {
             return;
         }
@@ -558,23 +560,23 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean hasTalisman() {
-        return Inventory.search().nameContainsNoCase("talisman").first().isPresent();
+        return InventoryUtil.nameContainsNoCase("talisman").first().isPresent();
     }
 
     private boolean hasUnchargedCells() {
-        return Inventory.contains(Constants.UNCHARGED_CELLS);
+        return InventoryUtil.hasItem(Constants.UNCHARGED_CELLS);
     }
 
     private boolean hasPowerEssence() {
-        return Inventory.containsAny(Constants.CATALYTIC_ENERGY, Constants.ELEMENTAL_ENERGY);
+        return InventoryUtil.hasItems(Constants.CATALYTIC_ENERGY, Constants.ELEMENTAL_ENERGY);
     }
 
     private boolean shouldDepositRunes() {
-        return !Inventory.search().nameContainsNoCase("rune").empty();
+        return !InventoryUtil.nameContainsNoCase("rune").empty();
     }
 
     private boolean isPortalSpawned() {
-        return TileObjects.search().nameContainsNoCase(Constants.PORTAL).filter(tileObject -> tileObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).nearestToPlayer().isPresent();
+        return ObjectUtil.nameContainsNoCase(Constants.PORTAL).filter(tileObject -> tileObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).nearestToPlayer().isPresent();
     }
 
     private boolean hasGuardianEssenceAmount(int amount) {
@@ -590,11 +592,11 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean hasEnoughFrags() {
-        return Inventory.contains(Constants.FRAGS, config.minFrags(), true);
+        return InventoryUtil.hasItem(Constants.FRAGS, config.minFrags());
     }
 
     private boolean hasEnoughStartingFrags() {
-        return Inventory.contains(Constants.FRAGS, config.startingFrags(), true);
+        return InventoryUtil.hasItem(Constants.FRAGS, config.startingFrags());
     }
 
     private boolean isWidgetVisible() {

@@ -12,7 +12,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.piggyplugins.InteractionApi.PrayerInteraction;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.piggyplugins.PiggyUtils.API.PrayerUtil;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
@@ -27,6 +30,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
@@ -37,7 +41,9 @@ import net.runelite.client.util.ImageUtil;
         tags = {"highlight", "pvp", "overlay", "players", "piggy"},
         enabledByDefault = false
 )
-
+@PluginDependency(EthanApiPlugin.class)
+@PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Singleton
 public class PrayAgainstPlayerPlugin extends Plugin {
 
@@ -98,8 +104,8 @@ public class PrayAgainstPlayerPlugin extends Plugin {
             return;
         }
 
-        if (!PrayerInteraction.isPrayerActive(overlay.getPrayerToActivate())) {
-            PrayerInteraction.togglePrayer(overlay.getPrayerToActivate());
+        if (!PrayerUtil.isPrayerActive(overlay.getPrayerToActivate())) {
+            PrayerUtil.togglePrayer(overlay.getPrayerToActivate());
         }
     }
 

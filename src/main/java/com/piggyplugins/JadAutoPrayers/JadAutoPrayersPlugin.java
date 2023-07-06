@@ -1,14 +1,15 @@
 package com.piggyplugins.JadAutoPrayers;
 
-import com.piggyplugins.EthanApiPlugin.Collections.NPCs;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.PrayerInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.MovementPackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.MovementPackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.API.PrayerUtil;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
@@ -32,6 +33,7 @@ import java.util.Optional;
 )
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class JadAutoPrayersPlugin extends Plugin {
 
@@ -78,26 +80,26 @@ public class JadAutoPrayersPlugin extends Plugin {
     }
 
     private void oneTickFlick() {
-        if (PrayerInteraction.isPrayerActive(shouldPray)) {
-            PrayerInteraction.togglePrayer(shouldPray);
+        if (PrayerUtil.isPrayerActive(shouldPray)) {
+            PrayerUtil.togglePrayer(shouldPray);
         }
-        PrayerInteraction.togglePrayer(shouldPray);
+        PrayerUtil.togglePrayer(shouldPray);
     }
 
     private void oneTickMultiFlick() {
         if (config.eagleEye()) {
-            if (PrayerInteraction.isPrayerActive(shouldPray)) {
-                PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
+            if (PrayerUtil.isPrayerActive(shouldPray)) {
+                PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
             }
-            PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
+            PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
             return;
         }
 
         if (config.rigour()) {
-            if (PrayerInteraction.isPrayerActive(shouldPray)) {
-                PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
+            if (PrayerUtil.isPrayerActive(shouldPray)) {
+                PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
             }
-            PrayerInteraction.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
+            PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
         }
     }
 

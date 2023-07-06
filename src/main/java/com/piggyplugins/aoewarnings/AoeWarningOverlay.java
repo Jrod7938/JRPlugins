@@ -38,7 +38,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.piggyplugins.EthanApiPlugin.RLApi.GraphicIDExtended;
+import com.piggyplugins.PiggyUtils.RLApi.GraphicIDExtended;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;

@@ -2,12 +2,13 @@ package com.piggyplugins.OneTickSwitcher;
 
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.InventoryInteraction;
-import com.piggyplugins.InteractionApi.PrayerInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.PrayerUtil;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDependency(EthanApiPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @PluginDescriptor(
         name = "One Tick Switcher",
         description = ";)",
@@ -106,7 +108,7 @@ public class OneTickSwitcherPlugin extends Plugin {
     private void swapGear(List<String> gearNames) {
         for (String gearName : gearNames) {
             MousePackets.queueClickPacket();
-            InventoryInteraction.useItemNoCase(gearName, "Equip", "Wear", "Wield");
+            InventoryUtil.useItemNoCase(gearName, "Equip", "Wear", "Wield");
         }
     }
 
@@ -174,21 +176,21 @@ public class OneTickSwitcherPlugin extends Plugin {
     private final HotkeyListener toggleEightListener = new HotkeyListener(() -> config.onePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.onePrayer()));
+            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.onePrayer()));
         }
     };
 
     private final HotkeyListener toggleNineListener = new HotkeyListener(() -> config.twoPrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.twoPrayer()));
+            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.twoPrayer()));
         }
     };
 
     private final HotkeyListener toggleTenListener = new HotkeyListener(() -> config.threePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerInteraction.toggleMultiplePrayers(parsePrayers(config.threePrayer()));
+            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.threePrayer()));
         }
     };
 

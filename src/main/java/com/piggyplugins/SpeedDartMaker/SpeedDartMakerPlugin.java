@@ -1,12 +1,13 @@
 package com.piggyplugins.SpeedDartMaker;
 
-import com.piggyplugins.EthanApiPlugin.Collections.Inventory;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -28,6 +29,7 @@ import net.runelite.client.util.HotkeyListener;
 )
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class SpeedDartMakerPlugin extends Plugin {
     @Inject

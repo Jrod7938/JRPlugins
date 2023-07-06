@@ -2,11 +2,11 @@ package com.piggyplugins.ChinBreakHandler;
 
 import com.piggyplugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
 import com.piggyplugins.ChinBreakHandler.util.IntRandomNumberGenerator;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.PacketUtils.WidgetID;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.PacketUtils.WidgetID;
+import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import io.reactivex.rxjava3.core.Observable;

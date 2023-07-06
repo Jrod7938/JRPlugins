@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 
-import com.piggyplugins.EthanApiPlugin.RLApi.GraphicIDExtended;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
+import com.piggyplugins.PiggyUtils.RLApi.GraphicIDExtended;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -53,10 +54,12 @@ import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 
+@PluginDependency(PiggyUtilsPlugin.class)
 @PluginDescriptor(
 	name = "AoE Warnings",
 	enabledByDefault = false,

@@ -1,19 +1,20 @@
 package com.piggyplugins.HerbCleaner;
 
-import com.piggyplugins.EthanApiPlugin.Collections.Bank;
-import com.piggyplugins.EthanApiPlugin.Collections.Inventory;
-import com.piggyplugins.EthanApiPlugin.Collections.TileObjects;
-import com.piggyplugins.EthanApiPlugin.Collections.query.TileObjectQuery;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.BankInteraction;
-import com.piggyplugins.InteractionApi.InventoryInteraction;
-import com.piggyplugins.InteractionApi.TileObjectInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.MovementPackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.BankInteraction;
+import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.TileObjectInteraction;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.MovementPackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -46,6 +47,7 @@ import java.util.Set;
 )
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class HerbCleanerPlugin extends Plugin {
     private static final Set<Integer> cleanHerbs = Set.of(ItemID.GUAM_LEAF, ItemID.MARRENTILL, ItemID.TARROMIN, ItemID.HARRALANDER, ItemID.RANARR_WEED, ItemID.TOADFLAX, ItemID.IRIT_LEAF,

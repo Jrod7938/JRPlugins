@@ -1,24 +1,27 @@
 package com.piggyplugins.RooftopAgility;
 
-import com.piggyplugins.EthanApiPlugin.BreakHandler.ReflectBreakHandler;
-import com.piggyplugins.EthanApiPlugin.Collections.Bank;
-import com.piggyplugins.EthanApiPlugin.Collections.ETileItem;
-import com.piggyplugins.EthanApiPlugin.Collections.Inventory;
-import com.piggyplugins.EthanApiPlugin.Collections.TileObjects;
-import com.piggyplugins.EthanApiPlugin.Collections.Widgets;
-import com.piggyplugins.EthanApiPlugin.Collections.query.TileObjectQuery;
-import com.piggyplugins.EthanApiPlugin.EthanApiPlugin;
-import com.piggyplugins.InteractionApi.BankInteraction;
-import com.piggyplugins.InteractionApi.InventoryInteraction;
-import com.piggyplugins.InteractionApi.TileObjectInteraction;
-import com.piggyplugins.PacketUtils.PacketUtilsPlugin;
-import com.piggyplugins.Packets.MousePackets;
-import com.piggyplugins.Packets.MovementPackets;
-import com.piggyplugins.Packets.ObjectPackets;
-import com.piggyplugins.Packets.TileItemPackets;
-import com.piggyplugins.Packets.WidgetPackets;
+import com.piggyplugins.PiggyUtils.API.BankUtil;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
+import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.ETileItem;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.Widgets;
+import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.BankInteraction;
+import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.TileObjectInteraction;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.MovementPackets;
+import com.example.Packets.ObjectPackets;
+import com.example.Packets.TileItemPackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -68,6 +71,7 @@ import java.util.concurrent.ThreadLocalRandom;
 )
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class RooftopAgilityPlugin extends Plugin {
     private final Set<Integer> inventoryItems = new HashSet<>();
@@ -156,7 +160,7 @@ public class RooftopAgilityPlugin extends Plugin {
             }
             if (!config.foodName().isEmpty()
                     && client.getBoostedSkillLevel(Skill.HITPOINTS) < config.lowHP()) {
-                Optional<Widget> food = Inventory.search().nameContainsNoCase(config.foodName()).first();
+                Optional<Widget> food = InventoryUtil.nameContainsNoCase(config.foodName()).first();
                 if (food.isPresent()) {
                     return State.EAT_FOOD;
                 } else {
@@ -218,7 +222,7 @@ public class RooftopAgilityPlugin extends Plugin {
     }
 
     private void eatFood() {
-        Optional<Widget> cake = Inventory.search().nameContainsNoCase(config.foodName()).first();
+        Optional<Widget> cake = InventoryUtil.nameContainsNoCase(config.foodName()).first();
         if (cake.isPresent()) {
             MousePackets.queueClickPacket();
             InventoryInteraction.useItem(cake.get(), "Eat");
@@ -263,13 +267,13 @@ public class RooftopAgilityPlugin extends Plugin {
         if (config.foodName().isEmpty()) {
             return false;
         }
-        return !Inventory.contains(config.foodName());
+        return !InventoryUtil.hasItem(config.foodName());
     }
 
     private void restockItems() {
         if (Bank.isOpen()) {
-            if (!config.foodName().isEmpty() && !Inventory.contains(config.foodName())) {
-                Optional<Widget> bankFood = Bank.search().nameContainsNoCase(config.foodName()).first();
+            if (!config.foodName().isEmpty() && !InventoryUtil.hasItem(config.foodName())) {
+                Optional<Widget> bankFood = BankUtil.nameContainsNoCase(config.foodName()).first();
                 if (bankFood.isPresent()) {
                     BankInteraction.withdrawX(bankFood.get(), 14);
                     return;
@@ -280,8 +284,8 @@ public class RooftopAgilityPlugin extends Plugin {
                     return;
                 }
             }
-            if (config.boostWithPie() && !Inventory.contains("summer pie")) {
-                Optional<Widget> bankPie = Bank.search().nameContainsNoCase("summer pie").first();
+            if (config.boostWithPie() && !InventoryUtil.hasItem("summer pie")) {
+                Optional<Widget> bankPie = BankUtil.nameContainsNoCase("summer pie").first();
                 if (bankPie.isPresent()) {
                     BankInteraction.withdrawX(bankPie.get(), 10);
                     return;

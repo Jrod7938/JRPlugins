@@ -27,7 +27,7 @@
  */
 package com.piggyplugins.aoewarnings;
 
-import com.piggyplugins.EthanApiPlugin.RLApi.GraphicIDExtended;
+import com.piggyplugins.PiggyUtils.RLApi.GraphicIDExtended;
 
 import java.util.HashMap;
 import java.util.Map;
