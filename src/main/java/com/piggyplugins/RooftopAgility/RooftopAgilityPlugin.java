@@ -74,8 +74,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class RooftopAgilityPlugin extends Plugin {
-    private final Set<Integer> inventoryItems = new HashSet<>();
-
     @Inject
     private Client client;
     @Inject
@@ -253,7 +251,7 @@ public class RooftopAgilityPlugin extends Plugin {
     private boolean shouldEatSummerPie() {
         return config.boostWithPie() &&
                 (client.getBoostedSkillLevel(Skill.AGILITY) < config.pieLevel()) &&
-                (Inventory.getItemAmount(ItemID.SUMMER_PIE) > 0 || Inventory.getItemAmount(ItemID.HALF_A_SUMMER_PIE) > 0);
+                (InventoryUtil.getItemAmount(ItemID.SUMMER_PIE) > 0 || InventoryUtil.getItemAmount(ItemID.HALF_A_SUMMER_PIE) > 0);
     }
 
     private boolean shouldCastTeleport() {
@@ -314,7 +312,7 @@ public class RooftopAgilityPlugin extends Plugin {
         if (summerPieItem.isPresent()) {
             WidgetItem item = (WidgetItem) summerPieItem.get();
             MousePackets.queueClickPacket();
-            InventoryInteraction.useItem(item.getId());
+            InventoryInteraction.useItem(item.getId(), "Eat");
         }
     }
 
@@ -390,11 +388,6 @@ public class RooftopAgilityPlugin extends Plugin {
                 timeout = 10;
                 break;
             case EAT_SUMMER_PIE:
-                if (Inventory.getItemAmount(ItemID.SUMMER_PIE) < 1 && Inventory.getItemAmount(ItemID.HALF_A_SUMMER_PIE) < 1) {
-                    state = State.OUT_OF_SUMMER_PIES;
-                    startAgility = false;
-                    return;
-                }
                 eatSummerPie();
                 break;
             case EAT_FOOD:
