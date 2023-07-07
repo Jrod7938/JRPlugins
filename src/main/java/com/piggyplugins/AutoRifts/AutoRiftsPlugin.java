@@ -9,7 +9,6 @@ import com.piggyplugins.AutoRifts.data.Utility;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.ObjectUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
-import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.Widgets;
@@ -34,7 +33,6 @@ import net.runelite.api.Skill;
 import net.runelite.api.TileObject;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.StatChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -47,7 +45,6 @@ import net.runelite.client.util.HotkeyListener;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -131,16 +128,6 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     @Subscribe
-    private void onStatChanged(StatChanged event) {
-        if (event.getSkill() != Skill.RUNECRAFT) {
-            return;
-        }
-
-        this.accessibleAltars = Utility.getAccessibleAltars(client.getRealSkillLevel(Skill.RUNECRAFT),
-                config.cosmicRunes(), config.lawRunes(), config.deathRunes(), config.bloodRunes());
-    }
-
-    @Subscribe
     private void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN
                 || !started) {
@@ -155,6 +142,9 @@ public class AutoRiftsPlugin extends Plugin {
             gameStarted = false;
         }
 
+        this.accessibleAltars = Utility.getAccessibleAltars(client.getRealSkillLevel(Skill.RUNECRAFT),
+                config.cosmicRunes(), config.lawRunes(), config.deathRunes(), config.bloodRunes());
+
         state = getCurrentState();
         handleState();
     }
@@ -162,10 +152,6 @@ public class AutoRiftsPlugin extends Plugin {
     @Subscribe
     private void onChatMessage(ChatMessage event) {
         if (client.getGameState() != GameState.LOGGED_IN) {
-            return;
-        }
-
-        if (event.getName() != null) {
             return;
         }
 
@@ -332,7 +318,7 @@ public class AutoRiftsPlugin extends Plugin {
             return tileObject.getId() == catalyticAltar.getId() && accessibleAltars.contains(catalyticAltar); // least this works?
         }).nearestToPlayer().ifPresent(tileObject -> this.catalyticAltar = tileObject);
 
-        if (catalytic > elemental && accessibleAltars.contains(catalyticAltar)) {
+        if (catalytic <= elemental && accessibleAltars.contains(catalyticAltar)) {
             TileObjectInteraction.interact(this.catalyticAltar, "Enter", "Use");
         } else {
             TileObjectInteraction.interact(this.elementalAltar, "Enter", "Use");
@@ -428,7 +414,7 @@ public class AutoRiftsPlugin extends Plugin {
 
     public State getCurrentState() {
         if ((EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() != -1) && !isMining()) {
-            if (isInAltar() && hasPowerEssence()) {
+            if (isInAltar() && !hasAnyGuardianEssence()) {
                 return State.EXIT_ALTAR;
             }
             if (isCraftingEss() && !isPortalSpawned()) {
@@ -462,15 +448,11 @@ public class AutoRiftsPlugin extends Plugin {
             return State.WAITING_FOR_GAME;
         }
 
-        if (isInAltar()) {
-            return State.CRAFT_RUNES;
-        }
-
         if (hasTalisman()) {
             return State.DROP_TALISMAN;
         }
 
-        if (shouldDepositRunes()) {
+        if (shouldDepositRunes() && !isInHugeMine() && !isInLargeMine()) {
             if (config.dropRunes()) {
                 return State.DROP_RUNES;
             }
@@ -496,6 +478,9 @@ public class AutoRiftsPlugin extends Plugin {
             if (hasGuardianEssence()) {
                 if (hasPowerEssence()) {
                     return State.POWER_GUARDIAN;
+                }
+                if (isInAltar()) {
+                    return State.CRAFT_RUNES;
                 }
                 return State.ENTER_RIFT;
             }
@@ -542,10 +527,13 @@ public class AutoRiftsPlugin extends Plugin {
                 if (hasPowerEssence()) {
                     return State.POWER_GUARDIAN;
                 }
+                if (isInAltar()) {
+                    return State.CRAFT_RUNES;
+                }
                 return State.ENTER_RIFT;
             }
 
-            if (hasPowerEssence()) {
+            if (hasPowerEssence() && !isInAltar()) {
                 if (!hasGuardianEssence()) {
                     if (isPortalSpawned()) {
                         return State.ENTER_PORTAL;
@@ -568,7 +556,9 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean hasPowerEssence() {
-        return InventoryUtil.hasItems(Constants.CATALYTIC_ENERGY, Constants.ELEMENTAL_ENERGY);
+        boolean e = InventoryUtil.hasItem(Constants.CATALYTIC_ENERGY) || InventoryUtil.hasItem(Constants.ELEMENTAL_ENERGY);
+        log.info(e + ", hpe");
+        return e;
     }
 
     private boolean shouldDepositRunes() {
@@ -580,23 +570,25 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean hasGuardianEssenceAmount(int amount) {
-        return Inventory.getItemAmount(Constants.ESS) >= amount;
+        return InventoryUtil.getItemAmount(Constants.ESS, false) >= amount;
     }
 
     private boolean hasGuardianEssence() {
-        return Inventory.getItemAmount(Constants.ESS) >= config.emptySlots();
+        int amt = InventoryUtil.getItemAmount(Constants.ESS, false);
+        log.info(amt + ",hge");
+        return amt >= config.emptySlots();
     }
 
     private boolean hasAnyGuardianEssence() {
-        return Inventory.getItemAmount(Constants.ESS) >= 1;
+        return InventoryUtil.getItemAmount(Constants.ESS, false) >= 1;
     }
 
     private boolean hasEnoughFrags() {
-        return InventoryUtil.hasItem(Constants.FRAGS, config.minFrags());
+        return InventoryUtil.hasItem(Constants.FRAGS, config.minFrags(), true);
     }
 
     private boolean hasEnoughStartingFrags() {
-        return InventoryUtil.hasItem(Constants.FRAGS, config.startingFrags());
+        return InventoryUtil.hasItem(Constants.FRAGS, config.startingFrags(), true);
     }
 
     private boolean isWidgetVisible() {
@@ -609,15 +601,15 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean isOutsideBarrier() {
-        return client.getLocalPlayer().getWorldLocation().getY() <= Constants.OUTSIDE_BARRIER_Y;
+        return client.getLocalPlayer().getWorldLocation().getY() <= Constants.OUTSIDE_BARRIER_Y && !isInAltar();
     }
 
     private boolean isInLargeMine() {
-        return client.getLocalPlayer().getWorldLocation().getX() >= Constants.LARGE_MINE_X;
+        return !isInAltar() && client.getLocalPlayer().getWorldLocation().getX() >= Constants.LARGE_MINE_X;
     }
 
     private boolean isInHugeMine() {
-        return client.getLocalPlayer().getWorldLocation().getX() <= Constants.HUGE_MINE_X;
+        return !isInAltar() && client.getLocalPlayer().getWorldLocation().getX() <= Constants.HUGE_MINE_X;
     }
 
     private boolean isGameBusy() {
@@ -625,11 +617,16 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean isInAltar() {
-        return Arrays.stream(client.getMapRegions()).noneMatch(GOTR_REGIONS::contains);
+        for (int region : client.getMapRegions()) {
+            if (GOTR_REGIONS.contains(region)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private int getFrags() {
-        return Inventory.getItemAmount(Constants.FRAGS);
+        return InventoryUtil.getItemAmount(Constants.FRAGS, true);
     }
 
     private boolean isCraftingEss() {

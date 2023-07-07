@@ -30,7 +30,7 @@ public class Constants {
 
 
     // Chat text
-    public static final String ENTER_ALTAR = "You step through the rift and find yourself at the ";
+    public static final String ENTER_ALTAR = "You step through the rift";
     public static final String EXIT_ALTAR = "You step through the portal and find yourself back in the temple.";
     public static final String GAME_STARTED = "Creatures from the Abyss will attack in 120 seconds.";
     public static final String ATTACK_STARTED = "Creatures from the Abyss begin their attack!";

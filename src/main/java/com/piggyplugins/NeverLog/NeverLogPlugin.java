@@ -8,7 +8,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import javax.inject.Inject;
 import java.time.Duration;
 
-@PluginDescriptor(name = "NeverLog",
+@PluginDescriptor(name = "NeverLog2",
         tags = {"piggy","neverlog"}
 )
 public class NeverLogPlugin extends Plugin {

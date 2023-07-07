@@ -51,22 +51,40 @@ public class InventoryUtil {
         return getItem(name, true);
     }
 
-    public static int getItemAmount(String name) {
-        Optional<Widget> item = getItem(name);
-        return item.map(Widget::getItemQuantity).orElse(0);
+    public static int getItemAmount(String name, boolean stacked) {
+        if (stacked) {
+            return nameContainsNoCase(name).first().isPresent() ? nameContainsNoCase(name).first().get().getItemQuantity() : 0;
+        }
+
+        return nameContainsNoCase(name).result().size();
     }
 
     public static int getItemAmount(int id) {
-        Optional<Widget> item = getById(id);
-        return item.map(Widget::getItemQuantity).orElse(0);
+        return getItemAmount(id, false);
+    }
+
+    public static int getItemAmount(int id, boolean stacked) {
+        if (stacked) {
+            return getById(id).isPresent() ? getById(id).get().getItemQuantity() : 0;
+        }
+
+        return Inventory.search().withId(id).result().size();
     }
 
     public static boolean hasItem(String name) {
-        return getItemAmount(name) > 0;
+        return getItemAmount(name, false) > 0;
+    }
+
+    public static boolean hasItem(String name, boolean stacked) {
+        return getItemAmount(name, stacked) > 0;
     }
 
     public static boolean hasItem(String name, int amount) {
-        return getItemAmount(name) >= amount;
+        return getItemAmount(name, false) >= amount;
+    }
+
+    public static boolean hasItem(String name, int amount, boolean stacked) {
+        return getItemAmount(name, stacked) >= amount;
     }
 
     public static boolean hasItems(String ...names) {
@@ -79,11 +97,25 @@ public class InventoryUtil {
         return true;
     }
 
+    public static boolean hasAnyItems(String ...names) {
+        for (String name : names) {
+            if (hasItem(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static boolean hasItem(int id) {
         return getItemAmount(id) > 0;
     }
 
     public static List<Widget> getItems() {
         return Inventory.search().result();
+    }
+
+    public static int emptySlots() {
+        return 28 - Inventory.search().result().size();
     }
 }
