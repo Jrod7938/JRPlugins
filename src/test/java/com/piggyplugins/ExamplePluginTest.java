@@ -6,9 +6,9 @@ import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
 import com.piggyplugins.JadAutoPrayers.JadAutoPrayersPlugin;
-import com.piggyplugins.NeverLog.NeverLogPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
+import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.PrayAgainstPlayer.PrayAgainstPlayerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
@@ -21,10 +21,10 @@ public class ExamplePluginTest {
         ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
 
                 //new stuff
-                PiggyUtilsPlugin.class, ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class, ItemCombinerPlugin.class,
-                 RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class, SpeedDartMakerPlugin.class,
-                OneTickSwitcherPlugin.class, AutoRiftsPlugin.class, NeverLogPlugin.class,
-                PrayAgainstPlayerPlugin.class);
+                PiggyUtilsPlugin.class, ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class,
+                ItemCombinerPlugin.class, RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class,
+                SpeedDartMakerPlugin.class, OneTickSwitcherPlugin.class, AutoRiftsPlugin.class,
+                PrayAgainstPlayerPlugin.class, PowerSkillerPlugin.class);
         RuneLite.main(args);
     }
 }
