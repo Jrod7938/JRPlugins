@@ -71,7 +71,6 @@ public class PowerSkillerPlugin extends Plugin {
     }
 
     private void handleState() {
-        System.out.println(state.name());
         switch (state) {
             case FIND_OBJECT:
                 findObject();
