@@ -22,7 +22,6 @@ import net.runelite.api.GameState;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
@@ -61,7 +60,6 @@ public class ItemCombinerPlugin extends Plugin {
     private int afkTicks;
     private boolean deposit;
     private boolean isMaking;
-    private int amtTwo;
 
     @Provides
     private ItemCombinerConfig getConfig(ConfigManager configManager) {
@@ -90,10 +88,6 @@ public class ItemCombinerPlugin extends Plugin {
 
         if (isMaking) {
             if (isDoneMaking()) {
-                isMaking = false;
-            }
-            Widget levelUp = client.getWidget(WidgetInfo.LEVEL_UP);
-            if (levelUp != null && !levelUp.isHidden()) {
                 isMaking = false;
             }
             return;
@@ -132,9 +126,10 @@ public class ItemCombinerPlugin extends Plugin {
         }
 
         Widget potionWidget = client.getWidget(17694734);
-        if (potionWidget != null) {
+        if (potionWidget != null && !potionWidget.isHidden()) {
+            log.info("widget visible");
             MousePackets.queueClickPacket();
-            WidgetPackets.queueResumePause(17694734, amtTwo);
+            WidgetPackets.queueResumePause(17694734, config.itemTwoAmt());
             isMaking = true;
             return;
         }
@@ -165,23 +160,21 @@ public class ItemCombinerPlugin extends Plugin {
 
     private void withdrawItemOne() {
         Bank.search()
-                .nameContains(config.itemOneName())
+                .withName(config.itemOneName())
                 .first()
                 .ifPresent(item -> BankInteraction.withdrawX(item, config.itemOneAmt()));
     }
 
     private void withdrawItemTwo() {
         Bank.search()
-                .nameContains(config.itemTwoName())
+                .withName(config.itemTwoName())
                 .first()
                 .ifPresent(item -> BankInteraction.withdrawX(item, config.itemTwoAmt()));
     }
 
     private void useItems() {
-        Widget itemOne = Inventory.search().nameContains(config.itemOneName()).first().get();
-        Widget itemTwo = Inventory.search().nameContains(config.itemTwoName()).first().get();
-
-        amtTwo = Inventory.getItemAmount(config.itemTwoName());
+        Widget itemOne = Inventory.search().filter(item -> item.getName().contains(config.itemOneName())).first().get();
+        Widget itemTwo = Inventory.search().filter(item -> item.getName().contains(config.itemTwoName())).first().get();
 
         MousePackets.queueClickPacket();
         MousePackets.queueClickPacket();
