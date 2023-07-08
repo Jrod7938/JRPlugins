@@ -24,3 +24,6 @@ https://discord.gg/kwYBYEg4uu
 If you already have EthanApiPlugin on your runelite already, it's probably fine to just grab `piggy-plugins-no-ethan-0.3.jar` and drag that into your `sideloaded-plugins` folder.
 
 If you don't have EthanApiPlugin then you can grab `piggy-plugins-aio-0.3.jar` and drag that into your `sideloaded-plugins` folder.
+
+
+[![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
