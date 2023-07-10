@@ -29,7 +29,7 @@ import java.util.List;
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDescriptor(
-        name = "Power Skiller",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Power Skiller</html>",
         description = "Will interact with an object and drop all items when inventory is full",
         tags = {"ethan", "piggy", "skilling"}
 )

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "Jad Flicker",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Jad Auto Prayers</html>",
         description = "Automatically switches & flicks prayer at Jad (multiple jads not supported)",
         tags = {"ethan", "piggy"}
 )

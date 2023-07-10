@@ -22,7 +22,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 
 @PluginDescriptor(
-        name = "Speed Dart Maker",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Speed Dart Maker</font>",
         description = "Fletches every type of dart in your inventory X amount of times per tick.",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
@@ -70,7 +70,6 @@ public class SpeedDartMakerPlugin extends Plugin {
             || !hasFeather()) {
             return;
         }
-
         fletchDarts();
     }
 

@@ -1,4 +1,4 @@
-package com.piggyplugins.aoewarnings;
+package com.piggyplugins.AoeWarn;
 
 import java.time.Instant;
 import lombok.AccessLevel;

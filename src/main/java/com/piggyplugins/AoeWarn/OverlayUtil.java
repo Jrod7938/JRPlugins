@@ -1,4 +1,4 @@
-package com.piggyplugins.aoewarnings;
+package com.piggyplugins.AoeWarn;
 
 import com.google.common.base.Strings;
 import java.awt.BasicStroke;

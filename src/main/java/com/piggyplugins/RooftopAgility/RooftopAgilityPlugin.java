@@ -64,7 +64,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
-        name = "Rooftop Agility",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Rooftop Agility</html>",
         description = "Partially ported iRooftops, example of how ReflectBreakHandler can be used for chinbreakhandler",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}

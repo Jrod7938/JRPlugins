@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @PluginDependency(EthanApiPlugin.class)
 @PluginDependency(PiggyUtilsPlugin.class)
 @PluginDescriptor(
-        name = "One Tick Switcher",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> One Tick Switcher</html>",
         description = ";)",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}

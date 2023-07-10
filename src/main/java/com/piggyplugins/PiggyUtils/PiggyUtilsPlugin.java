@@ -7,7 +7,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 
-@PluginDescriptor(name = "PiggyUtils",
+@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font> PiggyUtils</html>",
                 description = "Utility Plugin for PiggyPlugins",
                 tags = {"piggy","ethan"})
 @PluginDependency(EthanApiPlugin.class)

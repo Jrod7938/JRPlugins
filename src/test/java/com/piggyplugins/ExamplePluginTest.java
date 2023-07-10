@@ -7,12 +7,12 @@ import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
 import com.piggyplugins.JadAutoPrayers.JadAutoPrayersPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
+import com.piggyplugins.OneTickSwitcher.OneTickSwitcherPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.PrayAgainstPlayer.PrayAgainstPlayerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
-import com.piggyplugins.OneTickSwitcher.OneTickSwitcherPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
