@@ -1,6 +1,8 @@
 package com.piggyplugins;
 
+import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
 import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
+import com.piggyplugins.CannonReloader.CannonReloaderPlugin;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
@@ -24,7 +26,8 @@ public class ExamplePluginTest {
                 PiggyUtilsPlugin.class, ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class,
                 ItemCombinerPlugin.class, RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class,
                 SpeedDartMakerPlugin.class, OneTickSwitcherPlugin.class, AutoRiftsPlugin.class,
-                PrayAgainstPlayerPlugin.class, PowerSkillerPlugin.class);
+                PrayAgainstPlayerPlugin.class, PowerSkillerPlugin.class, AutoJugHumidifierPlugin.class,
+                CannonReloaderPlugin.class);
         RuneLite.main(args);
     }
 }

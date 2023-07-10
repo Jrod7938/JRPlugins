@@ -6,7 +6,7 @@ Automation plugins for runelite
 https://discord.gg/kwYBYEg4uu
 
 # Release 0.3
-*Updated 7/7/2023 2:01AM EST*
+*Updated 7/10/2023 11:16AM EST*
 **Plugins**:
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
@@ -18,6 +18,8 @@ https://discord.gg/kwYBYEg4uu
 - HerbCleaner
 - AutoRifts *(Beta / WIP, expect bugs / no pouches atm)*
 - aoewarnings *(OPRS base plugin ported by kotori)*
+- Auto Jug Humidify
+- Cannon Reloader
 - PowerSkiller *Intended to serve as a tutorial plugin for the discord server*
 
 # Instructions
