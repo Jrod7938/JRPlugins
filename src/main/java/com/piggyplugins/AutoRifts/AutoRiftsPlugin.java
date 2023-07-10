@@ -53,7 +53,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDependency(EthanApiPlugin.class)
 @PluginDescriptor(
-        name = "Auto Rifts",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Rifts</html>",
         description = "Guardians of the Rift",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
@@ -108,6 +108,7 @@ public class AutoRiftsPlugin extends Plugin {
     private boolean started;
     private Instant timer;
     private long pauseTime;
+    private boolean attackStarted;
 
     @Override
     protected void startUp() throws Exception {
@@ -140,6 +141,7 @@ public class AutoRiftsPlugin extends Plugin {
 
         if (!isInAltar() && !isWidgetVisible()) {
             gameStarted = false;
+            attackStarted = false;
         }
 
         this.accessibleAltars = Utility.getAccessibleAltars(client.getRealSkillLevel(Skill.RUNECRAFT),
@@ -161,10 +163,16 @@ public class AutoRiftsPlugin extends Plugin {
 
         if (event.getMessage().contains(Constants.GAME_OVER)) {
             gameStarted = false;
+            attackStarted = false;
         }
 
         if (event.getMessage().contains(Constants.GAME_WIN)) {
             gameStarted = false;
+            attackStarted = false;
+        }
+
+        if (event.getMessage().contains(Constants.ATTACK_STARTED)) {
+            attackStarted = true;
         }
     }
 
@@ -414,13 +422,27 @@ public class AutoRiftsPlugin extends Plugin {
 
     public State getCurrentState() {
         if ((EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() != -1) && !isMining()) {
-            if (isInAltar() && !hasAnyGuardianEssence()) {
-                return State.EXIT_ALTAR;
+            if (isInAltar()) {
+                if (!hasAnyGuardianEssence()) {
+                    return State.EXIT_ALTAR;
+                }
+                if (!gameStarted) {
+                    return State.EXIT_ALTAR;
+                }
             }
             if (isCraftingEss() && !isPortalSpawned()) {
                 return State.CRAFTING_ESS;
             }
             return State.ANIMATING;
+        }
+
+        if (isInAltar()) {
+            if (!hasAnyGuardianEssence()) {
+                return State.EXIT_ALTAR;
+            }
+            if (!gameStarted) {
+                return State.EXIT_ALTAR;
+            }
         }
 
         if (timeout > 0 && state != State.WAITING) {
