@@ -8,13 +8,25 @@ import net.runelite.client.config.Keybind;
 @ConfigGroup("PowerSkiller")
 public interface PowerSkillerConfig extends Config {
     @ConfigItem(
-            keyName = "Toggle",
+            keyName = "toggle",
             name = "Toggle",
-            description = ""
+            description = "",
+            position = -2
     )
     default Keybind toggle() {
         return Keybind.NOT_SET;
     }
+
+    @ConfigItem(
+            keyName = "searchNpc",
+            name = "Search NPCs (for fishing, etc)",
+            description = "For things like fishing spots",
+            position = -1
+    )
+    default boolean searchNpc() {
+        return false;
+    }
+
     @ConfigItem(
             name = "Object",
             keyName = "objectToInteract",

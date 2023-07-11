@@ -1,15 +1,18 @@
 package com.piggyplugins.PowerSkiller;
 
 import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.google.inject.Provides;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.NPCComposition;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
@@ -73,7 +76,11 @@ public class PowerSkillerPlugin extends Plugin {
     private void handleState() {
         switch (state) {
             case FIND_OBJECT:
-                findObject();
+                if (config.searchNpc()) {
+                    findNpc();
+                } else {
+                    findObject();
+                }
                 break;
             case DROP_ITEMS:
                 dropItems();
@@ -116,6 +123,15 @@ public class PowerSkillerPlugin extends Plugin {
             ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
             TileObjectInteraction.interact(tileObject, comp.getActions()[0]); // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
             // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
+        });
+    }
+
+    private void findNpc() {
+        String npcName = config.objectToInteract();
+
+        NPCs.search().withName(npcName).nearestToPlayer().ifPresent(npc -> {
+            NPCComposition comp = client.getNpcDefinition(npc.getId());
+            NPCInteraction.interact(npc,comp.getActions()[0]); // For fishing spots ?
         });
     }
 
