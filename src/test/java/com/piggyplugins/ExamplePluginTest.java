@@ -14,6 +14,7 @@ import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.PrayAgainstPlayer.PrayAgainstPlayerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
+import com.piggyplugins.SixHourLog.SixHourLogPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
@@ -27,7 +28,7 @@ public class ExamplePluginTest {
                 ItemCombinerPlugin.class, RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class,
                 SpeedDartMakerPlugin.class, OneTickSwitcherPlugin.class, AutoRiftsPlugin.class,
                 PrayAgainstPlayerPlugin.class, PowerSkillerPlugin.class, AutoJugHumidifierPlugin.class,
-                CannonReloaderPlugin.class);
+                CannonReloaderPlugin.class, SixHourLogPlugin.class);
         RuneLite.main(args);
     }
 }
