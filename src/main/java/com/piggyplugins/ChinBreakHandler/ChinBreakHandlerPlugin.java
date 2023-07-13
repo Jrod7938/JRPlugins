@@ -317,7 +317,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
                             client.setUsername(finalUsername);
                             client.setPassword(finalPassword);
 
-                            // client.setGameState(GameState.LOGGING_IN);
+                            client.setGameState(GameState.LOGGING_IN);
 
                             sendKey(KeyEvent.VK_ENTER);
                             sendKey(KeyEvent.VK_ENTER);
@@ -325,6 +325,8 @@ public class ChinBreakHandlerPlugin extends Plugin {
                         }
                 );
 
+            } else {
+                client.setGameState(GameState.LOGGING_IN);
             }
         }
     }
@@ -371,14 +373,10 @@ public class ChinBreakHandlerPlugin extends Plugin {
             logout = false;
 
             Widget loginScreen = client.getWidget(WidgetInfo.LOGIN_CLICK_TO_PLAY_SCREEN);
-            Widget playButtonText = client.getWidget(WidgetID.LOGIN_CLICK_TO_PLAY_GROUP_ID, 87);
-
-            if (playButtonText != null && playButtonText.getText().equals("CLICK HERE TO PLAY"))
-            {
-                click(playButtonText);
-            }
-            else if (loginScreen == null)
-            {
+            if (loginScreen != null) {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetActionPacket(1, 24772680, -1, -1);
+            } else {
                 state = State.INVENTORY;
             }
         }
@@ -677,7 +675,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
     public void menuAction(MenuOptionClicked menuOptionClicked, String option, String target, int identifier, MenuAction menuAction, int param0, int param1)
     {
-//        menuOptionClicked.setMenuOption(option);
+//        menuOptionClicked.getMenuOption().set.setMenuOption(option);
 //        menuOptionClicked.setMenuTarget(target);
 //        menuOptionClicked.setId(identifier);
 //        menuOptionClicked.setMenuAction(menuAction);
