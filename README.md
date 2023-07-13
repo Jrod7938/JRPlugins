@@ -6,7 +6,8 @@ Automation plugins for runelite
 https://discord.gg/kwYBYEg4uu
 
 # Release 0.3
-*Updated 7/10/2023 11:16AM EST*
+*Updated 7/13/2023 5:22 PM EST*
+
 **Plugins**:
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
