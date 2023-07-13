@@ -58,14 +58,13 @@ import java.awt.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Rooftop Agility</html>",
-        description = "Partially ported iRooftops, example of how ReflectBreakHandler can be used for chinbreakhandler",
+        description = "Partially ported iRooftops (by illumine), example of how ReflectBreakHandler can be used for chinbreakhandler",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
@@ -372,7 +371,7 @@ public class RooftopAgilityPlugin extends Plugin {
                 Optional<Widget> camelotSpellIcon = Widgets.search().withId(14286880).first();
                 if (camelotSpellIcon.isPresent()) {
                     MousePackets.queueClickPacket();
-                    WidgetPackets.queueWidgetAction(camelotSpellIcon.get(), "Cast");
+                    WidgetPackets.queueWidgetAction(camelotSpellIcon.get(), "Seers'");
                     timeout = 2 + tickDelay();
                 }
                 break;
