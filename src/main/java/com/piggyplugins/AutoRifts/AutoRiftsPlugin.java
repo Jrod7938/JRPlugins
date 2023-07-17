@@ -584,7 +584,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean shouldDepositRunes() {
-        return !InventoryUtil.nameContainsNoCase("rune").empty();
+        return !InventoryUtil.nameContainsNoCase("rune").filter(item -> !item.getName().contains("pouch")).empty();
     }
 
     private boolean isPortalSpawned() {
