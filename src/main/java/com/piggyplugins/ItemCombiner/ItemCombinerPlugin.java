@@ -1,13 +1,11 @@
 package com.piggyplugins.ItemCombiner;
 
 import com.example.EthanApiPlugin.Collections.Bank;
-import com.example.EthanApiPlugin.Collections.BankInventory;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
-import com.example.InteractionApi.BankInventoryInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.Packets.MousePackets;
@@ -22,6 +20,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
@@ -31,7 +30,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Item Combiner</html>",
@@ -94,10 +92,14 @@ public class ItemCombinerPlugin extends Plugin {
         }
 
         if (deposit) {
-            Optional<Widget> item = BankInventory.search()
-                    .filter(widget -> !widget.getName().equalsIgnoreCase(config.itemOneName()) && !widget.getName().equalsIgnoreCase(config.itemTwoName())).first();
-            item.ifPresent(widget -> BankInventoryInteraction.useItem(widget, "Deposit-All"));
-            deposit = false;
+            if (Bank.isOpen()) {
+                Widget widget = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetAction(widget, "Deposit", "Deposit inventory");
+                deposit = false;
+            } else {
+                findBank();
+            }
             return;
         }
 
