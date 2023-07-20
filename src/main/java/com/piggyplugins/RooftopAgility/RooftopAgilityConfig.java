@@ -11,12 +11,12 @@ import net.runelite.client.config.Range;
 public interface RooftopAgilityConfig extends Config {
 
     @ConfigItem(
-            keyName = "Toggle",
+            keyName = "agilityToggle",
             name = "Toggle",
             description = "",
             position = 0
     )
-    default Keybind toggle() {
+    default Keybind agilityToggle() {
         return Keybind.NOT_SET;
     }
 
