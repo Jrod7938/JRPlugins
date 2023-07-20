@@ -447,7 +447,7 @@ public class RooftopAgilityPlugin extends Plugin {
         return config.course().getName();
     }
 
-    private final HotkeyListener agilityToggle = new HotkeyListener(() -> config.toggle()) {
+    private final HotkeyListener agilityToggle = new HotkeyListener(() -> config.agilityToggle()) {
         @Override
         public void hotkeyPressed() {
             toggleAgility();
