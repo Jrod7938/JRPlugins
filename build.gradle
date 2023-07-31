@@ -11,12 +11,12 @@ repositories {
     mavenCentral()
 }
 
-def runeLiteVersion = '1.10.9'
+def runeLiteVersion = '1.10.9.1'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
-    compileOnly group: "net.runelite", name: "jshell", version: runeLiteVersion
     compileOnly 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.pf4j:pf4j:3.9.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
@@ -27,6 +27,8 @@ dependencies {
     implementation group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0', {
         exclude group: 'com.google.inject'
     }
+    //runtimeOnly group: 'net.runelite', name:'client', version: runeLiteVersion
+    //runtimeOnly 'org.projectlombok:lombok:1.18.20'
 }
 
 sourceSets {
@@ -94,6 +96,7 @@ publishing {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    options.release.set(11)
 }
 
 targetCompatibility = JavaVersion.VERSION_11

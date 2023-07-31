@@ -30,7 +30,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font> Cannon Reloaderr</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Cannon Reloader</html>",
         description = "Automatically reloads your cannon when out of cannonballs",
         enabledByDefault = false,
         tags = {"ethan", "piggy"}

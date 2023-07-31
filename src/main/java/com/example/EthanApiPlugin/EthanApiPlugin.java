@@ -148,7 +148,7 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static int getAnimation(NPC npc) {
-        Field animation = npc.getClass().getSuperclass().getDeclaredField("dq");
+        Field animation = npc.getClass().getSuperclass().getDeclaredField("cp");
         animation.setAccessible(true);
         int anim = animation.getInt(npc) * 1584912307;
         animation.setAccessible(false);
@@ -1176,5 +1176,7 @@ public class EthanApiPlugin extends Plugin {
 		eventBus.register(RuneLite.getInjector().getInstance(DepositBox.class));
 		eventBus.register(RuneLite.getInjector().getInstance(ShopInventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(Shop.class));
+        eventBus.register(RuneLite.getInjector().getInstance(GrandExchangeInventory.class));
+        eventBus.register(RuneLite.getInjector().getInstance(TradeInventory.class));
     }
 }
