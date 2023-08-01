@@ -1,6 +1,5 @@
 package com.piggyplugins;
 
-import com.piggyplugins.AutoDemonicGorillas.AutoDemonicGorillasPlugin;
 import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
 import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
 import com.piggyplugins.CannonReloader.CannonReloaderPlugin;
@@ -11,7 +10,6 @@ import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
 import com.piggyplugins.JadAutoPrayers.JadAutoPrayersPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.OneTickSwitcher.OneTickSwitcherPlugin;
-import com.piggyplugins.PiggyLoader.PiggyLoaderPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.PrayAgainstPlayer.PrayAgainstPlayerPlugin;
@@ -24,7 +22,6 @@ import net.runelite.client.externalplugins.ExternalPluginManager;
 public class ExamplePluginTest {
     public static void main(String[] args) throws Exception {
         ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
-                AutoDemonicGorillasPlugin.class, PiggyLoaderPlugin.class,
                 //new stuff
                 PiggyUtilsPlugin.class, ChinBreakHandlerPlugin.class, HerbCleanerPlugin.class,
                 ItemCombinerPlugin.class, RooftopAgilityPlugin.class, JadAutoPrayersPlugin.class,
