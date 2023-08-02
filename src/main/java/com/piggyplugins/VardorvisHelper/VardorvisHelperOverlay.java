@@ -38,7 +38,7 @@ public class VardorvisHelperOverlay extends OverlayPanel {
 
         panelComponent.getChildren().clear();
         BufferedImage prayerImage;
-        prayerImage = getPrayerImage(plugin.getPrayerSkill());
+        prayerImage = getPrayerImage(plugin.getPrayerSprite());
 
         panelComponent.setBackgroundColor(client.isPrayerActive(plugin.getCorrectPrayer()) ? Color.GREEN : Color.RED);
         panelComponent.getChildren().add(new ImageComponent(prayerImage));
