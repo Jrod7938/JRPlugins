@@ -1,5 +1,8 @@
 package com.piggyplugins.AutoRifts.data;
 
+import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
+import net.runelite.api.QuestState;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,20 +24,20 @@ public class Utility {
         return 12;
     }
 
-    public static Set<Altar> getAccessibleAltars(int level, boolean city, boolean troll, boolean mep, boolean sotf) {
+    public static Set<Altar> getAccessibleAltars(int level, QuestState city, QuestState troll, QuestState mep, QuestState sotf) {
         Set<Altar> accessibleAltars = new HashSet<>();
         for (int i = 0; i < getHighestLevelRuneIndex(level); i++) {
             Altar[] altars = Altar.values();
-            if (altars[i] == Altar.COSMIC && !city) {
+            if (altars[i] == Altar.COSMIC && city!=QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.LAW && !troll) {
+            if (altars[i] == Altar.LAW && troll!=QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.DEATH && !mep) {
+            if (altars[i] == Altar.DEATH && mep!=QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.BLOOD && !sotf) {
+            if (altars[i] == Altar.BLOOD && sotf!=QuestState.FINISHED) {
                 continue;
             }
             accessibleAltars.add(altars[i]);

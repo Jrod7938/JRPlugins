@@ -26,5 +26,10 @@ public enum State {
     GAME_BUSY,
     DROP_RUNES,
     DROP_TALISMAN,
-    CRAFTING_ESS
+    CRAFTING_ESS,
+    AWAITING_TOGGLE,
+    FILL_POUCH,
+    ERROR,
+    GET_POINTS
+
 }

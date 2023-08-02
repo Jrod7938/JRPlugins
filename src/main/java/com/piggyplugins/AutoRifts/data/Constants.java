@@ -7,7 +7,7 @@ public class Constants {
     public static final int HUGE_MINE_X = 3592;
 
     // Game Object IDs
-    public static final int BARRIER_BUSY_ID = 43489;
+    public static final int BARRIER_BUSY_ID = 43849;
     public static final int BARRIER_READY_ID = 43700;
 
     public static final int ACTIVE_ALTAR = 9363;

@@ -19,50 +19,10 @@ public interface AutoRiftsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "cosmicRunes",
-            name = "Completed lost city?",
-            description = "Allow cosmic runecrafting",
-            position = 1
-    )
-    default boolean cosmicRunes() {
-        return false;
-    }
-
-    @ConfigItem(
-            keyName = "lawRunes",
-            name = "Completed Troll Stronghold?",
-            description = "Allow law runecrafting",
-            position = 2
-    )
-    default boolean lawRunes() {
-        return false;
-    }
-
-    @ConfigItem(
-            keyName = "deathRunes",
-            name = "Completed Mourning's End Part II",
-            description = "Allow death runecrafting",
-            position = 3
-    )
-    default boolean deathRunes() {
-        return false;
-    }
-
-    @ConfigItem(
-            keyName = "bloodRunes",
-            name = "Completed Sins of the Father",
-            description = "Allow blood runecrafting",
-            position = 4
-    )
-    default boolean bloodRunes() {
-        return false;
-    }
-
-    @ConfigItem(
             keyName = "startFrags",
             name = "Starting Fragments",
             description = "How many fragments you should get before leaving the starting zone",
-            position = 5
+            position = 1
     )
     default int startingFrags() {
         return 60;
@@ -72,7 +32,7 @@ public interface AutoRiftsConfig extends Config {
             keyName = "minFrags",
             name = "Minimum Fragments",
             description = "When you should mine more fragments",
-            position = 6
+            position = 2
     )
     default int minFrags() {
         return 24;
@@ -82,29 +42,48 @@ public interface AutoRiftsConfig extends Config {
             keyName = "ignorePortal",
             name = "Ignore Portal Ess",
             description = "How much essence you should have to ignore portal",
-            position = 7
+            position = 3
     )
     default int ignorePortal() {
         return 20;
     }
 
     @ConfigItem(
-            keyName = "emptySlots",
-            name = "Empty Inv slots",
-            description = "How many inventory slots are free (kek uims)",
-            position = 8
-    )
-    default int emptySlots() {
-        return 24;
-    }
-
-    @ConfigItem(
             keyName = "dropRunes",
             name = "Drop Runes",
             description = "Drop Runes instead of depositing (kek uim)",
-            position = 9
+            position = 4
     )
     default boolean dropRunes() {
         return false;
+    }
+    @ConfigItem(
+            keyName = "hadBook",
+            name = "Have Abyssal Book in bank? (Important for NPC contact)",
+            description = "Does your bank contain Abyssal Book?",
+            position = 5
+    )
+    default boolean hadBook() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "usePouches",
+            name = "Use Essence Pouches?",
+            description = "Requires NPC Contact runes in Rune Pouch or Redwood lit Lantern",
+            position = 6
+    )
+    default boolean usePouches() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "prioritizeCatalytic",
+            name = "Prioritizes Catalytic Energy(Beta)",
+            description = "Will try to balance points if not ticked",
+            position = 7
+    )
+    default boolean prioritizeCatalytic() {
+        return true;
     }
 }
