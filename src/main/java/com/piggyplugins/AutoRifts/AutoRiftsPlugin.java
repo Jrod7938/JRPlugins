@@ -138,8 +138,7 @@ public class AutoRiftsPlugin extends Plugin {
     int temp =0;
     @Subscribe
     private void onGameTick(GameTick event) {
-        log.info("Catalytic:"+catalyticRewardPoints);
-        log.info("Elemental:"+elementalRewardPoints);
+
         if (catalyticRewardPoints == -2 && elementalRewardPoints == -2) {
             Optional<Widget> dialog = Widgets.search().withId(15007745).first();
             if (dialog.isPresent())
@@ -254,8 +253,8 @@ public class AutoRiftsPlugin extends Plugin {
         Matcher rewardPointMatcher = REWARD_POINT_PATTERN.matcher(event.getMessage());
         if(rewardPointMatcher.find()) {
 //            // Use replaceAll to remove thousands separators from the text
-//            elementalRewardPoints = Integer.parseInt(rewardPointMatcher.group(1).replaceAll(",", ""));
-//            catalyticRewardPoints = Integer.parseInt(rewardPointMatcher.group(2).replaceAll(",", ""));
+            elementalRewardPoints = Integer.parseInt(rewardPointMatcher.group(1).replaceAll(",", ""));
+            catalyticRewardPoints = Integer.parseInt(rewardPointMatcher.group(2).replaceAll(",", ""));
         }
 
     }
