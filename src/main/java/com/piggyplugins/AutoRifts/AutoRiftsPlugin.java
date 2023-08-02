@@ -139,8 +139,10 @@ public class AutoRiftsPlugin extends Plugin {
     int temp =0;
     @Subscribe
     private void onGameTick(GameTick event) {
-//        //log.info("Catalytic:"+catalyticRewardPoints);
-//        //log.info("Elemental:"+elementalRewardPoints);
+        if (client.getGameState() != GameState.LOGGED_IN || !started) {
+            return;
+        }
+
         if (catalyticRewardPoints == -2 && elementalRewardPoints == -2) {
             Optional<Widget> dialog = Widgets.search().withId(15007745).first();
             if (dialog.isPresent())
