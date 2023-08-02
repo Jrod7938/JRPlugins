@@ -43,7 +43,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '0.5'
+version = '0.6'
 sourceCompatibility = "11"
 
 task FullJar(type: Jar) {
