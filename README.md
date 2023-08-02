@@ -5,8 +5,8 @@ Automation plugins for runelite
 # Discord
 https://discord.gg/kwYBYEg4uu
 
-# Release 0.4
-*Updated 7/16/2023 8:52 PM EST*
+# Release 0.6
+*Updated 8/2/2023 3:03 AM EST*
 
 **Plugins**:
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
@@ -22,11 +22,12 @@ https://discord.gg/kwYBYEg4uu
 - Auto Jug Humidify
 - Cannon Reloader
 - PowerSkiller *Intended to serve as a tutorial plugin for the discord server*
+- Vardorvis Helper
 
 # Instructions
-If you already have EthanApiPlugin on your runelite already, it's probably fine to just grab `piggy-plugins-no-ethan-0.3.jar` and drag that into your `sideloaded-plugins` folder.
+If you already have EthanApiPlugin on your runelite already, it's probably fine to just grab `piggy-plugins-no-ethan-0.6.jar` and drag that into your `sideloaded-plugins` folder.
 
-If you don't have EthanApiPlugin then you can grab `piggy-plugins-aio-0.3.jar` and drag that into your `sideloaded-plugins` folder.
+If you don't have EthanApiPlugin then you can grab `piggy-plugins-aio-0.6.jar` and drag that into your `sideloaded-plugins` folder.
 
 
 [![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
