@@ -28,7 +28,7 @@ import javax.inject.Inject;
 public class VardorvisHelperPlugin extends Plugin {
 
     private static final int RANGE_PROJECTILE = 2521;
-    private static final int MAGE_PROJECTILE = 2522; // might be wrong, cba wasting more gp to find out
+    private static final int MAGE_PROJECTILE = 2520; // thx for grabbing this 4 me @sdeenginer
 
     private static final String VARDOVIS = "Vardorvis";
     private static final String VARDOVIS_HEAD = "Vardorvis' Head";
