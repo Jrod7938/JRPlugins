@@ -36,8 +36,8 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 
 @PluginDescriptor(
-        name = "Pray Against Player",
-        description = "Use plugin in PvP situations for best results! (Ported from OpenOSRS)",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Pray Against Player</font>",
+        description = "Use plugin in PvP situations for best results! (Ported from xKylee)",
         tags = {"highlight", "pvp", "overlay", "players", "piggy"},
         enabledByDefault = false
 )
