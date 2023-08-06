@@ -63,7 +63,7 @@ public class AutoRiftsPlugin extends Plugin {
     private static final Pattern CHECK_POINT_PATTERN = Pattern.compile(CHECK_POINT_REGEX);
     //Have to clean up the code, if you're reading this and want to clean it up, feel free to PR.
     // It's a fucking MESS rn and i cba cleaning it up after getting it to a proper state - Trinity
-    private List<Pouch> pouches = new ArrayList<Pouch>();
+    private List<Pouch> pouches = new ArrayList<>();
 
     private int essenceInPouches = 0;
     private static final Set<Integer> MINING_ANIMATION_IDS = Set.of(AnimationID.MINING_ADAMANT_PICKAXE, AnimationID.MINING_TRAILBLAZER_PICKAXE, AnimationID.MINING_BLACK_PICKAXE, AnimationID.MINING_BRONZE_PICKAXE, AnimationID.MINING_CRYSTAL_PICKAXE, AnimationID.MINING_DRAGON_PICKAXE, AnimationID.MINING_GILDED_PICKAXE, AnimationID.MINING_INFERNAL_PICKAXE, AnimationID.MINING_MITHRIL_PICKAXE, AnimationID.MINING_RUNE_PICKAXE, AnimationID.MINING_DRAGON_PICKAXE_OR, AnimationID.MINING_DRAGON_PICKAXE_OR_TRAILBLAZER, AnimationID.MINING_DRAGON_PICKAXE_UPGRADED, AnimationID.MINING_IRON_PICKAXE, AnimationID.MINING_STEEL_PICKAXE, AnimationID.MINING_TRAILBLAZER_PICKAXE_3, AnimationID.MINING_TRAILBLAZER_PICKAXE_2, AnimationID.MINING_3A_PICKAXE);
@@ -131,7 +131,6 @@ public class AutoRiftsPlugin extends Plugin {
         this.overlayManager.remove(overlay);
     }
 
-    int temp = 0;
 
     @Subscribe
     private void onGameTick(GameTick event) {
@@ -452,7 +451,7 @@ public class AutoRiftsPlugin extends Plugin {
         int elemental;
         TileObject catalyticAltar = null;
         TileObject elementalAltar = null;
-        List<TileObject> activeAltars = new ArrayList<TileObject>();
+        List<TileObject> activeAltars = new ArrayList<>();
         List<TileObject> guardians = TileObjects.search().nameContains("Guardian of").result();
         for (TileObject guardian : guardians) {
             GameObject gameObject = (GameObject) guardian;
@@ -764,24 +763,6 @@ public class AutoRiftsPlugin extends Plugin {
         return !InventoryUtil.nameContainsNoCase("rune").filter(item -> !item.getName().contains("pouch")).empty();
     }
 
-    public int getAlternative(Widget pouch) {
-        int alternative = -1;
-        switch (pouch.getItemId()) {
-            case ItemID.MEDIUM_POUCH:
-                alternative = ItemID.MEDIUM_POUCH_5511;
-                break;
-            case ItemID.LARGE_POUCH:
-                alternative = ItemID.LARGE_POUCH_5513;
-                break;
-            case ItemID.GIANT_POUCH:
-                alternative = ItemID.GIANT_POUCH_5515;
-                break;
-            case ItemID.COLOSSAL_POUCH:
-                alternative = ItemID.COLOSSAL_POUCH_26786;
-                break;
-        }
-        return alternative;
-    }
 
     public List<Pouch> getPouches() {
         return pouches;
@@ -860,7 +841,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     public List<Pouch> getEmptyPouches() {
-        List<Pouch> result = new ArrayList<Pouch>();
+        List<Pouch> result = new ArrayList<>();
         for (Pouch pouch : pouches) {
             if (!isPouchFull(pouch)) {
                 result.add(pouch);
@@ -915,20 +896,6 @@ public class AutoRiftsPlugin extends Plugin {
         }
     }
 
-    public boolean arePouchesFull() {
-        for (Pouch pouch : pouches) {
-            if (pouch.getCurrentEssence() != pouch.getEssenceTotal()) return false;
-        }
-        return true;
-    }
-
-
-    public int getEssenceSlots(WidgetInfo widgetInfo) {
-        List<Widget> inventoryItems = Arrays.asList(client.getWidget(widgetInfo.getId()).getDynamicChildren());
-        return (int) inventoryItems.stream().filter(item -> item.getItemId() == ItemID.PURE_ESSENCE || item.getItemId()
-                == ItemID.RUNE_ESSENCE).count();
-    }
-
     public boolean pouchesDegraded() {
         return api.getItemFromList(new int[]{ItemID.MEDIUM_POUCH_5511, ItemID.LARGE_POUCH_5513, ItemID.GIANT_POUCH_5515,
                 ItemID.COLOSSAL_POUCH_26786}, WidgetInfo.INVENTORY) != null;
@@ -938,13 +905,9 @@ public class AutoRiftsPlugin extends Plugin {
         return ObjectUtil.nameContainsNoCase(Constants.PORTAL).filter(tileObject -> tileObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).nearestToPlayer().isPresent();
     }
 
-    private boolean hasGuardianEssenceAmount(int amount) {
-        return InventoryUtil.getItemAmount(Constants.ESS, false) >= amount;
-    }
 
 
     private boolean hasGuardianEssence() {
-        int amt = InventoryUtil.getItemAmount(Constants.ESS, false);
         return !Inventory.search().withId(ItemID.GUARDIAN_ESSENCE).empty() && Inventory.full();
     }
 
