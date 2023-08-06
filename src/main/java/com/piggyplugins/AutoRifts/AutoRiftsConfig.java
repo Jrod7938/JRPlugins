@@ -57,15 +57,6 @@ public interface AutoRiftsConfig extends Config {
     default boolean dropRunes() {
         return false;
     }
-    @ConfigItem(
-            keyName = "hadBook",
-            name = "Have Abyssal Book in bank? (Important for NPC contact)",
-            description = "Does your bank contain Abyssal Book?",
-            position = 5
-    )
-    default boolean hadBook() {
-        return true;
-    }
 
     @ConfigItem(
             keyName = "usePouches",

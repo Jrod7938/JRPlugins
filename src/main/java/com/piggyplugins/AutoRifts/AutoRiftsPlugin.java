@@ -50,8 +50,8 @@ import java.util.regex.Pattern;
 )
 @Slf4j
 public class AutoRiftsPlugin extends Plugin {
-    private int elementalRewardPoints=-2;
-    private int catalyticRewardPoints=-2;
+    private int elementalRewardPoints = -2;
+    private int catalyticRewardPoints = -2;
 
     // thx gotr helper plugin, borrowed some code from u
     // https://github.com/DatBear/Guardians-of-the-Rift-Helper
@@ -62,7 +62,7 @@ public class AutoRiftsPlugin extends Plugin {
     private static final Pattern CHECK_POINT_PATTERN = Pattern.compile(CHECK_POINT_REGEX);
     //Have to clean up the code, if you're reading this and want to clean it up, feel free to PR.
     // It's a fucking MESS rn and i cba cleaning it up after getting it to a proper state - Trinity
-    private List<Pouch>pouches = new ArrayList<Pouch>();
+    private List<Pouch> pouches = new ArrayList<>();
 
     private int essenceInPouches = 0;
     private static final Set<Integer> MINING_ANIMATION_IDS = Set.of(AnimationID.MINING_ADAMANT_PICKAXE, AnimationID.MINING_TRAILBLAZER_PICKAXE, AnimationID.MINING_BLACK_PICKAXE, AnimationID.MINING_BRONZE_PICKAXE, AnimationID.MINING_CRYSTAL_PICKAXE, AnimationID.MINING_DRAGON_PICKAXE, AnimationID.MINING_GILDED_PICKAXE, AnimationID.MINING_INFERNAL_PICKAXE, AnimationID.MINING_MITHRIL_PICKAXE, AnimationID.MINING_RUNE_PICKAXE, AnimationID.MINING_DRAGON_PICKAXE_OR, AnimationID.MINING_DRAGON_PICKAXE_OR_TRAILBLAZER, AnimationID.MINING_DRAGON_PICKAXE_UPGRADED, AnimationID.MINING_IRON_PICKAXE, AnimationID.MINING_STEEL_PICKAXE, AnimationID.MINING_TRAILBLAZER_PICKAXE_3, AnimationID.MINING_TRAILBLAZER_PICKAXE_2, AnimationID.MINING_3A_PICKAXE);
@@ -129,10 +129,18 @@ public class AutoRiftsPlugin extends Plugin {
         this.breakHandler.stopPlugin(this);
         this.overlayManager.remove(overlay);
     }
-    int temp =0;
+
+
     @Subscribe
     private void onGameTick(GameTick event) {
+        log.info("" + getEssenceInPouches());
         if (client.getGameState() != GameState.LOGGED_IN || !started) {
+            return;
+        }
+
+        if (config.usePouches() && !hasRunes() && !hasLantern()) {
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Must have a rune pouch with NPC contact Runes to use essence pouches", null);
+            EthanApiPlugin.stopPlugin(this);
             return;
         }
 
@@ -148,20 +156,26 @@ public class AutoRiftsPlugin extends Plugin {
                 }
             }
         }
+//&&Inventory.search().withId(ItemID.RUNE_POUCH).empty()&&Inventory.search().withId(ItemID.DIVINE_RUNE_POUCH).empty()
 
-        if (config.usePouches()&&Inventory.search().withId(ItemID.RUNE_POUCH).empty()&&Inventory.search().withId(ItemID.DIVINE_RUNE_POUCH).empty()){
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE,"","Must have a rune pouch with NPC contact Runes to use essence pouches",null);
-            EthanApiPlugin.stopPlugin(this);
-        }
 
         if (pouches.size() == 0 && config.usePouches()) {
             setPouches();
         }
 
-        if(Inventory.full()
-                && getEmptyPouches().size()>0
-                &&Inventory.search().withId(ItemID.GUARDIAN_ESSENCE).first().isPresent()){
+        if (Inventory.full()
+                && config.usePouches()
+                && getEmptyPouches().size() > 0
+                && Inventory.search().withId(ItemID.GUARDIAN_ESSENCE).first().isPresent()
+                && !isInAltar()) {
             fillPouches();
+            if (isInHugeMine()) {
+                mineHugeGuardians();
+                return;
+            } else {
+                craftEssence();
+                return;
+            }
         }
 
         if (!gameStarted && isWidgetVisible()) {
@@ -177,7 +191,7 @@ public class AutoRiftsPlugin extends Plugin {
                 Quest.LOST_CITY.getState(client), Quest.TROLL_STRONGHOLD.getState(client),
                 Quest.MOURNINGS_END_PART_II.getState(client), Quest.SINS_OF_THE_FATHER.getState(client));
         state = getCurrentState();
-        handleState();
+        handleState(state);
     }
 
     @Subscribe
@@ -193,8 +207,8 @@ public class AutoRiftsPlugin extends Plugin {
         }
 
         if (event.getMessage().contains("5 seconds.")) {
-            int attempt = RandomUtils.nextInt(0,10);
-            if (attempt > 7){
+            int attempt = RandomUtils.nextInt(0, 10);
+            if (attempt > 7) {
                 if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
                     if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty() || !Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
                         MousePackets.queueClickPacket();
@@ -204,11 +218,11 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        if(event.getMessage().contains("3..")){
-            int attempt = RandomUtils.nextInt(0,5);
-            if(attempt>2){
+        if (event.getMessage().contains("3..")) {
+            int attempt = RandomUtils.nextInt(0, 5);
+            if (attempt > 2) {
                 if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
-                    if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty()||!Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
+                    if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty() || !Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
                         MousePackets.queueClickPacket();
                         WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1);
                     }
@@ -216,7 +230,7 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        if(event.getMessage().contains("2..")){
+        if (event.getMessage().contains("2..")) {
             if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
                 if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty() || !Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
                     MousePackets.queueClickPacket();
@@ -231,12 +245,15 @@ public class AutoRiftsPlugin extends Plugin {
         }
 
         if (event.getMessage().contains(Constants.GAME_OVER)) {
+
             gameStarted = false;
+            setEssenceInPouches(0);
             attackStarted = false;
         }
 
         if (event.getMessage().contains(Constants.GAME_WIN)) {
             gameStarted = false;
+            setEssenceInPouches(0);
             attackStarted = false;
         }
 
@@ -245,7 +262,7 @@ public class AutoRiftsPlugin extends Plugin {
         }
 
         Matcher rewardPointMatcher = REWARD_POINT_PATTERN.matcher(event.getMessage());
-        if(rewardPointMatcher.find()) {
+        if (rewardPointMatcher.find()) {
             elementalRewardPoints = Integer.parseInt(rewardPointMatcher.group(1).replaceAll(",", ""));
             catalyticRewardPoints = Integer.parseInt(rewardPointMatcher.group(2).replaceAll(",", ""));
         }
@@ -256,7 +273,7 @@ public class AutoRiftsPlugin extends Plugin {
         return ThreadLocalRandom.current().nextInt(0, 3);
     }
 
-    private void handleState() {
+    private void handleState(State state) {
         switch (state) {
             case GET_POINTS:
                 getPoints();
@@ -267,8 +284,8 @@ public class AutoRiftsPlugin extends Plugin {
                 timeout--;
                 break;
             case GAME_BUSY:
-                if (RandomUtils.nextInt(0, 100) == 30){
-                    TileObjectInteraction.interact(TileObjects.search().withId(Constants.BARRIER_BUSY_ID).first().get(),"Peek");
+                if (RandomUtils.nextInt(0, 100) == 30) {
+                    TileObjectInteraction.interact(TileObjects.search().withId(Constants.BARRIER_BUSY_ID).first().get(), "Peek");
                 }
                 break;
             case OUTSIDE_BARRIER:
@@ -317,7 +334,7 @@ public class AutoRiftsPlugin extends Plugin {
                 powerGuardian();
                 break;
             case REPAIR_POUCH:
-                boolean hadBook = config.hadBook();
+                boolean hadBook = Widgets.search().withText("Can I have another Abyssal book?").first().isPresent();
                 if (!Widgets.search().withTextContains("What do you want?").hiddenState(false).empty() || !Widgets.search().withTextContains("Can you repair").hiddenState(false).empty()) {
                     MousePackets.queueClickPacket();
                     WidgetPackets.queueResumePause(15138821, -1);
@@ -369,12 +386,12 @@ public class AutoRiftsPlugin extends Plugin {
         InventoryInteraction.useItem(item, "Drop");
     }
 
-    private void getPoints(){
+    private void getPoints() {
         if (isOutsideBarrier()) {
             Optional<TileObject> guardian = TileObjects.search().withId(43695).first();
-            TileObjectInteraction.interact(guardian.get(),"Check");
+            TileObjectInteraction.interact(guardian.get(), "Check");
         }
-        timeout=tickDelay();
+        timeout = tickDelay();
     }
 
     private void depositRunes() {
@@ -415,12 +432,16 @@ public class AutoRiftsPlugin extends Plugin {
         if (tileObject.isEmpty()) {
             return;
         }
-        if(getEssenceInPouches()>0&&Inventory.getEmptySlots()>0){
+        if (getEssenceInPouches() > 0 && Inventory.getEmptySlots() > 0) {
             emptyPouches();
+            TileObject altar = tileObject.get();
+            TileObjectInteraction.interact(altar, Constants.CRAFT_RUNES);
+            return;
         }
-
-        TileObject altar = tileObject.get();
-        TileObjectInteraction.interact(altar, Constants.CRAFT_RUNES);
+        if (hasGuardianEssence()) {
+            TileObject altar = tileObject.get();
+            TileObjectInteraction.interact(altar, Constants.CRAFT_RUNES);
+        }
         timeout = tickDelay();
     }
 
@@ -429,9 +450,9 @@ public class AutoRiftsPlugin extends Plugin {
         int elemental;
         TileObject catalyticAltar = null;
         TileObject elementalAltar = null;
-        List<TileObject> activeAltars = new ArrayList<TileObject>();
+        List<TileObject> activeAltars = new ArrayList<>();
         List<TileObject> guardians = TileObjects.search().nameContains("Guardian of").result();
-        for (TileObject guardian:guardians) {
+        for (TileObject guardian : guardians) {
             GameObject gameObject = (GameObject) guardian;
             Animation animation = ((DynamicObject) gameObject.getRenderable()).getAnimation();
             if (animation.getId() == 9363) {
@@ -439,7 +460,7 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        for(TileObject altar : activeAltars){
+        for (TileObject altar : activeAltars) {
             if (isCatalytic(altar)) {
                 catalyticAltar = altar;
             } else {
@@ -448,15 +469,15 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        if (catalyticRewardPoints<0&&elementalRewardPoints<0){
-             elemental = client.getVarbitValue(13686);
-             catalytic = client.getVarbitValue(13685);
+        if (catalyticRewardPoints < 0 && elementalRewardPoints < 0) {
+            elemental = client.getVarbitValue(13686);
+            catalytic = client.getVarbitValue(13685);
         } else {
-             elemental = elementalRewardPoints;
-             catalytic = catalyticRewardPoints;
+            elemental = elementalRewardPoints;
+            catalytic = catalyticRewardPoints;
         }
 
-        if (catalytic == 0 && elemental == 0){
+        if (catalytic == 0 && elemental == 0) {
             elemental = 1;
         }
         Widget catalyticWidget = client.getWidget(48889879);
@@ -465,23 +486,23 @@ public class AutoRiftsPlugin extends Plugin {
         if (elementalWidget == null || catalyticWidget == null) {
             return;
         }
-        if ((elemental>=catalytic || config.prioritizeCatalytic()) && catalyticAltar!=null){
-            for(Altar altar : accessibleAltars){
+        if ((elemental >= catalytic || config.prioritizeCatalytic()) && catalyticAltar != null) {
+            for (Altar altar : accessibleAltars) {
                 if (altar.getId() == catalyticAltar.getId()) {
-                    TileObjectInteraction.interact(catalyticAltar,"Enter");
+                    TileObjectInteraction.interact(catalyticAltar, "Enter");
                     return;
                 }
             }
-            TileObjectInteraction.interact(elementalAltar,"Enter");
+            TileObjectInteraction.interact(elementalAltar, "Enter");
         } else if (elemental < catalytic && elementalAltar != null) {
-            TileObjectInteraction.interact(elementalAltar,"Enter");
+            TileObjectInteraction.interact(elementalAltar, "Enter");
         }
 
         timeout = tickDelay();
     }
 
-    public boolean isCatalytic(TileObject altar){
-        Set<Integer> catalyticAltars = Set.of(43705,43709,43706,43710,43711,43708,43712,43707);
+    public boolean isCatalytic(TileObject altar) {
+        Set<Integer> catalyticAltars = Set.of(43705, 43709, 43706, 43710, 43711, 43708, 43712, 43707);
         return catalyticAltars.contains(altar.getId());
     }
 
@@ -501,11 +522,9 @@ public class AutoRiftsPlugin extends Plugin {
         if (tileObject.isEmpty()) {
             return;
         }
-        if(isMining() || client.getLocalPlayer().getAnimation() == -1){
-            TileObject workbench = tileObject.get();
-            TileObjectInteraction.interact(workbench, "Work-at");
-            timeout = tickDelay();
-        }
+        TileObject workbench = tileObject.get();
+        TileObjectInteraction.interact(workbench, "Work-at");
+        timeout = tickDelay();
     }
 
     private void takeCells() {
@@ -535,11 +554,9 @@ public class AutoRiftsPlugin extends Plugin {
         if (tileObject.isEmpty()) {
             return;
         }
-        if (client.getLocalPlayer().getAnimation() == -1) {
-            TileObject remains = tileObject.get();
-            TileObjectInteraction.interact(remains, "Mine");
-            timeout=tickDelay();
-        }
+        TileObject remains = tileObject.get();
+        TileObjectInteraction.interact(remains, "Mine");
+        timeout = tickDelay();
     }
 
     private void mineLargeGuardians() {
@@ -559,7 +576,7 @@ public class AutoRiftsPlugin extends Plugin {
         if (tileObject.isEmpty()) {
             return;
         }
-        if (client.getLocalPlayer().getAnimation() == -1){
+        if (client.getLocalPlayer().getAnimation() == -1) {
             TileObject remains = tileObject.get();
             TileObjectInteraction.interact(remains, "Mine");
             timeout = tickDelay();
@@ -589,7 +606,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     public State getCurrentState() {
-        if ((EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() != -1)){
+        if ((EthanApiPlugin.isMoving() || (client.getLocalPlayer().getAnimation() != -1))) {
             if (isCraftingEss() && !isPortalSpawned()) {
                 return State.CRAFTING_ESS;
             }
@@ -600,21 +617,21 @@ public class AutoRiftsPlugin extends Plugin {
                     return State.MINING;
                 }
             }
-            if (isMining()&&!isInHugeMine() && !isInLargeMine()) {
+            if (isMining() && !isInHugeMine() && !isInLargeMine()) {
                 if (hasEnoughFrags()) {
                     return State.CRAFT_ESSENCE;
                 }
 
-                if (isPortalSpawned()&&!Inventory.full()) {
-                    return  State.ENTER_PORTAL;
+                if (isPortalSpawned() && !Inventory.full()) {
+                    return State.ENTER_PORTAL;
                 }
             }
 
-            if (isMining()&&(!Inventory.full() && Inventory.getItemAmount(ItemID.GUARDIAN_FRAGMENTS) < config.minFrags())){
+            if (isMining() && (!Inventory.full() && Inventory.getItemAmount(ItemID.GUARDIAN_FRAGMENTS) < config.minFrags())) {
                 return State.MINING;
             }
 
-            if (isCraftingEss() && isPortalSpawned() && Inventory.getItemAmount(ItemID.GUARDIAN_ESSENCE)<config.ignorePortal()){
+            if (isCraftingEss() && isPortalSpawned() && Inventory.getItemAmount(ItemID.GUARDIAN_ESSENCE) < config.ignorePortal()) {
                 if (timeout > 0) {
                     return State.TIMEOUT;
                 } else {
@@ -634,19 +651,19 @@ public class AutoRiftsPlugin extends Plugin {
         }
 
         if (isGameBusy()) {
+            if (elementalRewardPoints < 0 && catalyticRewardPoints < 0) {
+                return State.GET_POINTS;
+            }
             return State.GAME_BUSY;
         }
 
         if (isOutsideBarrier() && !isInAltar() && !isGameBusy()) {
-            if (elementalRewardPoints < 0 && catalyticRewardPoints < 0) {
-                return State.GET_POINTS;
-            }
             return State.OUTSIDE_BARRIER;
         }
 
         if (isInAltar()) {
             if (!gameStarted) {
-              return State.EXIT_ALTAR;
+                return State.EXIT_ALTAR;
             }
             if (hasAnyGuardianEssence() || getEssenceInPouches() > 0) {
                 return State.CRAFT_RUNES;
@@ -669,7 +686,7 @@ public class AutoRiftsPlugin extends Plugin {
         }
 
         if (isInLargeMine()) {
-            if(isPortalSpawned() || hasEnoughStartingFrags()) {
+            if (isPortalSpawned() || hasEnoughStartingFrags()) {
                 return State.LEAVE_LARGE;
             }
             if (!gameStarted) {
@@ -681,7 +698,7 @@ public class AutoRiftsPlugin extends Plugin {
 
         if (isPortalSpawned() && !Inventory.full()) {
             if (isInHugeMine() && gameStarted) {
-               return Inventory.full() ? State.ENTER_PORTAL : State.MINE_HUGE;
+                return Inventory.full() ? State.ENTER_PORTAL : State.MINE_HUGE;
             }
 
             if (isInHugeMine() && !gameStarted) {
@@ -703,7 +720,7 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        if (hasGuardianEssence()) {
+        if (hasGuardianEssence() && gameStarted) {
             return State.ENTER_RIFT;
         }
 
@@ -719,7 +736,7 @@ public class AutoRiftsPlugin extends Plugin {
             return State.MINE_GAME;
         }
 
-        if (!gameStarted && EthanApiPlugin.playerPosition().getX() != Constants.LARGE_MINE_X){
+        if (!gameStarted && EthanApiPlugin.playerPosition().getX() != Constants.LARGE_MINE_X) {
             if (isInHugeMine()) {
                 return State.ENTER_PORTAL;
             }
@@ -744,31 +761,16 @@ public class AutoRiftsPlugin extends Plugin {
     private boolean shouldDepositRunes() {
         return !InventoryUtil.nameContainsNoCase("rune").filter(item -> !item.getName().contains("pouch")).empty();
     }
-    
-    public int getAlternative(Widget pouch) {
-        int alternative = -1;
-        switch (pouch.getItemId()) {
-            case ItemID.MEDIUM_POUCH:
-                alternative = ItemID.MEDIUM_POUCH_5511;
-                break;
-            case ItemID.LARGE_POUCH:
-                alternative = ItemID.LARGE_POUCH_5513;
-                break;
-            case ItemID.GIANT_POUCH:
-                alternative = ItemID.GIANT_POUCH_5515;
-                break;
-            case ItemID.COLOSSAL_POUCH:
-                alternative = ItemID.COLOSSAL_POUCH_26786;
-                break;
-        }
-        return alternative;
-    }
-    
-    public List<Pouch> getPouches(){
+
+
+    public List<Pouch> getPouches() {
         return pouches;
     }
 
     public int getEssenceInPouches() {
+        if (!config.usePouches()) {
+            return 0;
+        }
         List<Pouch> allEssPouches = getPouches();
         int essenceInPouches = 0;
         for (Pouch curr : allEssPouches) {
@@ -777,54 +779,69 @@ public class AutoRiftsPlugin extends Plugin {
         return essenceInPouches;
     }
 
+    public void setEssenceInPouches(int amount) {
+        if (!config.usePouches()) {
+            return;
+        }
+        List<Pouch> allEssPouches = getPouches();
+        for (Pouch curr : allEssPouches) {
+            curr.setCurrentEssence(amount);
+        }
+    }
+
     public void setPouches() {
         Optional<Widget> smallpouch = Inventory.search().withId(ItemID.SMALL_POUCH).first();
         Optional<Widget> medpouch = Inventory.search().withId(ItemID.MEDIUM_POUCH).first();
         Optional<Widget> largepouch = Inventory.search().withId(ItemID.LARGE_POUCH).first();
         Optional<Widget> giantpouch = Inventory.search().withId(ItemID.GIANT_POUCH).first();
         Optional<Widget> collosalpouch = Inventory.search().withId(ItemID.COLOSSAL_POUCH).first();
-        if (smallpouch.isPresent()){
-            Pouch smallEssPouch = new Pouch(ItemID.SMALL_POUCH,  3);
+        if (smallpouch.isPresent()) {
+            Pouch smallEssPouch = new Pouch(ItemID.SMALL_POUCH, 3);
             pouches.add(smallEssPouch);
         }
 
         if (medpouch.isPresent() && client.getRealSkillLevel(Skill.RUNECRAFT) >= 25) {
-            Pouch medEssPouch = new Pouch(ItemID.MEDIUM_POUCH,6);
+            Pouch medEssPouch = new Pouch(ItemID.MEDIUM_POUCH, 6);
             pouches.add(medEssPouch);
         }
 
         if (largepouch.isPresent() && client.getRealSkillLevel(Skill.RUNECRAFT) >= 50) {
-            Pouch largeEssPouch = new Pouch(ItemID.LARGE_POUCH,9);
+            Pouch largeEssPouch = new Pouch(ItemID.LARGE_POUCH, 9);
             pouches.add(largeEssPouch);
         }
 
         if (giantpouch.isPresent() && client.getRealSkillLevel(Skill.RUNECRAFT) >= 75) {
-            Pouch giantEssPouch = new Pouch(ItemID.GIANT_POUCH ,12);
+            Pouch giantEssPouch = new Pouch(ItemID.GIANT_POUCH, 12);
             pouches.add(giantEssPouch);
         }
 
         if (collosalpouch.isPresent() && client.getRealSkillLevel(Skill.RUNECRAFT) >= 85) {
-            Pouch colossalEssPouch = new Pouch(ItemID.COLOSSAL_POUCH ,40);
+            Pouch colossalEssPouch = new Pouch(ItemID.COLOSSAL_POUCH, 40);
             pouches.add(colossalEssPouch);
         }
     }
 
     public boolean isPouchFull(Pouch pouch) {
-        return pouch.getCurrentEssence()==pouch.getEssenceTotal();
+        return pouch.getCurrentEssence() == pouch.getEssenceTotal();
     }
+
+    public boolean pouchHasEssence(Pouch pouch) {
+        return pouch.getCurrentEssence() != 0;
+    }
+
 
     private int getRemainingEssence() {
         int total = 0;
-        for(Pouch pouch : pouches){
+        for (Pouch pouch : pouches) {
             total += pouch.getEssenceTotal() - pouch.getCurrentEssence();
         }
         return total;
 
     }
 
-    public List<Pouch> getEmptyPouches(){
-        List<Pouch> result = new ArrayList<Pouch>();
-        for (Pouch pouch: pouches) {
+    public List<Pouch> getEmptyPouches() {
+        List<Pouch> result = new ArrayList<>();
+        for (Pouch pouch : pouches) {
             if (!isPouchFull(pouch)) {
                 result.add(pouch);
             }
@@ -832,10 +849,10 @@ public class AutoRiftsPlugin extends Plugin {
         return result;
     }
 
-    public List<Pouch> getFullPouches(){
+    public List<Pouch> getFullPouches() {
         List<Pouch> result = new ArrayList<>();
-        for (Pouch pouch: pouches) {
-            if (isPouchFull(pouch)) {
+        for (Pouch pouch : pouches) {
+            if (pouchHasEssence(pouch)) {
                 result.add(pouch);
             }
         }
@@ -853,43 +870,29 @@ public class AutoRiftsPlugin extends Plugin {
                     pouch.setCurrentEssence(pouch.getEssenceTotal());
                     essenceAmount = Inventory.getItemAmount(ItemID.GUARDIAN_ESSENCE);
                 } else {
-                    pouch.setCurrentEssence(essenceAmount+pouch.getCurrentEssence());
-                    essenceAmount =0;
+                    pouch.setCurrentEssence(essenceAmount + pouch.getCurrentEssence());
+                    essenceAmount = 0;
                 }
 
             }
         }
-        if (isInHugeMine()) {
-            mineHugeGuardians();
-            return;
-        }
-        craftEssence();
+
     }
 
-    public void emptyPouches(){
+    public void emptyPouches() {
         int spaces = Inventory.getEmptySlots();
         List<Pouch> result = getFullPouches();
-        for(Pouch pouch:result){
+        for (Pouch pouch : result) {
             Optional<Widget> emptyPouch = Inventory.search().withId(pouch.getPouchID()).first();
-            if(emptyPouch.isPresent()){
-                InventoryInteraction.useItem(emptyPouch.get(),"Empty");
-                pouch.setCurrentEssence(pouch.getCurrentEssence()-spaces);
+            if (emptyPouch.isPresent()) {
+                InventoryInteraction.useItem(emptyPouch.get(), "Empty");
+                if (pouch.getCurrentEssence() - spaces < 0) {
+                    pouch.setCurrentEssence(0);
+                } else {
+                    pouch.setCurrentEssence(pouch.getCurrentEssence() - spaces);
+                }
             }
         }
-    }
-
-    public boolean arePouchesFull(){
-        for (Pouch pouch:pouches){
-            if(pouch.getCurrentEssence()!=pouch.getEssenceTotal()) return false;
-        }
-        return true;
-    }
-
-
-    public int getEssenceSlots(WidgetInfo widgetInfo) {
-        List<Widget> inventoryItems = Arrays.asList(client.getWidget(widgetInfo.getId()).getDynamicChildren());
-        return (int) inventoryItems.stream().filter(item -> item.getItemId() == ItemID.PURE_ESSENCE || item.getItemId()
-                == ItemID.RUNE_ESSENCE).count();
     }
 
     public boolean pouchesDegraded() {
@@ -901,12 +904,9 @@ public class AutoRiftsPlugin extends Plugin {
         return ObjectUtil.nameContainsNoCase(Constants.PORTAL).filter(tileObject -> tileObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).nearestToPlayer().isPresent();
     }
 
-    private boolean hasGuardianEssenceAmount(int amount) {
-        return InventoryUtil.getItemAmount(Constants.ESS, false) >= amount;
-    }
+
 
     private boolean hasGuardianEssence() {
-        int amt = InventoryUtil.getItemAmount(Constants.ESS, false);
         return !Inventory.search().withId(ItemID.GUARDIAN_ESSENCE).empty() && Inventory.full();
     }
 
@@ -957,6 +957,25 @@ public class AutoRiftsPlugin extends Plugin {
         return true;
     }
 
+    private boolean hasRuneAmount(int runeId, int amount) {
+        return (client.getVarbitValue(Varbits.RUNE_POUCH_RUNE1) == runeId
+                && client.getVarbitValue(Varbits.RUNE_POUCH_AMOUNT1) >= amount)
+                || (client.getVarbitValue(Varbits.RUNE_POUCH_RUNE2) == runeId
+                && client.getVarbitValue(Varbits.RUNE_POUCH_AMOUNT2) >= amount)
+                || (client.getVarbitValue(Varbits.RUNE_POUCH_RUNE3) == runeId
+                && client.getVarbitValue(Varbits.RUNE_POUCH_AMOUNT3) >= amount)
+                || (client.getVarbitValue(Varbits.RUNE_POUCH_RUNE4) == runeId
+                && client.getVarbitValue(Varbits.RUNE_POUCH_AMOUNT4) >= amount);
+    }
+
+    private boolean hasRunes() {
+        return hasRuneAmount(1, 2) && hasRuneAmount(14, 1) && hasRuneAmount(9, 1);
+    }
+
+    private boolean hasLantern() {
+        return Equipment.search().withId(ItemID.ABYSSAL_LANTERN_REDWOOD_LOGS).first().isPresent();
+    }
+
     private int getFrags() {
         return InventoryUtil.getItemAmount(Constants.FRAGS, true);
     }
@@ -992,6 +1011,7 @@ public class AutoRiftsPlugin extends Plugin {
             toggle();
         }
     };
+
 
     public void toggle() {
         if (client.getGameState() != GameState.LOGGED_IN) {
