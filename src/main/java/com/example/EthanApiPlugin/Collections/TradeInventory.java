@@ -48,29 +48,24 @@ public class TradeInventory {
     @Subscribe
     public void onItemContainerChanged(ItemContainerChanged e)
     {
-        if (e.getContainerId() == 256)
+        if (e.getContainerId() == 336)
         {
-
-        }
-        if (client.getWidget(TRADE_INVENTORY_PACKED_ID) == null)
-        {
-            tradeInventoryItems.clear();
-            return;
-        }
-        try
-        {
-            System.out.println(e.getContainerId() + ", cont id for trade inv");
-            tradeInventoryItems =
-                    Arrays.stream(client.getWidget(TRADE_INVENTORY_PACKED_ID).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
-            for (Widget w : tradeInventoryItems) {
-                System.out.println(w.getName());
+            if (client.getWidget(TRADE_INVENTORY_PACKED_ID) == null)
+            {
+                tradeInventoryItems.clear();
+                return;
             }
-            return;
-        }
-        catch (NullPointerException err)
-        {
-            tradeInventoryItems.clear();
-            return;
+            try
+            {
+                tradeInventoryItems =
+                        Arrays.stream(client.getWidget(TRADE_INVENTORY_PACKED_ID).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
+                return;
+            }
+            catch (NullPointerException err)
+            {
+                tradeInventoryItems.clear();
+                return;
+            }
         }
     }
 
