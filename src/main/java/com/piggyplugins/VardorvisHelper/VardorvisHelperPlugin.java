@@ -6,11 +6,11 @@ import com.piggyplugins.PiggyUtils.API.PrayerUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
+import net.runelite.api.Projectile;
 import net.runelite.api.SpriteID;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
@@ -27,11 +27,20 @@ import javax.inject.Inject;
 )
 public class VardorvisHelperPlugin extends Plugin {
 
+    private static final int RANGE_PROJECTILE = 2521;
+    private static final int MAGE_PROJECTILE = 2520; // thx for grabbing this 4 me @sdeenginer
+
     private static final String VARDOVIS = "Vardorvis";
     private static final String VARDOVIS_HEAD = "Vardorvis' Head";
 
+    private Projectile rangeProjectile;
+    private Projectile mageProjectile;
+
     private int rangeTicks = 0;
     private int mageTicks = 0;
+    private int rangeCooldown = 0;
+    private int mageCooldown = 0;
+    private boolean mageFirst;
 
     @Inject
     private Client client;
@@ -59,8 +68,12 @@ public class VardorvisHelperPlugin extends Plugin {
         overlayManager.remove(overlay);
     }
 
-    private void handleGameTick() {
-        if (rangeTicks > 0) {
+    private void handleMageFirstGameTick() {
+        if (mageTicks > 0) {
+            if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MAGIC)) {
+                PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MAGIC);
+            }
+        } else if (rangeTicks > 0) {
             if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MISSILES)) {
                 PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MISSILES);
             }
@@ -71,14 +84,14 @@ public class VardorvisHelperPlugin extends Plugin {
         }
     }
 
-    private void handleAwakenedGameTick() {
-        if (mageTicks > 0) {
-            if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MAGIC)) {
-                PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MAGIC);
-            }
-        } else if (rangeTicks > 0) {
+    private void handleRangeFirstGameTick() {
+        if (rangeTicks > 0) {
             if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MISSILES)) {
                 PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MISSILES);
+            }
+        } else if (mageTicks > 0) {
+            if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MAGIC)) {
+                PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MAGIC);
             }
         } else {
             if (!PrayerUtil.isPrayerActive(Prayer.PROTECT_FROM_MELEE)) {
@@ -95,45 +108,76 @@ public class VardorvisHelperPlugin extends Plugin {
 
         if (mageTicks > 0) {
             mageTicks--;
+            if (mageTicks == 0) {
+                mageCooldown = 3;
+                if (mageFirst) {
+                    mageFirst = false;
+                }
+            }
         }
 
         if (rangeTicks > 0) {
             rangeTicks--;
+            if (rangeTicks == 0) {
+                rangeCooldown = 3;
+            }
+        }
+
+        if (mageTicks == 0) {
+            mageProjectile = null;
+            if (mageCooldown > 0) {
+                mageCooldown--;
+            }
+        }
+
+        if (rangeTicks == 0) {
+            rangeProjectile = null;
+            if (rangeCooldown > 0) {
+                rangeCooldown--;
+            }
         }
 
         if (config.autoPray()) {
-            if (config.awakened()) {
-                handleAwakenedGameTick();
+            if (mageFirst) {
+                handleMageFirstGameTick();
             } else {
-                handleGameTick();
+                handleRangeFirstGameTick();
             }
         }
     }
 
     @Subscribe
-    private void onNpcSpawned(NpcSpawned event) {
-        if (client.getGameState() != GameState.LOGGED_IN) {
+    private void onProjectileMoved(ProjectileMoved event) {
+        if (client.getGameState() != GameState.LOGGED_IN || !isInFight()) {
             return;
         }
 
-        if (event.getActor() instanceof NPC) {
-            if (event.getActor().getName() == null) return;
-            if (event.getActor().getName().equals(VARDOVIS_HEAD)) {
-                if (config.awakened()) {
-                    if (mageTicks == 0) {
-                        mageTicks = 4;
-                    } else {
-                        rangeTicks = 4;
-                    }
-                } else {
-                    rangeTicks = 4;
+        Projectile projectile = event.getProjectile();
+        if (projectile.getId() == MAGE_PROJECTILE) {
+            if (mageProjectile == null && mageCooldown == 0) {
+                mageTicks = 4;
+                mageProjectile = projectile;
+                if (rangeProjectile == null) {
+                    mageFirst = true;
+                }
+            }
+        }
+
+        if (projectile.getId() == RANGE_PROJECTILE) {
+            if (rangeProjectile == null && rangeCooldown == 0) {
+                rangeTicks = 4;
+                rangeProjectile = projectile;
+                if (mageProjectile == null) {
+                    mageFirst = false;
                 }
             }
         }
     }
 
-
-    public int getPrayerSkill() {
+    public int getPrayerSprite() {
+        if (mageTicks > 0) {
+            return SpriteID.PRAYER_PROTECT_FROM_MAGIC;
+        }
         if (rangeTicks > 0) {
             return SpriteID.PRAYER_PROTECT_FROM_MISSILES;
         }
