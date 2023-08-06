@@ -7,7 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.AutoRifts.data.*;
 import com.piggyplugins.AutoRifts.data.Constants;
-import com.piggyplugins.PiggyUtils.API.EquipmentUtil;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.ObjectUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
