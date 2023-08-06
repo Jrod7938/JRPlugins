@@ -69,10 +69,20 @@ public interface AutoRiftsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "hasBook",
+            name = "Abyssal Book in bank? (IMPORTANT FOR NPC CONTACT)",
+            description = "IMPORTANT TO USE NPC CONTACT",
+            position = 7
+    )
+    default boolean hasBook() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "prioritizeCatalytic",
             name = "Prioritizes Catalytic Energy(Beta)",
             description = "Will try to balance points if not ticked",
-            position = 7
+            position = 8
     )
     default boolean prioritizeCatalytic() {
         return true;

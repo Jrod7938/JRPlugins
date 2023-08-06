@@ -334,12 +334,11 @@ public class AutoRiftsPlugin extends Plugin {
                 powerGuardian();
                 break;
             case REPAIR_POUCH:
-                boolean hadBook = Widgets.search().withText("Can I have another Abyssal book?").first().isPresent();
                 if (!Widgets.search().withTextContains("What do you want?").hiddenState(false).empty() || !Widgets.search().withTextContains("Can you repair").hiddenState(false).empty()) {
                     MousePackets.queueClickPacket();
                     WidgetPackets.queueResumePause(15138821, -1);
                     MousePackets.queueClickPacket();
-                    WidgetPackets.queueResumePause(14352385, hadBook ? 1 : 2);
+                    WidgetPackets.queueResumePause(14352385, config.hasBook() ? 1 : 2);
                     MousePackets.queueClickPacket();
                     WidgetPackets.queueResumePause(14221317, -1);
                     MousePackets.queueClickPacket();
