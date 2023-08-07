@@ -57,13 +57,13 @@ public interface PowerSkillerConfig extends Config {
         return "coins,rune pouch,divine rune pouch,looting bag,clue scroll";
     }
 
-    @ConfigItem(
-            name = "Empty slots",
-            keyName = "emptySlots",
-            description = "Amount of empty slots you have to skill with, mostly a UIM feature lol",
-            position = 3
-    )
-    default int emptySlots() {
-        return 28;
-    }
+//    @ConfigItem(
+//            name = "Empty slots",
+//            keyName = "emptySlots",
+//            description = "Amount of empty slots you have to skill with, mostly a UIM feature lol",
+//            position = 3
+//    )
+//    default int emptySlots() {
+//        return 28;
+//    }
 }

@@ -1,5 +1,6 @@
 package com.piggyplugins.PowerSkiller;
 
+import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
@@ -37,7 +38,6 @@ import java.util.List;
         tags = {"ethan", "piggy", "skilling"}
 )
 public class PowerSkillerPlugin extends Plugin {
-
     @Inject
     private Client client;
     @Inject
@@ -68,11 +68,14 @@ public class PowerSkillerPlugin extends Plugin {
             // We do an early return if the user isn't logged in
             return;
         }
+        if(state!=null){
+            System.out.println(state.name());
+        }
+
 
         state = getNextState();
         handleState();
     }
-
     private void handleState() {
         switch (state) {
             case FIND_OBJECT:
@@ -145,10 +148,13 @@ public class PowerSkillerPlugin extends Plugin {
     }
 
     private boolean isInventoryReset() {
-        return Inventory.search()
-                .filter(item -> !shouldKeep(item.getName())) // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
-                .result()
-                .size() == 28 - config.emptySlots(); // we will know that the inventory is reset if the size becomes the amount of slots - empty slots
+        List<Widget> inventory = Inventory.search().result();
+        for(Widget item : inventory){
+            if (!shouldKeep(item.getName())) { // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
+                return false;
+            }
+        }
+        return true; // we will know that the inventory is reset because the inventory only contains items we want to keep
     }
 
     private boolean isDroppingItems() {
@@ -162,14 +168,21 @@ public class PowerSkillerPlugin extends Plugin {
                 .anyMatch(i -> name.toLowerCase().contains(i.toLowerCase())); // we'll set everything to lowercase, and check if the input name contains any of the items in the itemsToKeep array.
                 // might seem silly, but this is to allow specific items you want to keep without typing the full name.  I also prefer names over ids- you can change this if you like.
     }
-
     private boolean hasTools() {
+        //Updated from https://github.com/moneyprinterbrrr/ImpactPlugins/blob/experimental/src/main/java/com/impact/PowerGather/PowerGatherPlugin.java#L196
+        //Big thanks hawkkkkkk
         String[] tools = config.toolsToUse().split(","); // split the tools listed by comma, no space.
 
-        return Inventory.search()
+        int numInventoryTools = Inventory.search()
                 .filter(item -> isTool(item.getName())) // filter inventory by using out isTool method
-                .result().size() == tools.length; // if the size of tools and the filtered inventory is the same, we have our tools.
+                .result().size();
+        int numEquippedTools = Equipment.search()
+                .filter(item -> isTool(item.getName())) // filter inventory by using out isTool method
+                .result().size();
+
+        return numInventoryTools + numEquippedTools >= tools.length; // if the size of tools and the filtered inventory is the same, we have our tools.
     }
+
 
     private boolean isTool(String name) {
         String[] tools = config.toolsToUse().split(","); // split the tools listed by comma, no space.

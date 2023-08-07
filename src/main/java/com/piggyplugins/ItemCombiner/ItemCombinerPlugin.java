@@ -66,11 +66,13 @@ public class ItemCombinerPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
+        isMaking=false;
         keyManager.registerKeyListener(toggle);
     }
 
     @Override
     protected void shutDown() throws Exception {
+        isMaking=false;
         keyManager.unregisterKeyListener(toggle);
     }
 
@@ -83,8 +85,10 @@ public class ItemCombinerPlugin extends Plugin {
             afkTicks = 0;
             return;
         }
+        log.info("Started");
 
         if (isMaking) {
+            log.info("Making");
             if (isDoneMaking()) {
                 isMaking = false;
             }

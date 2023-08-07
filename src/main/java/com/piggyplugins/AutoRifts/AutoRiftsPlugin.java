@@ -606,6 +606,9 @@ public class AutoRiftsPlugin extends Plugin {
 
     public State getCurrentState() {
         if ((EthanApiPlugin.isMoving() || (client.getLocalPlayer().getAnimation() != -1))) {
+            if (pouchesDegraded()) {
+                return State.REPAIR_POUCH;
+            }
             if (isCraftingEss() && !isPortalSpawned()) {
                 return State.CRAFTING_ESS;
             }
