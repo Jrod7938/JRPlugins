@@ -10,8 +10,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 @PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font> PiggyUtils</html>",
                 description = "Utility Plugin for PiggyPlugins",
                 tags = {"piggy","ethan"})
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 @Slf4j
 public class PiggyUtilsPlugin extends Plugin {
     @Override

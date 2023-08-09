@@ -35,9 +35,6 @@ import java.util.concurrent.ThreadLocalRandom;
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class CannonReloaderPlugin extends Plugin {
 

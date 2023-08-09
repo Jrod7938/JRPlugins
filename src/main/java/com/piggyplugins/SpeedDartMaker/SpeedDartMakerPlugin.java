@@ -27,9 +27,6 @@ import net.runelite.client.util.HotkeyListener;
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class SpeedDartMakerPlugin extends Plugin {
     @Inject

@@ -63,8 +63,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
+
 @PluginDescriptor(
         name = "Chin break handler",
         description = "Automatically takes breaks for you",

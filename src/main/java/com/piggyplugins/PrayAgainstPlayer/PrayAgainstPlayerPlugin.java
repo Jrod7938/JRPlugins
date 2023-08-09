@@ -41,9 +41,6 @@ import net.runelite.client.util.ImageUtil;
         tags = {"highlight", "pvp", "overlay", "players", "piggy"},
         enabledByDefault = false
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Singleton
 public class PrayAgainstPlayerPlugin extends Plugin {
 

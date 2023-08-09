@@ -45,9 +45,6 @@ import java.util.Set;
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class HerbCleanerPlugin extends Plugin {
     private static final Set<Integer> cleanHerbs = Set.of(ItemID.GUAM_LEAF, ItemID.MARRENTILL, ItemID.TARROMIN, ItemID.HARRALANDER, ItemID.RANARR_WEED, ItemID.TOADFLAX, ItemID.IRIT_LEAF,

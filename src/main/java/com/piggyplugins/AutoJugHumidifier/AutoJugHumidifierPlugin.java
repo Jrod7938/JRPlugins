@@ -41,9 +41,6 @@ import java.util.Optional;
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class AutoJugHumidifierPlugin extends Plugin {
     @Inject

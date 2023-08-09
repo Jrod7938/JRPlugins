@@ -24,9 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> One Tick Switcher</html>",
         description = ";)",

@@ -37,9 +37,6 @@ import java.util.Arrays;
         enabledByDefault = false,
         tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(PiggyUtilsPlugin.class)
 @Slf4j
 public class ItemCombinerPlugin extends Plugin {
     @Inject

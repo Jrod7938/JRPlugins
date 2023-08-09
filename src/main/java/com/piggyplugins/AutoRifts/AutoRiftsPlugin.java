@@ -40,8 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
+
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Rifts</html>",
         description = "Guardians of the Rift",

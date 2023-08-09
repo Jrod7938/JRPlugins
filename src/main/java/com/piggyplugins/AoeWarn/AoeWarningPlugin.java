@@ -59,7 +59,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 
-@PluginDependency(PiggyUtilsPlugin.class)
 @PluginDescriptor(
 	name = "AoE Warnings",
 	enabledByDefault = false,
