@@ -9,6 +9,7 @@ repositories {
         url = 'https://repo.runelite.net'
     }
     mavenCentral()
+    jcenter()
 }
 
 def runeLiteVersion = '1.10.9.2'
@@ -23,14 +24,16 @@ dependencies {
     testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
     implementation 'org.json:json:20230227'
     implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
+    implementation("com.google.archivepatcher:archive-patch-applier:1.0.4")
+    implementation("org.benf:cfr:0.152")
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
     implementation group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0', {
         exclude group: 'com.google.inject'
     }
     //runtimeOnly group: 'net.runelite', name:'client', version: runeLiteVersion
     //runtimeOnly 'org.projectlombok:lombok:1.18.20'
-}
 
+}
 sourceSets {
 
     main {
