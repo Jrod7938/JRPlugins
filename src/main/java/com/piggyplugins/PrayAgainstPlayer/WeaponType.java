@@ -91,7 +91,8 @@ public enum WeaponType {
             "flail",
             "granite hammer",
             "rapier",
-            "bulwark"
+            "bulwark",
+            "osmumten's fang"
     };
 
     private static final String[] rangedWeaponNames = {
