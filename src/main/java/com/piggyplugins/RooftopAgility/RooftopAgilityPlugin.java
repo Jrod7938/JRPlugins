@@ -13,15 +13,11 @@ import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.InventoryInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
-import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.Packets.MousePackets;
-import com.example.Packets.MovementPackets;
-import com.example.Packets.ObjectPackets;
 import com.example.Packets.TileItemPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -42,19 +38,14 @@ import net.runelite.api.events.ItemSpawned;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetItem;
-import net.runelite.client.chat.ChatMessageBuilder;
-import net.runelite.client.chat.ChatMessageManager;
-import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
-import java.awt.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -83,9 +74,6 @@ public class RooftopAgilityPlugin extends Plugin {
     private RooftopAgilityOverlay overlay;
     @Inject
     private KeyManager keyManager;
-    @Inject
-    private ChatMessageManager messageManager;
-
     private Player player;
     @Getter
     private State state;
@@ -328,13 +316,6 @@ public class RooftopAgilityPlugin extends Plugin {
     private void onGameTick(GameTick event) {
         player = client.getLocalPlayer();
         if (player == null || !startAgility || !REGION_IDS.contains(client.getLocalPlayer().getWorldLocation().getRegionID()) || breakHandler.isBreakActive(this)) {
-            return;
-        }
-        if (!client.isResized()) {
-            ChatMessageBuilder builder = new ChatMessageBuilder();
-            builder.append(Color.RED, "You must be set to resizable mode to use Void Agility.");
-            String msg = builder.build();
-            messageManager.queue(QueuedMessage.builder().name("VoidAgility").runeLiteFormattedMessage(msg).build());
             return;
         }
         marksPerHour = (int) getMarksPH();
