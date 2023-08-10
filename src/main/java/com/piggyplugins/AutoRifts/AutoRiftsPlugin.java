@@ -69,16 +69,6 @@ public class AutoRiftsPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private EthanApiPlugin api;
-    @Inject
-    private MovementPackets movementPackets;
-    @Inject
-    private ObjectPackets objectPackets;
-    @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private TileItemPackets tileItemPackets;
-    @Inject
     private ReflectBreakHandler breakHandler;
     @Inject
     private OverlayManager overlayManager;
@@ -897,7 +887,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     public boolean pouchesDegraded() {
-        return api.getItemFromList(new int[]{ItemID.MEDIUM_POUCH_5511, ItemID.LARGE_POUCH_5513, ItemID.GIANT_POUCH_5515,
+        return EthanApiPlugin.getItemFromList(new int[]{ItemID.MEDIUM_POUCH_5511, ItemID.LARGE_POUCH_5513, ItemID.GIANT_POUCH_5515,
                 ItemID.COLOSSAL_POUCH_26786}, WidgetInfo.INVENTORY) != null;
     }
 

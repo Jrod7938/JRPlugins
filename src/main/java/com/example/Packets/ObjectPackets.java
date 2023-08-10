@@ -1,8 +1,8 @@
 package com.example.Packets;
 
+import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.PacketUtils.PacketDef;
 import com.example.PacketUtils.PacketReflection;
-import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import lombok.SneakyThrows;
 import net.runelite.api.GameObject;
 import net.runelite.api.ObjectComposition;
@@ -15,6 +15,8 @@ import net.runelite.api.widgets.Widget;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.PacketUtils.PacketReflection.client;
 
 public class ObjectPackets {
     @SneakyThrows
@@ -66,7 +68,7 @@ public class ObjectPackets {
             p = new Point(object.getLocalLocation().getSceneX(), object.getLocalLocation().getSceneY());
         }
         LocalPoint lp = new LocalPoint(p.getX(), p.getY());
-        WorldPoint wp = WorldPoint.fromScene(PacketReflection.client, lp.getX(), lp.getY(), object.getPlane());
+        WorldPoint wp = WorldPoint.fromScene(client, lp.getX(), lp.getY(), object.getPlane());
         int num = -1;
         for (String action : actions) {
             for (String action2 : actionlist) {
@@ -98,7 +100,7 @@ public class ObjectPackets {
             p = new Point(object.getLocalLocation().getSceneX(), object.getLocalLocation().getSceneY());
         }
         LocalPoint lp = new LocalPoint(p.getX(), p.getY());
-        WorldPoint wp = WorldPoint.fromScene(PacketReflection.client, lp.getX(), lp.getY(), object.getPlane());
+        WorldPoint wp = WorldPoint.fromScene(client, lp.getX(), lp.getY(), object.getPlane());
         queueWidgetOnTileObject(object.getId(), wp.getX(), wp.getY(), widget.getIndex(),
                 widget.getItemId(),
                 widget.getId(),

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

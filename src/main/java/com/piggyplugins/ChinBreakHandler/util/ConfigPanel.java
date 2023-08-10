@@ -24,7 +24,7 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.ComboBoxListRenderer;
 import net.runelite.client.util.Text;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;

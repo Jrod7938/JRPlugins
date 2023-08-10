@@ -1,7 +1,7 @@
 package com.piggyplugins.ShiftClickWalker;
 
 import java.awt.event.KeyEvent;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import net.runelite.client.input.KeyListener;
 
 public class ShiftClickWalkerInputListener

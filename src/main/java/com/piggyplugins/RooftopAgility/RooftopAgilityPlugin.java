@@ -72,16 +72,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RooftopAgilityPlugin extends Plugin {
     @Inject
     private Client client;
-    @Inject
-    private EthanApiPlugin api;
-    @Inject
-    private MovementPackets movementPackets;
-    @Inject
-    private ObjectPackets objectPackets;
-    @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private TileItemPackets tileItemPackets;
+
     @Inject
     private ReflectBreakHandler breakHandler;
     @Inject

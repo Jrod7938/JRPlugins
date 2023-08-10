@@ -38,12 +38,6 @@ public class OneTickSwitcherPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private EthanApiPlugin api;
-    @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private WidgetPackets widgetPackets;
-    @Inject
     private OneTickSwitcherConfig config;
     @Inject
     private KeyManager keyManager;

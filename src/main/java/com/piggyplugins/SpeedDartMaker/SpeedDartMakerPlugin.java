@@ -32,12 +32,6 @@ public class SpeedDartMakerPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private WidgetPackets widgetPackets;
-    @Inject
-    private EthanApiPlugin api;
-    @Inject
     private SpeedDartMakerConfig config;
     @Inject
     private KeyManager keyManager;

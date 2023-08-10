@@ -5,7 +5,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.awt.*;
 
 public class RooftopAgilityOverlay extends OverlayPanel {

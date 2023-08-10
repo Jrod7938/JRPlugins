@@ -18,7 +18,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 @Slf4j
 @PluginDescriptor(

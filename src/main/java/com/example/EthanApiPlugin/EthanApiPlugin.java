@@ -1,13 +1,39 @@
 package com.example.EthanApiPlugin;
 
-import com.example.EthanApiPlugin.Collections.*;
+import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.BankInventory;
+import com.example.EthanApiPlugin.Collections.DepositBox;
+import com.example.EthanApiPlugin.Collections.Equipment;
+import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.Collections.Players;
+import com.example.EthanApiPlugin.Collections.Shop;
+import com.example.EthanApiPlugin.Collections.ShopInventory;
+import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.QuickPrayer;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import lombok.SneakyThrows;
-import net.runelite.api.*;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.CollisionData;
+import net.runelite.api.CollisionDataFlag;
+import net.runelite.api.GameObject;
+import net.runelite.api.GameState;
+import net.runelite.api.HeadIcon;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemComposition;
+import net.runelite.api.NPC;
+import net.runelite.api.Node;
+import net.runelite.api.Player;
+import net.runelite.api.Point;
+import net.runelite.api.Scene;
+import net.runelite.api.SkullIcon;
+import net.runelite.api.Tile;
+import net.runelite.api.TileObject;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
@@ -26,7 +52,16 @@ import net.runelite.client.util.WildcardMatcher;
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -313,7 +348,7 @@ public class EthanApiPlugin extends Plugin {
         return null;
     }
 
-    public int getFirstFreeSlot(WidgetInfo container) {
+    public static int getFirstFreeSlot(WidgetInfo container) {
         Widget[] items = client.getWidget(container).getDynamicChildren();
         for (int i = 0; i < items.length; i++) {
             if (items[i].getItemId() == 6512) {
@@ -324,7 +359,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @Deprecated
-    public int getEmptySlots(WidgetInfo widgetInfo) {
+    public static int getEmptySlots(WidgetInfo widgetInfo) {
         List<Widget> inventoryItems = Arrays.asList(client.getWidget(widgetInfo.getId()).getDynamicChildren());
         return (int) inventoryItems.stream().filter(item -> item.getItemId() == 6512).count();
     }
@@ -335,7 +370,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @Deprecated
-    public TileObject findObject(String objectName) {
+    public static TileObject findObject(String objectName) {
         ArrayList<TileObject> validObjects = new ArrayList<>();
         for (Tile[][] tile : client.getScene().getTiles()) {
             for (Tile[] tiles : tile) {
@@ -374,7 +409,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @Deprecated
-    public TileObject findObject(int id) {
+    public static TileObject findObject(int id) {
         ArrayList<TileObject> validObjects = new ArrayList<>();
         Arrays.stream(client.getScene().getTiles()).flatMap(Arrays::stream).flatMap(Arrays::stream).filter(Objects::nonNull).filter(tile -> tile.getGameObjects() != null && tile.getGameObjects().length != 0).forEach(tile ->
         {
@@ -388,7 +423,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @Deprecated
-    public Widget getItemFromList(int[] list, WidgetInfo container) {
+    public static Widget getItemFromList(int[] list, WidgetInfo container) {
         for (int i : list) {
             Widget item = getItem(i, container);
             if (item != null) {
@@ -399,7 +434,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @Deprecated
-    public int checkIfWearing(int[] ids) {
+    public static int checkIfWearing(int[] ids) {
 
         if (client.getItemContainer(InventoryID.EQUIPMENT) != null) {
             Item[] equipment = client.getItemContainer(InventoryID.EQUIPMENT).getItems();
@@ -1176,7 +1211,5 @@ public class EthanApiPlugin extends Plugin {
 		eventBus.register(RuneLite.getInjector().getInstance(DepositBox.class));
 		eventBus.register(RuneLite.getInjector().getInstance(ShopInventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(Shop.class));
-        eventBus.register(RuneLite.getInjector().getInstance(GrandExchangeInventory.class));
-        eventBus.register(RuneLite.getInjector().getInstance(TradeInventory.class));
     }
 }

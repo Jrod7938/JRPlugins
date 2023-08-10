@@ -1,7 +1,7 @@
 package com.example.InteractionApi;
 
-import com.example.Packets.WidgetPackets;
 import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
 import net.runelite.api.widgets.WidgetInfo;
 
 import java.util.List;

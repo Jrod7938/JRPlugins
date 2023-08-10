@@ -4,11 +4,11 @@ import com.example.PacketUtils.PacketDef;
 import com.example.PacketUtils.PacketReflection;
 import lombok.SneakyThrows;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.util.Text;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.runelite.client.util.Text;
 
 public class WidgetPackets {
     @SneakyThrows

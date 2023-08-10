@@ -1,7 +1,7 @@
 package com.piggyplugins.ShiftClickWalker;
 
 import com.google.inject.Provides;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuAction;

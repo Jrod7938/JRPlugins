@@ -35,7 +35,7 @@ import java.awt.Rectangle;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Singleton;
 
 import com.piggyplugins.PiggyUtils.RLApi.GraphicIDExtended;

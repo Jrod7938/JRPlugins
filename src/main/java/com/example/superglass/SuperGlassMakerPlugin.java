@@ -1,6 +1,9 @@
 package com.example.superglass;
 
-import com.example.EthanApiPlugin.Collections.*;
+import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.BankInventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.NPCInteraction;
@@ -12,7 +15,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.ItemID;
+import net.runelite.api.NPC;
+import net.runelite.api.TileObject;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;

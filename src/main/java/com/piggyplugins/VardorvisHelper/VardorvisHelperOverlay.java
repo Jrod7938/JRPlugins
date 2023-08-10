@@ -8,7 +8,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ImageComponent;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

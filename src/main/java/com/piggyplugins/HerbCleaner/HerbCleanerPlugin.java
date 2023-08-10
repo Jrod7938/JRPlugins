@@ -70,12 +70,6 @@ public class HerbCleanerPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private WidgetPackets widgetPackets;
-    @Inject
-    private EthanApiPlugin api;
-    @Inject
     private HerbCleanerConfig config;
     @Inject
     private KeyManager keyManager;

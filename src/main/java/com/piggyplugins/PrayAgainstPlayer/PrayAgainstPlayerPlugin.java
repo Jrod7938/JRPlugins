@@ -9,7 +9,7 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Singleton;
 
 import com.example.EthanApiPlugin.EthanApiPlugin;

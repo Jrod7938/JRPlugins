@@ -21,7 +21,9 @@ import net.runelite.client.plugins.PluginDescriptor;
 
 import java.util.Arrays;
 
-import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.*;
+import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_FROM_MAGIC;
+import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_FROM_MELEE;
+import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_FROM_MISSILES;
 
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDependency(EthanApiPlugin.class)

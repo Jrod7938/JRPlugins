@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.util.ConcurrentModificationException;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Singleton;
 
 import lombok.Getter;

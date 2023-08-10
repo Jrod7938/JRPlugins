@@ -9,7 +9,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Singleton;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

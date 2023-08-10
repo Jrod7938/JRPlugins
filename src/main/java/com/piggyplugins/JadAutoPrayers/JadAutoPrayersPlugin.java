@@ -35,14 +35,6 @@ public class JadAutoPrayersPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private MousePackets mousePackets;
-    @Inject
-    private WidgetPackets widgetPackets;
-    @Inject
-    private EthanApiPlugin api;
-    @Inject
-    private MovementPackets movementPackets;
-    @Inject
     private JadAutoPrayersConfig config;
 
     private Prayer shouldPray = Prayer.PROTECT_FROM_MELEE;

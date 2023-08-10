@@ -7,7 +7,11 @@ import org.roaringbitmap.RoaringBitmap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 public class GlobalCollisionMap {

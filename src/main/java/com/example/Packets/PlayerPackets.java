@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.PacketUtils.PacketReflection.client;
+
 public class PlayerPackets {
     @SneakyThrows
     public static void queuePlayerAction(int actionFieldNo, int playerIndex, boolean ctrlDown) {
@@ -44,7 +46,7 @@ public class PlayerPackets {
 
     @SneakyThrows
     public static void queuePlayerAction(Player player, String... actionlist) {
-        List<String> actions = Arrays.stream(PacketReflection.client.getPlayerOptions()).collect(Collectors.toList());
+        List<String> actions = Arrays.stream(client.getPlayerOptions()).collect(Collectors.toList());
         for (int i = 0; i < actions.size(); i++) {
             if (actions.get(i) == null)
                 continue;

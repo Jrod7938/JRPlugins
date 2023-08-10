@@ -6,7 +6,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.util.concurrent.Executors;
