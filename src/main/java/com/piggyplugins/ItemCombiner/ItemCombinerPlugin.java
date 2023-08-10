@@ -13,7 +13,9 @@ import com.example.Packets.MovementPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -27,6 +29,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
@@ -45,6 +48,13 @@ public class ItemCombinerPlugin extends Plugin {
     private ItemCombinerConfig config;
     @Inject
     private KeyManager keyManager;
+    @Inject
+    private OverlayManager overlayManager;
+    @Inject
+    private ItemCombinerOverlay overlay;
+    @Inject
+    private ReflectBreakHandler breakHandler;
+    @Getter
     private boolean started;
     private int afkTicks;
     private boolean deposit;
@@ -57,32 +67,42 @@ public class ItemCombinerPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        isMaking=false;
+        isMaking = false;
         keyManager.registerKeyListener(toggle);
+        overlayManager.add(overlay);
+        breakHandler.registerPlugin(this);
     }
 
     @Override
     protected void shutDown() throws Exception {
-        isMaking=false;
+        isMaking = false;
         keyManager.unregisterKeyListener(toggle);
+        overlayManager.remove(overlay);
+        breakHandler.unregisterPlugin(this);
     }
 
     @Subscribe
     private void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN
-            || !started
-            || EthanApiPlugin.isMoving()
-            || client.getLocalPlayer().getAnimation() != -1) {
+                || !started
+                || EthanApiPlugin.isMoving()
+                || client.getLocalPlayer().getAnimation() != -1
+                || breakHandler.isBreakActive(this)) {
             afkTicks = 0;
             return;
         }
-        log.info("Started");
+        //log.info("Started");
 
         if (isMaking) {
-            log.info("Making");
+            //log.info("Making");
             if (isDoneMaking()) {
                 isMaking = false;
             }
+            return;
+        }
+
+        if (breakHandler.shouldBreak(this)) {
+            breakHandler.startBreak(this);
             return;
         }
 
@@ -124,7 +144,7 @@ public class ItemCombinerPlugin extends Plugin {
 
         Widget potionWidget = client.getWidget(17694734);
         if (potionWidget != null && !potionWidget.isHidden()) {
-            log.info("widget visible");
+            //log.info("widget visible");
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(17694734, config.itemTwoAmt());
             isMaking = true;
@@ -198,5 +218,11 @@ public class ItemCombinerPlugin extends Plugin {
             return;
         }
         started = !started;
+
+        if (started) {
+            breakHandler.startPlugin(this);
+        } else {
+            breakHandler.stopPlugin(this);
+        }
     }
 }

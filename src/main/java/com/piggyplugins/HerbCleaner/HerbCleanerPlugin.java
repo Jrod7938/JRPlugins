@@ -14,7 +14,10 @@ import com.example.Packets.MovementPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.ItemCombiner.ItemCombinerOverlay;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -30,6 +33,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
@@ -73,18 +77,28 @@ public class HerbCleanerPlugin extends Plugin {
     private HerbCleanerConfig config;
     @Inject
     private KeyManager keyManager;
-
+    @Inject
+    private OverlayManager overlayManager;
+    @Inject
+    private ItemCombinerOverlay overlay;
+    @Inject
+    private ReflectBreakHandler breakHandler;
+    @Getter
     private boolean started;
 
 
     @Override
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);
+        overlayManager.add(overlay);
+        breakHandler.registerPlugin(this);
     }
 
     @Override
     protected void shutDown() throws Exception {
         keyManager.unregisterKeyListener(toggle);
+        overlayManager.remove(overlay);
+        breakHandler.unregisterPlugin(this);
     }
 
     @Provides
@@ -95,7 +109,13 @@ public class HerbCleanerPlugin extends Plugin {
     @Subscribe
     private void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN
-            || !started) {
+            || !started
+            || breakHandler.isBreakActive(this)) {
+            return;
+        }
+
+        if (breakHandler.shouldBreak(this)) {
+            breakHandler.startBreak(this);
             return;
         }
 
@@ -193,5 +213,10 @@ public class HerbCleanerPlugin extends Plugin {
             return;
         }
         started = !started;
+        if (started) {
+            breakHandler.startPlugin(this);
+        } else {
+            breakHandler.stopPlugin(this);
+        }
     }
 }
