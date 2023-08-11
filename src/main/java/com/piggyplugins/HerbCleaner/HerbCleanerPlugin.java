@@ -80,7 +80,7 @@ public class HerbCleanerPlugin extends Plugin {
     @Inject
     private OverlayManager overlayManager;
     @Inject
-    private HerbCleanerOverlay overlay;
+    private ItemCombinerOverlay overlay;
     @Inject
     private ReflectBreakHandler breakHandler;
     @Getter
