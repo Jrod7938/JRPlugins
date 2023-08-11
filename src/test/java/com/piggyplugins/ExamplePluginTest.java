@@ -7,6 +7,7 @@ import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
+import com.piggyplugins.ItemDropper.ItemDropperPlugin;
 import com.piggyplugins.JadAutoPrayers.JadAutoPrayersPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.OneTickSwitcher.OneTickSwitcherPlugin;
@@ -30,7 +31,7 @@ public class ExamplePluginTest {
                 SpeedDartMakerPlugin.class, OneTickSwitcherPlugin.class, AutoRiftsPlugin.class,
                 PrayAgainstPlayerPlugin.class, PowerSkillerPlugin.class, AutoJugHumidifierPlugin.class,
                 CannonReloaderPlugin.class, SixHourLogPlugin.class, VardorvisHelperPlugin.class,
-                ShiftClickWalkerPlugin.class);
+                ShiftClickWalkerPlugin.class, ItemDropperPlugin.class);
         RuneLite.main(args);
     }
 }
