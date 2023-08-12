@@ -12,7 +12,6 @@ import com.ethan.Packets.MovementPackets;
 import com.ethan.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.ItemCombiner.ItemCombinerOverlay;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +75,7 @@ public class HerbCleanerPlugin extends Plugin {
     @Inject
     private OverlayManager overlayManager;
     @Inject
-    private ItemCombinerOverlay overlay;
+    private HerbCleanerOverlay overlay;
     @Inject
     private ReflectBreakHandler breakHandler;
     @Getter
