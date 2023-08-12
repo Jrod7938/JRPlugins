@@ -1,9 +1,7 @@
 package com.piggyplugins.ItemDropper;
 
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.InteractionApi.InventoryInteraction;
-import com.example.PacketUtils.PacketUtilsPlugin;
+import com.ethan.EthanApiPlugin.Collections.Inventory;
+import com.ethan.InteractionApi.InventoryInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 
@@ -28,8 +25,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 		description = "Automatically drops items on hotkey pressed or if the inventory is full",
 		tags = {"ethan", "piggy"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 public class ItemDropperPlugin extends Plugin {
 	@Inject private ItemDropperConfig config;
 	@Inject private KeyManager keyManager;
