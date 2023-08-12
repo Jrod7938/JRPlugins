@@ -283,12 +283,9 @@ public class RooftopAgilityPlugin extends Plugin {
     }
 
     private void eatSummerPie() {
-        Optional<Widget> summerPieItem = Inventory.search().filter(item -> item.getItemId() == ItemID.SUMMER_PIE || item.getItemId() == ItemID.HALF_A_SUMMER_PIE).first();
-        if (summerPieItem.isPresent()) {
-            WidgetItem item = (WidgetItem) summerPieItem.get();
-            MousePackets.queueClickPacket();
-            InventoryInteraction.useItem(item.getId(), "Eat");
-        }
+        InventoryUtil.nameContainsNoCase("summer pie").first().ifPresent(item -> {
+            InventoryInteraction.useItem(item, "Eat");
+        });
     }
 
     @Provides
