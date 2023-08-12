@@ -51,7 +51,7 @@ sourceCompatibility = "11"
 
 task FullJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.example.Main'
+        attributes 'Main-Class': 'com.ethan.Main'
     }
     baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -61,7 +61,7 @@ task FullJar(type: Jar) {
 
 task EthanJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.example.Main'
+        attributes 'Main-Class': 'com.ethan.Main'
     }
     baseName = 'ethans-api'
     exclude("com/piggyplugins")
@@ -74,7 +74,7 @@ task PiggyJar(type: Jar) {
     manifest {
     }
     baseName = 'piggy-plugins-no-ethan'
-    exclude("com/example")
+    exclude("com/ethan")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
