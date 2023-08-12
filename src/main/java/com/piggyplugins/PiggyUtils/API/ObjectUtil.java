@@ -1,7 +1,7 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.ethan.EthanApiPlugin.Collections.TileObjects;
+import com.ethan.EthanApiPlugin.Collections.query.TileObjectQuery;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.TileObject;
 

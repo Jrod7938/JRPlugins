@@ -1,7 +1,7 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.EthanApiPlugin.Collections.Bank;
-import com.example.EthanApiPlugin.Collections.query.ItemQuery;
+import com.ethan.EthanApiPlugin.Collections.Bank;
+import com.ethan.EthanApiPlugin.Collections.query.ItemQuery;
 import net.runelite.api.widgets.Widget;
 
 public class BankUtil {

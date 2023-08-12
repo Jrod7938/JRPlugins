@@ -12,10 +12,7 @@ import java.util.List;
 import com.google.inject.Inject;
 import javax.inject.Singleton;
 
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.PacketUtils.PacketUtilsPlugin;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
-import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
@@ -30,7 +27,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;

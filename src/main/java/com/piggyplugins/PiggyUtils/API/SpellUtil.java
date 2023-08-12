@@ -1,6 +1,6 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.PacketUtils.WidgetInfoExtended;
+import com.ethan.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.Client;
 import net.runelite.api.widgets.Widget;
 

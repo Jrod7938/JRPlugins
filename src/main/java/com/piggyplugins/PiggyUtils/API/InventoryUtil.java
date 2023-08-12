@@ -1,9 +1,9 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.Collections.query.ItemQuery;
-import com.example.Packets.MousePackets;
-import com.example.Packets.WidgetPackets;
+import com.ethan.EthanApiPlugin.Collections.Inventory;
+import com.ethan.EthanApiPlugin.Collections.query.ItemQuery;
+import com.ethan.Packets.MousePackets;
+import com.ethan.Packets.WidgetPackets;
 import net.runelite.api.widgets.Widget;
 
 import java.util.List;

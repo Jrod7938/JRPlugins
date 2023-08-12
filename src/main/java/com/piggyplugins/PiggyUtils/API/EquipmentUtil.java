@@ -1,6 +1,6 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.EthanApiPlugin.Collections.Equipment;
+import com.ethan.EthanApiPlugin.Collections.Equipment;
 
 public class EquipmentUtil {
     public static boolean hasItem(String name) {

@@ -1,13 +1,11 @@
 package com.piggyplugins.CannonReloader;
 
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.InteractionApi.TileObjectInteraction;
-import com.example.PacketUtils.PacketUtilsPlugin;
-import com.example.Packets.MousePackets;
+import com.ethan.EthanApiPlugin.EthanApiPlugin;
+import com.ethan.InteractionApi.TileObjectInteraction;
+import com.ethan.Packets.MousePackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.ObjectUtil;
-import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -21,7 +19,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import com.google.inject.Inject;

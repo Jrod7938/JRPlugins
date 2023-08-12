@@ -1,9 +1,6 @@
 package com.piggyplugins.JadAutoPrayers;
 
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.Packets.MousePackets;
-import com.example.Packets.MovementPackets;
-import com.example.Packets.WidgetPackets;
+import com.ethan.EthanApiPlugin.EthanApiPlugin;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.NpcUtil;
@@ -20,7 +17,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

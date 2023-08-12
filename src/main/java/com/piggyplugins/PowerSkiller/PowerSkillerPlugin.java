@@ -1,15 +1,14 @@
 package com.piggyplugins.PowerSkiller;
 
-import com.example.EthanApiPlugin.Collections.Equipment;
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.Collections.NPCs;
-import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.InteractionApi.InventoryInteraction;
-import com.example.InteractionApi.NPCInteraction;
-import com.example.InteractionApi.TileObjectInteraction;
-import com.example.PacketUtils.PacketUtilsPlugin;
+import com.ethan.EthanApiPlugin.Collections.Equipment;
+import com.ethan.EthanApiPlugin.Collections.Inventory;
+import com.ethan.EthanApiPlugin.Collections.NPCs;
+import com.ethan.EthanApiPlugin.Collections.TileObjects;
+import com.ethan.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.ethan.EthanApiPlugin.EthanApiPlugin;
+import com.ethan.InteractionApi.InventoryInteraction;
+import com.ethan.InteractionApi.NPCInteraction;
+import com.ethan.InteractionApi.TileObjectInteraction;
 import com.google.inject.Provides;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -21,7 +20,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 

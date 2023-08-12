@@ -2,13 +2,10 @@ package com.piggyplugins.OneTickSwitcher;
 
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.PacketUtils.PacketUtilsPlugin;
-import com.example.Packets.MousePackets;
-import com.example.Packets.WidgetPackets;
+import com.ethan.Packets.MousePackets;
+import com.ethan.Packets.WidgetPackets;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
-import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -16,7 +13,6 @@ import net.runelite.api.Prayer;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 

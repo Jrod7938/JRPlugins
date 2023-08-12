@@ -1,6 +1,6 @@
 package com.piggyplugins.VardorvisHelper;
 
-import com.example.EthanApiPlugin.Collections.NPCs;
+import com.ethan.EthanApiPlugin.Collections.NPCs;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -1,9 +1,9 @@
 package com.piggyplugins.PiggyUtils.API;
 
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.PacketUtils.WidgetInfoExtended;
-import com.example.Packets.MousePackets;
-import com.example.Packets.WidgetPackets;
+import com.ethan.EthanApiPlugin.EthanApiPlugin;
+import com.ethan.PacketUtils.WidgetInfoExtended;
+import com.ethan.Packets.MousePackets;
+import com.ethan.Packets.WidgetPackets;
 import net.runelite.api.Prayer;
 
 import java.util.HashMap;
