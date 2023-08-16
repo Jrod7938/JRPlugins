@@ -39,7 +39,7 @@ public class Inventory {
         return search().withName(itemName).result().size();
     }
 
-    @Subscribe
+    @Subscribe(priority = 10000)
     public void onItemContainerChanged(ItemContainerChanged e) {
         client.runScript(6009, 9764864, 28, 1, -1);
         if (e.getContainerId() == 93) {

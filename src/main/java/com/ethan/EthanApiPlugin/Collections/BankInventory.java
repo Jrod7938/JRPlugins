@@ -23,6 +23,7 @@ public class BankInventory {
     static List<Widget> bankInventoryItems = new ArrayList<>();
 
     public static ItemQuery search() {
+        BankInventory.retryCollection();
         return new ItemQuery(bankInventoryItems.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
 
@@ -217,5 +218,16 @@ public class BankInventory {
         if (gameStateChanged.getGameState() == GameState.HOPPING || gameStateChanged.getGameState() == GameState.LOGIN_SCREEN || gameStateChanged.getGameState() == GameState.CONNECTION_LOST) {
             BankInventory.bankInventoryItems.clear();
         }
+    }
+
+    public static void retryCollection(){
+        if (client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER) == null) {
+            BankInventory.bankInventoryItems.clear();
+            return;
+        }
+
+        BankInventory.bankInventoryItems =
+                Arrays.stream(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
+
     }
 }
