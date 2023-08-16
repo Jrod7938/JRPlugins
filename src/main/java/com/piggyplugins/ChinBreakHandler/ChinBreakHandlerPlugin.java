@@ -310,14 +310,21 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
                 clientThread.invoke(() ->
                         {
-                            client.setUsername(finalUsername);
-                            client.setPassword(finalPassword);
+                            String accountselection = configManager.getConfiguration("chinBreakHandler", "jagexlauncher");
+
+                            boolean b = Boolean.parseBoolean(accountselection);
+                            if (!b) {
+                                client.setUsername(finalUsername);
+                                client.setPassword(finalPassword);
+                            }
 
                             client.setGameState(GameState.LOGGING_IN);
 
-                            sendKey(KeyEvent.VK_ENTER);
-                            sendKey(KeyEvent.VK_ENTER);
-                            sendKey(KeyEvent.VK_ENTER);
+                            if (!b) {
+                                sendKey(KeyEvent.VK_ENTER);
+                                sendKey(KeyEvent.VK_ENTER);
+                                sendKey(KeyEvent.VK_ENTER);
+                            }
                         }
                 );
 
@@ -401,7 +408,11 @@ public class ChinBreakHandlerPlugin extends Plugin {
         else if (state == State.LOGOUT_BUTTON)
         {
             Widget logoutButton = client.getWidget(182, 8);
-            click(logoutButton);
+            if (logoutButton != null) {
+                click(logoutButton);
+            } else if (client.getWidget(4521989) != null && !client.getWidget(4521989).isHidden()) {
+                click(client.getWidget(4521989));
+            }
             delay = new IntRandomNumberGenerator(20, 25).nextInt();
         }
         else if (state == State.INVENTORY)

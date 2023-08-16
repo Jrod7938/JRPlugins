@@ -65,6 +65,7 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
         JCheckBox manualButton = new JCheckBox("Manual");
         JCheckBox profilesButton = new JCheckBox("Profiles plugin");
+        JCheckBox jagexLauncherButton = new JCheckBox("Jagex Launcher");
 
         String profilesSalt = configManager.getConfiguration("betterProfiles", "salt");
         boolean profilesSavePasswords = Boolean.parseBoolean(configManager.getConfiguration("betterProfiles", "rememberPassword"));
@@ -85,6 +86,11 @@ public class ChinBreakHandlerAccountPanel extends JPanel
             contentPanel(!profilesButton.isSelected());
         });
 
+        jagexLauncherButton.addActionListener(e -> {
+            configManager.setConfiguration("chinBreakHandler", "jagexlauncher", jagexLauncherButton.isSelected());
+            contentPanel();
+        });
+
         buttonGroup.add(manualButton);
         buttonGroup.add(profilesButton);
 
@@ -101,6 +107,10 @@ public class ChinBreakHandlerAccountPanel extends JPanel
         contentPanel(config);
 
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private void contentPanel() {
+        contentPanel.removeAll();
     }
 
     private void contentPanel(boolean manual)
