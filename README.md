@@ -5,8 +5,8 @@ Automation plugins for runelite
 # Discord
 https://discord.gg/kwYBYEg4uu
 
-# Release 0.8
-*Updated 8/12/2023 12:38 AM EST*
+# Release 1.0
+*Updated 8/18/2023 7:32 AM EST*
 
 **Plugins**:
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
@@ -25,9 +25,11 @@ https://discord.gg/kwYBYEg4uu
 - Vardorvis Helper
 
 # Instructions
-If you already have EthanApiPlugin on your runelite already, it's probably fine to just grab `piggy-plugins-no-ethan-0.6.jar` and drag that into your `sideloaded-plugins` folder.
+Simply drag and drop `piggy-loader` into your `sideloaded-plugins` folder.
 
-If you don't have EthanApiPlugin then you can grab `piggy-plugins-aio-0.6.jar` and drag that into your `sideloaded-plugins` folder.
+If you already have EthanApiPlugin on your runelite already, open loader config & disable the option to download EthanApi.
+
+If you don't have a `sideloaded-plugins` folder, you'll want to grab `ethan-api-standalone` from the releases and follow the more detailed instructions in our discord.
 
 
 [![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
