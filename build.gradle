@@ -3,13 +3,16 @@ plugins {
     id 'maven-publish'
 }
 
-repositories {
-    mavenLocal()
-    maven {
-        url = 'https://repo.runelite.net'
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            url = 'https://repo.runelite.net'
+        }
+        mavenCentral()
+        jcenter()
     }
-    mavenCentral()
-    jcenter()
+
 }
 
 def runeLiteVersion = '1.10.10.1'
@@ -34,6 +37,7 @@ dependencies {
     //runtimeOnly 'org.projectlombok:lombok:1.18.20'
 
 }
+
 sourceSets {
 
     main {
@@ -46,12 +50,12 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '0.8'
+version = '1.0.0'
 sourceCompatibility = "11"
 
 task FullJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.ethan.Main'
+        attributes 'Main-Class': 'com.example.Main'
     }
     baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -61,7 +65,7 @@ task FullJar(type: Jar) {
 
 task EthanJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.ethan.Main'
+        attributes 'Main-Class': 'com.example.Main'
     }
     baseName = 'ethans-api'
     exclude("com/piggyplugins")
@@ -74,10 +78,21 @@ task PiggyJar(type: Jar) {
     manifest {
     }
     baseName = 'piggy-plugins-no-ethan'
-    exclude("com/ethan")
+    exclude("com/example")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+subprojects {
+    tasks.withType(Jar) {
+        doLast {
+            copy {
+                from("./build/libs/")
+                into("../release/")
+            }
+        }
+    }
 }
 
 publishing {
@@ -97,7 +112,7 @@ publishing {
     }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 targetCompatibility = JavaVersion.VERSION_11
