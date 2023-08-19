@@ -13,29 +13,54 @@ allprojects {
         jcenter()
     }
 
+    def runeLiteVersion = '1.10.10.1'
+
+    plugins.withType(JavaPlugin) {
+        dependencies {
+            compileOnly 'org.projectlombok:lombok:1.18.20'
+            annotationProcessor 'org.projectlombok:lombok:1.18.20'
+            compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+            testImplementation 'junit:junit:4.12'
+            testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+            testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+        }
+    }
 }
 
-def runeLiteVersion = '1.10.10.1'
-
 dependencies {
-    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    compileOnly 'org.pf4j:pf4j:3.9.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testImplementation 'junit:junit:4.12'
-    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
-    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
-    implementation 'org.json:json:20230227'
-    implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
-    implementation("com.google.archivepatcher:archive-patch-applier:1.0.4")
-    implementation("org.benf:cfr:0.152")
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
-    implementation group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0', {
-        exclude group: 'com.google.inject'
-    }
-    //runtimeOnly group: 'net.runelite', name:'client', version: runeLiteVersion
-    //runtimeOnly 'org.projectlombok:lombok:1.18.20'
+    implementation project(path: ':AoeWarn')
+    implementation project(path: ':AutoJugHumidifier')
+    implementation project(path: ':AutoRifts')
+    implementation project(path: ':AutoTele')
+    implementation project(path: ':CalvarionHelper')
+    implementation project(path: ':CannonReloader')
+    implementation project(path: ':E3T4G')
+    implementation project(path: ':EthansApi')
+    implementation project(path: ':ChinBreakHandler')
+    implementation project(path: ':GauntletFlicker')
+    implementation project(path: ':Harpoon2Ticker')
+    implementation project(path: ':HerbCleaner')
+    implementation project(path: ':ItemCombiner')
+    implementation project(path: ':ItemDropper')
+    implementation project(path: ':JadAutoPrayers')
+    implementation project(path: ':LavaRunecrafter')
+    implementation project(path: ':NightmareHelper')
+    implementation project(path: ':OneTickSwitcher')
+    implementation project(path: ':PiggyUtils')
+    implementation project(path: ':PowerSkiller')
+    implementation project(path: ':PrayerFlicker')
+    implementation project(path: ':PrayAgainstPlayer')
+    implementation project(path: ':RooftopAgility')
+    implementation project(path: ':RunEnabler')
+    implementation project(path: ':ShiftClickWalker')
+    implementation project(path: ':SixHourLog')
+    implementation project(path: ':SpeedDartMaker')
+    implementation project(path: ':SuperglassMake')
+    implementation project(path: ':UpkeepPlugin')
+    implementation project(path: ':VardorvisHelper')
 
+    // Add modules here like so, so you can run the ExamplePluginTest
+    testImplementation project(path: ':EthansApi')
 }
 
 sourceSets {
@@ -53,22 +78,10 @@ group = 'com.piggyplugins'
 version = '1.0.0'
 sourceCompatibility = "11"
 
-task FullJar(type: Jar) {
+task FatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.example.Main'
     }
     baseName = 'piggy-plugins-aio'
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-task EthanJar(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'com.example.Main'
-    }
-    baseName = 'ethans-api'
-    exclude("com/piggyplugins")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
@@ -77,8 +90,6 @@ task EthanJar(type: Jar) {
 task PiggyJar(type: Jar) {
     manifest {
     }
-    baseName = 'piggy-plugins-no-ethan'
-    exclude("com/example")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

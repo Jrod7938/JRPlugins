@@ -36,8 +36,6 @@ import java.util.Set;
         description = "",
         tags = {"ethan"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 @Slf4j
 public class gauntletFlicker extends Plugin {
     @Inject

@@ -11,7 +11,7 @@ import com.example.Packets.ObjectPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-//import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -40,8 +40,8 @@ import java.util.Optional;
 public class ThreeTickFourGranite extends Plugin {
     @Inject
     Client client;
-//    @Inject
-//    private ReflectBreakHandler breakHandler;
+    @Inject
+    private ReflectBreakHandler breakHandler;
     @Inject
     private OverlayManager overlayManager;
     @Inject
@@ -150,9 +150,9 @@ public class ThreeTickFourGranite extends Plugin {
         started = !started;
 
         if (!started) {
-            //breakHandler.stopPlugin(this);
+            breakHandler.stopPlugin(this);
         } else {
-            //breakHandler.startPlugin(this);
+            breakHandler.startPlugin(this);
         }
     }
 }

@@ -34,6 +34,7 @@ import net.runelite.api.Scene;
 import net.runelite.api.SkullIcon;
 import net.runelite.api.Tile;
 import net.runelite.api.TileObject;
+import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
@@ -181,7 +182,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     public static boolean isQuickPrayerEnabled() {
-        return client.getVarbitValue(QUICK_PRAYER) == 1;
+        return client.getVarbitValue(Varbits.QUICK_PRAYER) == 1;
     }
 
 
