@@ -41,7 +41,7 @@ public class PiggyLoaderPlugin extends Plugin {
     private static final String PIGGY_PACKAGE = "com.piggyplugins";
     private final String pluginsJsonURL = "https://github.com/0Hutch/PiggyPluginsRelease/blob/main/plugins.json?raw=true";
     private final String infoJsonURL = "https://github.com/0Hutch/PiggyPluginsRelease/blob/main/info.json?raw=true";
-    private final String currentLoaderVersion = "1.0.0";
+    private final String currentLoaderVersion = "1.0.1";
 
     @Inject
     private Client client;
@@ -162,12 +162,11 @@ public class PiggyLoaderPlugin extends Plugin {
         }
 
         for (PluginInfo plugin : pluginInfoJsonObject) {
-            //0 = name, 1 = package, 2 = class, 3 = version, 4 = url
+            //0 = name, 1 = package, 2 = class, 3 = url
             pluginInfoList.add(plugin.getName());
             pluginInfoList.add(plugin.getPackageId());
             pluginInfoList.add(plugin.getMainClassName());
-            pluginInfoList.add(plugin.getReleases().get(plugin.getReleases().size() - 1).getVersion());
-            pluginInfoList.add(plugin.getReleases().get(plugin.getReleases().size() - 1).getUrl().toString());
+            pluginInfoList.add(plugin.getURL());
         }
     }
 
@@ -179,7 +178,7 @@ public class PiggyLoaderPlugin extends Plugin {
 
         try {
             ArrayList<URL> pluginUrlsList = new ArrayList<>();
-            for (int i = 4; i < pluginInfoList.size(); i += 5) {
+            for (int i = 3; i < pluginInfoList.size(); i += 4) {
                 URL pluginUrl = new URL(pluginInfoList.get(i));
                 if (!pluginUrlsList.contains(pluginUrl)) {
                     pluginUrlsList.add(pluginUrl);
@@ -290,8 +289,8 @@ public class PiggyLoaderPlugin extends Plugin {
         ArrayList<String> pluginClassPathsToLoad = new ArrayList<>();
 
         if (config.needsEthan()) {
-            pluginClassPathsToLoad.add(getPluginClassPath("PacketUtilsPlugin", ETHAN_PACKAGE));
-            pluginClassPathsToLoad.add(getPluginClassPath("EthanApiPlugin", ETHAN_PACKAGE));
+            pluginClassPathsToLoad.add("com.example.PacketUtils.PacketUtilsPlugin");
+            pluginClassPathsToLoad.add("com.example.EthanApiPlugin.EthanApiPlugin");
         }
 
         pluginClassPathsToLoad.add(getPluginClassPath("PiggyUtils", PIGGY_PACKAGE));
@@ -310,7 +309,17 @@ public class PiggyLoaderPlugin extends Plugin {
         pluginClassPathsToLoad.add(getPluginClassPath("ShiftClickWalker", PIGGY_PACKAGE));
         pluginClassPathsToLoad.add(getPluginClassPath("SpeedDartMaker", PIGGY_PACKAGE));
         pluginClassPathsToLoad.add(getPluginClassPath("VardorvisHelper", PIGGY_PACKAGE));
-
+        pluginClassPathsToLoad.add(getPluginClassPath("AutoTele", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("CalvarionHelper", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("gauntletFlicker", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("ThreeTickFourGranite", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("harpoon2ticker", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("NightmareHelper", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("EthanPrayerFlicker", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("LavaRunecrafter", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("RunEnabler", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("SuperGlassMaker", ETHAN_PACKAGE));
+        pluginClassPathsToLoad.add(getPluginClassPath("UpkeepPlugin", ETHAN_PACKAGE));
 
         return pluginClassPathsToLoad;
     }

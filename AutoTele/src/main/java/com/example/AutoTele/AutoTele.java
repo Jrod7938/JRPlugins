@@ -22,7 +22,6 @@ import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import java.util.Optional;
@@ -34,8 +33,6 @@ import java.util.Set;
         enabledByDefault = false,
         tags = {"ethan"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 public class AutoTele extends Plugin {
     @Inject
     Client client;

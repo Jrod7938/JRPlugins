@@ -34,8 +34,6 @@ import java.util.Optional;
 
 @PluginDescriptor(name = "Super Glass Maker", description = "", enabledByDefault = false, tags = {"ethan"})
 @Slf4j
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
 public class SuperGlassMakerPlugin extends Plugin {
     public int timeout = 0;
     @Inject

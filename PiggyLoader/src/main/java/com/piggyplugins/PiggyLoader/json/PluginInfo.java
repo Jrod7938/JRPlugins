@@ -20,5 +20,5 @@ public class PluginInfo {
     @Getter
     private String mainClassName;
     @Getter
-    private List<Releases> releases = new ArrayList<Releases>();
+    private String URL;
 }

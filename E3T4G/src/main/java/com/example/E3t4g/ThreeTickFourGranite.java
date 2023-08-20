@@ -35,8 +35,6 @@ import java.util.Optional;
         name = "<html><font color=\"#FF9DF9\">[EV]</font> 3t4g</html>",
         enabledByDefault = false
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 public class ThreeTickFourGranite extends Plugin {
     @Inject
     Client client;

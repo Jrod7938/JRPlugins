@@ -35,8 +35,6 @@ import java.lang.reflect.InvocationTargetException;
         tags = {"ethan"}
 )
 @Slf4j
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
 public class EthanPrayerFlickerPlugin extends Plugin {
     public int timeout = 0;
     @Inject

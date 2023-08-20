@@ -44,8 +44,6 @@ import java.util.List;
         enabledByDefault = false,
         tags = {"ethan"}
 )
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
 public class LavaRunecrafterPlugin extends Plugin {
     public int timeout = 0;
     public int bindingCharges = -1;

@@ -25,8 +25,7 @@ import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_F
 import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_FROM_MELEE;
 import static com.example.EthanApiPlugin.Collections.query.QuickPrayer.PROTECT_FROM_MISSILES;
 
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
+
 @PluginDescriptor(
         name = "NightmareHelper",
         description = "",

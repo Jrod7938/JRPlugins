@@ -30,8 +30,6 @@ import java.util.Optional;
         enabledByDefault = false,
         tags = {"ethan"}
 )
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
 @Slf4j
 public class UpkeepPlugin extends Plugin {
     public int timeout = 0;

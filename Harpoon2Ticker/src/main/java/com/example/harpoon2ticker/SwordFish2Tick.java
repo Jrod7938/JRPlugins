@@ -33,8 +33,6 @@ import java.util.Optional;
         enabledByDefault = false,
         tags = {"ethan"}
 )
-@PluginDependency(EthanApiPlugin.class)
-@PluginDependency(PacketUtilsPlugin.class)
 public class SwordFish2Tick extends Plugin {
     int lastHitsplat = 0;
     @Inject
