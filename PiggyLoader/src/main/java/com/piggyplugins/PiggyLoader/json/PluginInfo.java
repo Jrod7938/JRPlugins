@@ -20,5 +20,5 @@ public class PluginInfo {
     @Getter
     private String mainClassName;
     @Getter
-    private String URL;
+    private String url;
 }

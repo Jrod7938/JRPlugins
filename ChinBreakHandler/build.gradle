@@ -5,10 +5,7 @@ plugins {
 dependencies {
     compileOnly project(":EthansApi")
     compileOnly project(":PiggyUtils")
-}
-
-dependencies {
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    compileOnly 'io.reactivex.rxjava3:rxjava:3.1.6'
 }
 
 sourceSets {

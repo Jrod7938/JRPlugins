@@ -166,7 +166,7 @@ public class PiggyLoaderPlugin extends Plugin {
             pluginInfoList.add(plugin.getName());
             pluginInfoList.add(plugin.getPackageId());
             pluginInfoList.add(plugin.getMainClassName());
-            pluginInfoList.add(plugin.getURL());
+            pluginInfoList.add(plugin.getUrl());
         }
     }
 
