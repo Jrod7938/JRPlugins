@@ -11,14 +11,19 @@ import net.runelite.api.NPC;
 import net.runelite.api.Prayer;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Jad Auto Prayers</html>",
@@ -33,9 +38,9 @@ public class JadAutoPrayersPlugin extends Plugin {
     @Inject
     private JadAutoPrayersConfig config;
 
-    private Prayer shouldPray = Prayer.PROTECT_FROM_MELEE;
-    private final List<Prayer> extraPrayerList = new ArrayList<>();
-    private int ticksSinceAnimation = 0;
+    private final Map<NPC, Integer> jadMap = new HashMap<>();
+    private final Queue<Prayer> nextPrayers = new PriorityQueue<>();
+    private Prayer shouldPray = Prayer.PROTECT_FROM_MAGIC;
 
     @Provides
     private JadAutoPrayersConfig getConfig(ConfigManager configManager) {
@@ -48,17 +53,26 @@ public class JadAutoPrayersPlugin extends Plugin {
             return;
         }
 
-        ticksSinceAnimation++;
+        for (Map.Entry<NPC, Integer> entry : jadMap.entrySet()) {
+            if (entry.getKey().isDead()) {
+                continue;
+            }
 
-        if (ticksSinceAnimation > 3) {
-            // back to melee cus healers? :shrug:
-            shouldPray = Prayer.PROTECT_FROM_MELEE;
+            entry.setValue(entry.getValue()+1);
         }
 
-        if (config.eagleEye() || config.rigour()) {
-            oneTickMultiFlick();
-        } else {
+        if (!nextPrayers.isEmpty()) {
+            jadMap.forEach((key, value) -> {
+                if (value == 3) {
+                    shouldPray = nextPrayers.poll();
+                }
+            });
+        }
+
+        if (config.oneTickFlick()) {
             oneTickFlick();
+        } else {
+            autoPrayer();
         }
     }
 
@@ -69,43 +83,47 @@ public class JadAutoPrayersPlugin extends Plugin {
         PrayerUtil.togglePrayer(shouldPray);
     }
 
-    private void oneTickMultiFlick() {
-        if (config.eagleEye()) {
-            if (PrayerUtil.isPrayerActive(shouldPray)) {
-                PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
-            }
-            PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.EAGLE_EYE);
-            return;
+    private void autoPrayer() {
+        if (!PrayerUtil.isPrayerActive(shouldPray)) {
+            PrayerUtil.togglePrayer(shouldPray);
         }
+    }
 
-        if (config.rigour()) {
-            if (PrayerUtil.isPrayerActive(shouldPray)) {
-                PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
-            }
-            PrayerUtil.toggleMultiplePrayers(shouldPray, Prayer.RIGOUR);
+    @Subscribe
+    private void onNpcSpawned(NpcSpawned event) {
+        if (event.getNpc().getName().toLowerCase().contains("jad")) {
+            jadMap.put(event.getNpc(), 0);
         }
     }
 
 
     @Subscribe
     public void onAnimationChanged(AnimationChanged event) {
-        this.setupJadPrayers();
-    }
-
-    private void setupJadPrayers() {
-        Optional<NPC> jad = NpcUtil.nameContainsNoCase("-jad").nearestToPlayer();
-
-        if (jad.isEmpty()) {
+        if (!(event.getActor() instanceof NPC)) {
             return;
         }
 
-        int animationID = EthanApiPlugin.getAnimation(jad.get());
+        if (event.getActor().getName() == null) {
+            return;
+        }
+
+        if (event.getActor().getName().toLowerCase().contains("jad")) {
+            this.setupJadPrayers((NPC) event.getActor());
+        }
+    }
+
+    private void setupJadPrayers(NPC npc) {
+        int animationID = EthanApiPlugin.getAnimation(npc);
         if (animationID == 2656 || animationID == 7592) {
-            ticksSinceAnimation = 0;
-            shouldPray = Prayer.PROTECT_FROM_MAGIC;
+            if (jadMap.containsKey(npc)) {
+                jadMap.replace(npc, 0);
+            }
+            nextPrayers.add(Prayer.PROTECT_FROM_MAGIC);
         } else if (animationID == 2652 || animationID == 7593) {
-            ticksSinceAnimation = 0;
-            shouldPray = Prayer.PROTECT_FROM_MISSILES;
+            if (jadMap.containsKey(npc)) {
+                jadMap.replace(npc, 0);
+            }
+            nextPrayers.add(Prayer.PROTECT_FROM_MISSILES);
         }
     }
 
