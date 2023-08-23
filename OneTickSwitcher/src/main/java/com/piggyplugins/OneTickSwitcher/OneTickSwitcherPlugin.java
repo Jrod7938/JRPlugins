@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Prayer;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
@@ -38,6 +39,8 @@ public class OneTickSwitcherPlugin extends Plugin {
     private OneTickSwitcherConfig config;
     @Inject
     private KeyManager keyManager;
+    @Inject
+    private ClientThread clientThread;
 
     @Provides
     private OneTickSwitcherConfig getConfig(ConfigManager configManager) {
@@ -102,8 +105,10 @@ public class OneTickSwitcherPlugin extends Plugin {
     }
 
     private void toggleSpec() {
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, SPEC_BAR, -1, -1);
+        clientThread.invoke(() -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetActionPacket(1, SPEC_BAR, -1, -1);
+        });
     }
 
     private final HotkeyListener toggleSpecListener = new HotkeyListener(() -> config.specToggle()) {
@@ -165,28 +170,30 @@ public class OneTickSwitcherPlugin extends Plugin {
     private final HotkeyListener toggleEightListener = new HotkeyListener(() -> config.onePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.onePrayer()));
+            clientThread.invoke(() -> PrayerUtil.toggleMultiplePrayers(parsePrayers(config.onePrayer())));
         }
     };
 
     private final HotkeyListener toggleNineListener = new HotkeyListener(() -> config.twoPrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.twoPrayer()));
+            clientThread.invoke(() -> PrayerUtil.toggleMultiplePrayers(parsePrayers(config.twoPrayer())));
         }
     };
 
     private final HotkeyListener toggleTenListener = new HotkeyListener(() -> config.threePrayerToggle()) {
         @Override
         public void hotkeyPressed() {
-            PrayerUtil.toggleMultiplePrayers(parsePrayers(config.threePrayer()));
+            clientThread.invoke(() -> PrayerUtil.toggleMultiplePrayers(parsePrayers(config.threePrayer())));
         }
     };
 
     public void toggleGear(List<String> gearNames) {
-        if (client.getGameState() != GameState.LOGGED_IN) {
-            return;
-        }
-        swapGear(gearNames);
+        clientThread.invoke(() -> {
+            if (client.getGameState() != GameState.LOGGED_IN) {
+                return;
+            }
+            swapGear(gearNames);
+        });
     }
 }
