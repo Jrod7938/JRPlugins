@@ -28,13 +28,14 @@ public interface ItemDropperConfig extends Config {
 
 	@ConfigItem(
 			keyName = "itemIds",
-			name = "Item IDs",
-			description = "<html>* Item IDs of the items you want to drop<br>" +
+			name = "Item IDs or names",
+			description = "<html>* Item IDs or names of the items you want to drop<br>" +
+					"* Names support wildcards (i.e. *karam* or *salmon" +
 					"* Separate with comma or comma and space</html>",
 			position = 2
 	)
 	default String itemIds() {
-		return "100, 200";
+		return "100, 200, trout, *salmon";
 	}
 
 	@Range(
