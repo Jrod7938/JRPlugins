@@ -34,7 +34,7 @@ public interface ItemDropperConfig extends Config {
 					"* Separate with comma or comma and space</html>",
 			position = 2
 	)
-	default String itemIds() {
+	default String itemIdsOrNames() {
 		return "100, 200, trout, *salmon";
 	}
 

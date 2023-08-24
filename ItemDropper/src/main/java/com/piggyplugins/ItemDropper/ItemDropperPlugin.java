@@ -94,12 +94,12 @@ public class ItemDropperPlugin extends Plugin {
 	}
 
 	private void updateItemIds() {
-		if (config.itemIds().trim().isEmpty()) {
+		if (config.itemIdsOrNames().trim().isEmpty()) {
 			itemIds.clear();
 			itemNames.clear();
 			return;
 		}
-		var parts = config.itemIds().trim().split(", |,");
+		var parts = config.itemIdsOrNames().trim().split(", |,");
 		for (String part : parts) {
 			try {
 				int id = Integer.parseInt(part.trim());
