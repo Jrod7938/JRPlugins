@@ -13,7 +13,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.10.1'
+    def runeLiteVersion = '1.10.10.4'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -59,6 +59,7 @@ dependencies {
 //    implementation project(path: ':SuperglassMake')
 //    implementation project(path: ':UpkeepPlugin')
 //    implementation project(path: ':VardorvisHelper')
+//    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 
     // Add modules here like so, so you can run the ExamplePluginTest
     compileOnly project(path: ':EthansApi')
@@ -77,7 +78,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.0'
+version = '1.0.3'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {

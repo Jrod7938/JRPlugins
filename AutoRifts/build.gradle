@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation project(path: ':EthansApi')
     compileOnly project(":EthansApi")
     compileOnly project(":PiggyUtils")
 }
