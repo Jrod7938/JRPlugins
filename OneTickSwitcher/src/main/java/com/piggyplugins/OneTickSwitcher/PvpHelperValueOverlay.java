@@ -30,6 +30,10 @@ public class PvpHelperValueOverlay extends OverlayPanel {
 
     @Override
     public Dimension render(Graphics2D graphics) {
+        if (!config.showOverlay()) {
+            return null;
+        }
+
         panelComponent.getChildren().add(TitleComponent.builder()
                 .text("PVP Helper")
                 .color(Color.WHITE)
