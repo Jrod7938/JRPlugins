@@ -80,11 +80,21 @@ public interface AutoRiftsConfig extends Config {
 
     @ConfigItem(
             keyName = "prioritizeCatalytic",
-            name = "Prioritizes Catalytic Energy(Beta)",
+            name = "Prioritizes Catalytic Energy",
             description = "Will try to balance points if not ticked",
             position = 8
     )
     default boolean prioritizeCatalytic() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "prioritizeHigher",
+            name = "Prioritize Higher Tier Runes(BETA)",
+            description = "Prioritizes Nature/Law/Death/Blood even if points arent balanced - Expect some bugs",
+            position = 9
+    )
+    default boolean prioritizeHighTier() {
         return true;
     }
 }
