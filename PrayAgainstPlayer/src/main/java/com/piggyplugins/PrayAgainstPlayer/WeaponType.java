@@ -111,7 +111,8 @@ public enum WeaponType {
             "trident",
             "wand",
             "dawnbringer",
-            "voidwaker"
+            "voidwaker",
+            "sceptre"
     };
 
 }
