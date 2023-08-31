@@ -7,6 +7,7 @@ import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -28,7 +29,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ItemDropperPlugin extends Plugin {
 	@Inject private ItemDropperConfig config;
 	@Inject private KeyManager keyManager;
+	@Inject private ClientThread clientThread;
 	private final List<Integer> itemIds = new ArrayList<>();
+	private final List<String> itemNames = new ArrayList<>();
 	private final ConcurrentLinkedQueue<Widget> itemsToDrop = new ConcurrentLinkedQueue<>();
 	private boolean dropping = false;
 
@@ -41,6 +44,7 @@ public class ItemDropperPlugin extends Plugin {
 	protected void startUp() {
 		keyManager.registerKeyListener(dropItemsHotkey);
 		itemsToDrop.clear();
+		itemNames.clear();
 		dropping = false;
 		updateItemIds();
 	}
@@ -74,28 +78,35 @@ public class ItemDropperPlugin extends Plugin {
 		@Override
 		public void hotkeyPressed() {
 			if (dropping) return;
-			buildItemQueue();
-			dropping = true;
+			clientThread.invoke(() -> {
+				buildItemQueue();
+				dropping = true;
+			});
 		}
 	};
 
 	private void buildItemQueue() {
 		itemsToDrop.clear();
 		itemsToDrop.addAll(Inventory.search().idInList(itemIds).result());
+		for (String name : itemNames) {
+			itemsToDrop.addAll(Inventory.search().matchesWildCardNoCase(name).filter(w -> !itemsToDrop.contains(w)).result());
+		}
 	}
 
 	private void updateItemIds() {
-		if (config.itemIds().trim().isEmpty()) {
+		if (config.itemIdsOrNames().trim().isEmpty()) {
 			itemIds.clear();
+			itemNames.clear();
 			return;
 		}
-		var parts = config.itemIds().trim().split(", |,");
+		var parts = config.itemIdsOrNames().trim().split(", |,");
 		for (String part : parts) {
 			try {
 				int id = Integer.parseInt(part.trim());
 				itemIds.add(id);
 			}
 			catch (NumberFormatException ignored) {
+				itemNames.add(part.trim());
 			}
 		}
 	}
