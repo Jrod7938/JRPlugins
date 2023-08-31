@@ -14,4 +14,13 @@ public interface JadAutoPrayersConfig extends Config {
     default boolean oneTickFlick() {
         return true;
     }
+
+    @ConfigItem(
+            keyName = "rigourUnlocked",
+            name = "Rigour Unlocked",
+            description = "Do you have rigour?"
+    )
+    default boolean rigourUnlocked() {
+        return true;
+    }
 }
