@@ -23,7 +23,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 
 import com.google.inject.Inject;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
@@ -51,12 +50,10 @@ public class CannonReloaderPlugin extends Plugin {
 
     private int cballsLeft;
     private int nextReload;
-    private Random random;
 
     @Override
     protected void startUp() throws Exception {
         clientThread.invoke(() -> cballsLeft = client.getVarpValue(VarPlayer.CANNON_AMMO));
-        random = new Random();
         nextReload = ThreadLocalRandom.current().nextInt(config.reloadMin(), config.reloadMax());
     }
 
