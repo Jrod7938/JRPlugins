@@ -769,7 +769,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean shouldDepositRunes() {
-        return !InventoryUtil.nameContainsNoCase("rune").filter(item -> !item.getName().contains("pouch") && !item.getName().contains("pickaxe")).empty();
+        return  !Inventory.search().matchesWildCardNoCase("*rune").empty();
     }
 
 
