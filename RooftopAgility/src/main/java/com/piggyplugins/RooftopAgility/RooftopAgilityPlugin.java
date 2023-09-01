@@ -111,9 +111,11 @@ public class RooftopAgilityPlugin extends Plugin {
 
     private void findObstacle() {
         Obstacles obstacle = Obstacles.getObstacle(client.getLocalPlayer().getWorldLocation());
+        log.info(""+obstacle.getObstacleId());
         if (obstacle != null) {
             Optional<TileObject> tileObject = TileObjects.search().withId(obstacle.getObstacleId()).first();
             if (tileObject.isPresent() && !client.getLocalPlayer().isInteracting()) {
+                log.info("Sending Packet");
                 TileObjectInteraction.interact(tileObject.get(), TileObjectQuery.getObjectComposition(tileObject.get()).getActions()[0]);
             }
         }
@@ -203,6 +205,9 @@ public class RooftopAgilityPlugin extends Plugin {
     }
 
     public String getElapsedTime() {
+        if(!startAgility){
+            return "00:00:00";
+        }
         Duration duration = Duration.between(timer, Instant.now());
         long durationInMillis = duration.toMillis();
         long second = (durationInMillis / 1000) % 60;
@@ -217,6 +222,14 @@ public class RooftopAgilityPlugin extends Plugin {
         markOfGrace = null;
         startAgility = false;
         timer = null;
+        mogSpawnCount = 0;
+        mogCollectCount = 0;
+        mogInventoryCount = -1;
+        marksPerHour = 0;
+    }
+    private void resetValsNoTimer() {
+        markOfGraceTile = null;
+        startAgility = false;
         mogSpawnCount = 0;
         mogCollectCount = 0;
         mogInventoryCount = -1;
@@ -426,7 +439,7 @@ public class RooftopAgilityPlugin extends Plugin {
         }
         startAgility = !startAgility;
         if (!startAgility) {
-            resetVals();
+            resetValsNoTimer();
             this.state = State.TIMEOUT;
             breakHandler.stopPlugin(this);
         } else {
