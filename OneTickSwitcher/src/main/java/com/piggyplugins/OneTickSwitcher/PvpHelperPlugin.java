@@ -93,6 +93,9 @@ public class PvpHelperPlugin extends Plugin {
         keyManager.registerKeyListener(gearOneListener);
         keyManager.registerKeyListener(gearTwoListener);
         keyManager.registerKeyListener(gearThreeListener);
+        keyManager.registerKeyListener(gearFourListener);
+        keyManager.registerKeyListener(gearFiveListener);
+        keyManager.registerKeyListener(gearSixListener);
         keyManager.registerKeyListener(prayerOneListener);
         keyManager.registerKeyListener(prayerTwoListener);
         keyManager.registerKeyListener(prayerThreeListener);
@@ -111,6 +114,10 @@ public class PvpHelperPlugin extends Plugin {
         keyManager.unregisterKeyListener(gearOneListener);
         keyManager.unregisterKeyListener(gearTwoListener);
         keyManager.unregisterKeyListener(gearThreeListener);
+        keyManager.unregisterKeyListener(gearFourListener);
+        keyManager.unregisterKeyListener(gearFiveListener);
+        keyManager.unregisterKeyListener(gearSixListener);
+        keyManager.unregisterKeyListener(prayerOneListener);
         keyManager.unregisterKeyListener(prayerTwoListener);
         keyManager.unregisterKeyListener(prayerThreeListener);
         keyManager.unregisterKeyListener(spellOneListener);
@@ -331,6 +338,27 @@ public class PvpHelperPlugin extends Plugin {
         @Override
         public void hotkeyPressed() {
             toggleGear(getGearNames(config.threeGear()));
+        }
+    };
+
+    private final HotkeyListener gearFourListener = new HotkeyListener(() -> config.fourToggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggleGear(getGearNames(config.fourGear()));
+        }
+    };
+
+    private final HotkeyListener gearFiveListener = new HotkeyListener(() -> config.fiveToggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggleGear(getGearNames(config.fiveGear()));
+        }
+    };
+
+    private final HotkeyListener gearSixListener = new HotkeyListener(() -> config.sixToggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggleGear(getGearNames(config.sixGear()));
         }
     };
 

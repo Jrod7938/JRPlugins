@@ -13,7 +13,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.10.4'
+    def runeLiteVersion = 'latest.release'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -29,7 +29,6 @@ allprojects {
 
 dependencies {
 //    Uncomment for fat jar
-//    implementation project(path: ':AoeWarn')
 //    implementation project(path: ':AutoJugHumidifier')
 //    implementation project(path: ':AutoRifts')
 //    implementation project(path: ':AutoTele')
@@ -83,6 +82,7 @@ sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
     manifest {
+        attributes 'Main-Class': 'com.example.Main'
     }
     baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

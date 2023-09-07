@@ -85,6 +85,36 @@ public interface PvpHelperConfig extends Config {
         return "";
     }
 
+    @ConfigItem(keyName = "fourToggle", name = "Four Toggle", description = "", position = 7, section = gearSection)
+    default Keybind fourToggle() {
+        return Keybind.NOT_SET;
+    }
+
+    @ConfigItem(keyName = "fourGear", name = "Four Gear", description = "", position = 8, section = gearSection)
+    default String fourGear() {
+        return "";
+    }
+
+    @ConfigItem(keyName = "fiveToggle", name = "Five Toggle", description = "", position = 9, section = gearSection)
+    default Keybind fiveToggle() {
+        return Keybind.NOT_SET;
+    }
+
+    @ConfigItem(keyName = "fiveGear", name = "Five Gear", description = "", position = 10, section = gearSection)
+    default String fiveGear() {
+        return "";
+    }
+
+    @ConfigItem(keyName = "sixToggle", name = "Six Toggle", description = "", position = 11, section = gearSection)
+    default Keybind sixToggle() {
+        return Keybind.NOT_SET;
+    }
+
+    @ConfigItem(keyName = "sixGear", name = "Six Gear", description = "", position = 12, section = gearSection)
+    default String sixGear() {
+        return "";
+    }
+
     @ConfigSection(
             name = "Prayers",
             description = "Prayers to switch",
