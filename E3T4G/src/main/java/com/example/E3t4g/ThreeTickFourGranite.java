@@ -61,14 +61,14 @@ public class ThreeTickFourGranite extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-       // breakHandler.registerPlugin(this);
+        breakHandler.registerPlugin(this);
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
     }
 
     @Override
     protected void shutDown() throws Exception {
-     //   breakHandler.unregisterPlugin(this);
+        breakHandler.unregisterPlugin(this);
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
     }
@@ -80,10 +80,10 @@ public class ThreeTickFourGranite extends Plugin {
             return;
         }
 
-//        if (breakHandler.shouldBreak(this)) {
-//            breakHandler.startBreak(this);
-//            return;
-//        }
+        if (breakHandler.shouldBreak(this)) {
+            breakHandler.startBreak(this);
+            return;
+        }
 
         timeout = timeout == 0 ? 2 : timeout - 1;
         if (timeout != 2) return;

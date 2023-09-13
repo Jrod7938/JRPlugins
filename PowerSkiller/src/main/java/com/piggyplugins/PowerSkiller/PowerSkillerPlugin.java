@@ -64,10 +64,6 @@ public class PowerSkillerPlugin extends Plugin {
             // We do an early return if the user isn't logged in
             return;
         }
-        if(state!=null){
-            System.out.println(state.name());
-        }
-
 
         state = getNextState();
         handleState();
