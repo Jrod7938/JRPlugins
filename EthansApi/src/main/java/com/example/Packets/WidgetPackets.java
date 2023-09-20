@@ -53,13 +53,7 @@ public class WidgetPackets {
             System.out.println("call to queueWidgetAction with null widget");
             return;
         }
-
-        String[] actionStrings = widget.getActions();
-        if (actionStrings == null) {
-            return;
-        }
-
-        List<String> actions = Arrays.stream(actionStrings).collect(Collectors.toList());
+        List<String> actions = Arrays.stream(widget.getActions()).collect(Collectors.toList());
         for (int i = 0; i < actions.size(); i++) {
             if (actions.get(i) == null)
                 continue;
@@ -68,7 +62,7 @@ public class WidgetPackets {
         int num = -1;
         for (String action : actions) {
             for (String action2 : actionlist) {
-				if (action != null && Text.removeTags(action).equalsIgnoreCase(action2)) {
+                if (action != null && Text.removeTags(action).equalsIgnoreCase(action2)) {
                     num = actions.indexOf(action.toLowerCase()) + 1;
                 }
             }

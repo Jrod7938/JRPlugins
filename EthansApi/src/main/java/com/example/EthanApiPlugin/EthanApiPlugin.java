@@ -1,40 +1,13 @@
 package com.example.EthanApiPlugin;
 
-import com.example.EthanApiPlugin.Collections.Bank;
-import com.example.EthanApiPlugin.Collections.BankInventory;
-import com.example.EthanApiPlugin.Collections.DepositBox;
-import com.example.EthanApiPlugin.Collections.Equipment;
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.Collections.NPCs;
-import com.example.EthanApiPlugin.Collections.Players;
-import com.example.EthanApiPlugin.Collections.Shop;
-import com.example.EthanApiPlugin.Collections.ShopInventory;
-import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.Collections.query.QuickPrayer;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import lombok.SneakyThrows;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.CollisionData;
-import net.runelite.api.CollisionDataFlag;
-import net.runelite.api.GameObject;
-import net.runelite.api.GameState;
-import net.runelite.api.HeadIcon;
-import net.runelite.api.InventoryID;
-import net.runelite.api.Item;
-import net.runelite.api.ItemComposition;
-import net.runelite.api.NPC;
-import net.runelite.api.Node;
-import net.runelite.api.Player;
-import net.runelite.api.Point;
-import net.runelite.api.Scene;
-import net.runelite.api.SkullIcon;
-import net.runelite.api.Tile;
-import net.runelite.api.TileObject;
-import net.runelite.api.Varbits;
+import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
@@ -53,17 +26,7 @@ import net.runelite.client.util.WildcardMatcher;
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -138,7 +101,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("ao");
+            skullField = player.getClass().getDeclaredField("ay");
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -146,7 +109,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * 321608603;
+            var1 = skullField.getInt(player) * 705058777;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
@@ -182,33 +145,33 @@ public class EthanApiPlugin extends Plugin {
     }
 
     public static boolean isQuickPrayerEnabled() {
-        return client.getVarbitValue(Varbits.QUICK_PRAYER) == 1;
+        return client.getVarbitValue(QUICK_PRAYER) == 1;
     }
 
 
     @SneakyThrows
     public static int getAnimation(NPC npc) {
-        Field animation = npc.getClass().getSuperclass().getDeclaredField("ck");
+        Field animation = npc.getClass().getSuperclass().getDeclaredField("bo");
         animation.setAccessible(true);
-        int anim = animation.getInt(npc) * -1553687919;
+        int anim = animation.getInt(npc) * 1375718357;
         animation.setAccessible(false);
         return anim;
     }
 
     @SneakyThrows
     public static int pathLength(NPC npc) {
-        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("dq");
+        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("dl");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(npc) * -1388670275;
+        int path = pathLength.getInt(npc) * -1385308684;
         pathLength.setAccessible(false);
         return path;
     }
 
     @SneakyThrows
     public static int pathLength(Player player) {
-        Field pathLength = player.getClass().getSuperclass().getDeclaredField("dq");
+        Field pathLength = player.getClass().getSuperclass().getDeclaredField("dl");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(player) * -1388670275;
+        int path = pathLength.getInt(player) * -1385308684;
         pathLength.setAccessible(false);
         return path;
     }
@@ -431,7 +394,7 @@ public class EthanApiPlugin extends Plugin {
             }
         }
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, (byte) 5);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, (byte) 102);
         doAction.setAccessible(false);
     }
 

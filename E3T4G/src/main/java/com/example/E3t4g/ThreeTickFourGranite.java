@@ -119,7 +119,7 @@ public class ThreeTickFourGranite extends Plugin {
                     "cleaned guam in inventory", null);
             return;
         }
-        if (tar.get().getItemQuantity() <= 15) {
+        if (tar.get().getItemQuantity() < 15) {
             EthanApiPlugin.stopPlugin(this);
             client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "plugin not able to work with less than 15 swamp tar" +
                     " in inventory", null);

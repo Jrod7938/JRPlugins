@@ -24,29 +24,16 @@ import org.benf.cfr.reader.Main;
 
 import javax.inject.Inject;
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
@@ -70,8 +57,9 @@ public class PacketUtilsPlugin extends Plugin {
     ClientThread thread;
     public static Method addNodeMethod;
     public static boolean usingClientAddNode = false;
-    public static final int CLIENT_REV = 216;
+    public static final int CLIENT_REV = 217;
     private static boolean loaded = false;
+    private static String loadedConfigName = "";
     @Inject
     private PluginManager pluginManager;
 
@@ -118,8 +106,18 @@ public class PacketUtilsPlugin extends Plugin {
             });
             return;
         }
+        //setupNeverlog();
         Thread updateThread = new Thread(() ->
         {
+            int feature = Runtime.version().feature();
+            if(feature!=11){
+                for (int i = 0; i < 10; i++) {
+                    log.error("ETHAN VANN PLUGINS LOADED ON JAVA != 11 THIS IS NOT SUPPORTED");
+                    log.error("DEVELOPERS SHOULD IGNORE BUG REPORTS CONTAINING THIS LINE UNTIL THIS ISSUE IS RESOLVED");
+                }
+            }else{
+                log.info("Ethan Vann Plugins loaded on Java 11");
+            }
             setupRuneliteUpdateHandling(RuneLiteProperties.getVersion());
             cleanup();
         });
@@ -149,7 +147,32 @@ public class PacketUtilsPlugin extends Plugin {
     }
 
     @SneakyThrows
+    public static void setupNeverlog(){
+        staticClient.setIdleTimeout(42069);
+        for (Field declaredField : staticClient.getClass().getDeclaredFields()) {
+            if(declaredField.getType()==int.class&& Modifier.isStatic(declaredField.getModifiers())){
+                declaredField.setAccessible(true);
+                int value = declaredField.getInt(null);
+                if(value!=42069){
+                    declaredField.setAccessible(false);
+                    continue;
+                }
+                System.out.println("found idle ticks field: " + declaredField.getName());
+                declaredField.setInt(null, Integer.MAX_VALUE);
+                declaredField.setAccessible(false);
+            }
+        }
+    }
+    @SneakyThrows
     public void cleanup() {
+        if(!loadedConfigName.equals(makeString())){
+            for (int i = 0; i < 10; i++) {
+                log.error("ETHAN VANN PLUGINS LOADED WITH INCORRECT CONFIG DATA THIS IS NOT SUPPORTED");
+                log.error("DEVELOPERS SHOULD IGNORE BUG REPORTS CONTAINING THIS LINE UNTIL THIS ISSUE IS RESOLVED");
+            }
+        }else{
+            log.info("config loaded from correct path");
+        }
         Path codeSource = RuneLite.RUNELITE_DIR.toPath().resolve("PacketUtils");
         List<Path> toDelete = new ArrayList<>();
         toDelete.add(codeSource.resolve("vanilla.jar"));
@@ -164,16 +187,19 @@ public class PacketUtilsPlugin extends Plugin {
     @SneakyThrows
     public void setupRuneliteUpdateHandling(String version) {
         Path codeSource = RuneLite.RUNELITE_DIR.toPath().resolve("PacketUtils");
-        if (Files.exists(codeSource.resolve(version+"-"+client.getRevision() + ".txt"))) {
-            List<String> lines = Files.readAllLines(codeSource.resolve(version+"-"+client.getRevision() + ".txt"));
+        if (Files.exists(codeSource.resolve(version + "-" + client.getRevision() + ".txt"))) {
+            Path f = codeSource.resolve(version + "-" + client.getRevision() + ".txt");
+            List<String> lines = Files.readAllLines(f);
+            loadedConfigName = f.getFileName().toString();
+            System.out.println(loadedConfigName);
             if (lines.size() < 2) {
                 return;
             }
             usingClientAddNode = Boolean.parseBoolean(lines.get(0));
             if (usingClientAddNode) {
-                System.out.println("loaded addNode config from file");
-                System.out.println("usingClientAddNode: " + usingClientAddNode);
-                System.out.println("addNodeMethod: " + "N/A");
+                log.info("loaded addNode config from file");
+                log.info("usingClientAddNode: " + usingClientAddNode);
+                log.info("addNodeMethod: " + "N/A");
                 return;
             }
             String[] split = lines.get(1).split("\\.");
@@ -183,9 +209,9 @@ public class PacketUtilsPlugin extends Plugin {
                     addNodeMethod = declaredMethod;
                 }
             }
-            System.out.println("loaded addNode config from file");
-            System.out.println("usingClientAddNode: " + usingClientAddNode);
-            System.out.println("addNodeMethod: " + addNodeMethod);
+            log.info("loaded addNode config from file");
+            log.info("usingClientAddNode: " + usingClientAddNode);
+            log.info("addNodeMethod: " + addNodeMethod);
             return;
         }
         String doActionClassName = "";
@@ -224,9 +250,9 @@ public class PacketUtilsPlugin extends Plugin {
         downloadVanillaJar(vanillaOutputPath, rlConfigURL);
         File vanilla = vanillaOutputPath.toFile();
         if (vanilla.exists()) {
-            System.out.println("Vanilla jar exists");
+            log.info("Vanilla jar exists");
         } else {
-            System.out.println("Vanilla jar does not exist");
+            log.info("Vanilla jar does not exist");
         }
         OutputStream patchedOutputStream = Files.newOutputStream(patchedOutputPath);
         InputStream patch = ClientLoader.class.getResourceAsStream("/client.patch");
@@ -286,12 +312,12 @@ public class PacketUtilsPlugin extends Plugin {
         }
         for (String line : lines) {
             if (line.contains(mostUsedMethod)) {
-                System.out.println("found addNode method call example " + line.trim());
-                StringBuilder stringOutput = new StringBuilder();
-                stringOutput.append(usingClientAddNode);
-                stringOutput.append("\n");
-                stringOutput.append(mostUsedMethod);
-                Files.write(Files.createFile(codeSource.resolve(version+"-"+client.getRevision() + ".txt")), stringOutput.toString().getBytes(StandardCharsets.UTF_8));
+                log.info("found addNode method call example " + line.trim());
+                String stringOutput = usingClientAddNode +
+                        "\n" +
+                        mostUsedMethod;
+                Path config = Files.write(Files.createFile(codeSource.resolve(version + "-" + client.getRevision() + ".txt")), stringOutput.getBytes(StandardCharsets.UTF_8));
+                loadedConfigName = config.getFileName().toString();
                 break;
             }
         }
@@ -306,7 +332,7 @@ public class PacketUtilsPlugin extends Plugin {
             }
             if (line.contains("runelite.gamepack")) {
                 URL clientURL = new URL(line.split("=")[1]);
-                System.out.println("Downloading vanilla client from " + clientURL);
+                log.info("Downloading vanilla client from " + clientURL);
                 try (InputStream clientStream = clientURL.openStream()) {
                     Files.copy(clientStream, vanillaOutputPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -334,5 +360,8 @@ public class PacketUtilsPlugin extends Plugin {
                 }
             });
         }
+    }
+    public String makeString(){
+        return RuneLiteProperties.getVersion()+"-" + client.getRevision() +".txt";
     }
 }
