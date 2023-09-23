@@ -30,7 +30,7 @@ import net.runelite.client.util.HotkeyListener;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "<html>3t4g</html>",
+        name = "3t4g",
         enabledByDefault = false
 )
 public class et34g extends Plugin {
