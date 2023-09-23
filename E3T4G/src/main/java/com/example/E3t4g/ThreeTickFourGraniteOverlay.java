@@ -9,10 +9,10 @@ import java.awt.*;
 
 public class ThreeTickFourGraniteOverlay extends OverlayPanel {
 
-    private final ThreeTickFourGranite plugin;
+    private final et34g plugin;
 
     @Inject
-    private ThreeTickFourGraniteOverlay(ThreeTickFourGranite plugin) {
+    private ThreeTickFourGraniteOverlay(et34g plugin) {
         super(plugin);
         this.plugin = plugin;
         setPosition(OverlayPosition.BOTTOM_LEFT);

@@ -4,7 +4,6 @@ import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.InventoryInteraction;
-import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.PacketUtils.WidgetInfoExtended;
 import com.example.Packets.MousePackets;
 import com.example.Packets.ObjectPackets;
@@ -24,7 +23,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
@@ -32,10 +30,10 @@ import net.runelite.client.util.HotkeyListener;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[EV]</font> 3t4g</html>",
+        name = "<html>3t4g</html>",
         enabledByDefault = false
 )
-public class ThreeTickFourGranite extends Plugin {
+public class et34g extends Plugin {
     @Inject
     Client client;
     @Inject
