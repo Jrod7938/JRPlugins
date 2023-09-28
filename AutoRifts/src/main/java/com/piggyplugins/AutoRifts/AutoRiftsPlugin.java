@@ -682,6 +682,15 @@ public class AutoRiftsPlugin extends Plugin {
             return State.POWER_GUARDIAN;
         }
 
+        if(!config.prioritizePortal()){ //old way - non prioritize portal
+            if (shouldDepositRunes()) {
+                if (config.dropRunes()) {
+                    return State.DROP_RUNES;
+                }
+                return State.DEPOSIT_RUNES;
+            }
+        }
+
         if (hasTalisman()) {
             return State.DROP_TALISMAN;
         }
@@ -721,11 +730,13 @@ public class AutoRiftsPlugin extends Plugin {
             }
         }
 
-        if (shouldDepositRunes()) {
-            if (config.dropRunes()) {
-                return State.DROP_RUNES;
+        if(config.prioritizePortal()){
+            if (shouldDepositRunes()) {
+                if (config.dropRunes()) {
+                    return State.DROP_RUNES;
+                }
+                return State.DEPOSIT_RUNES;
             }
-            return State.DEPOSIT_RUNES;
         }
 
         if (hasGuardianEssence() && gameStarted) {

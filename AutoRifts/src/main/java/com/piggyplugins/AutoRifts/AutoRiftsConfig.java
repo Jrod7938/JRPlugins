@@ -97,4 +97,14 @@ public interface AutoRiftsConfig extends Config {
     default boolean prioritizeHighTier() {
         return true;
     }
+
+    @ConfigItem(
+            keyName = "prioritizePortal",
+            name = "Prioritize Portal(BETA)",
+            description = "Prioritizes Portal, mainly affects when to drop/deposit runes - Expect some bugs",
+            position = 10
+    )
+    default boolean prioritizePortal() {
+        return true;
+    }
 }
