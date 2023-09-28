@@ -18,6 +18,7 @@ public class AutoRiftsOverlay extends OverlayPanel {
 
     @Override
     public Dimension render(Graphics2D graphics) {
+        panelComponent.setPreferredSize(new Dimension(200, 320));
         panelComponent.getChildren().add(TitleComponent.builder()
                 .text("Auto Rifts")
                 .color(Color.WHITE)

@@ -50,6 +50,8 @@ public class Constants {
     public static final String FRAGS = "Guardian fragments";
     public static final String ESS = "Guardian essence";
     public static final String PORTAL = "Portal";
+    public static final int PORTAL_SPAWN = 43729;
+
     public static final String CATALYTIC_ENERGY = "Catalytic guardian stone";
     public static final String ELEMENTAL_ENERGY = "Elemental guardian stone";
     public static final String GREAT_GUARDIAN = "The Great Guardian";

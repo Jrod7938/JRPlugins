@@ -234,14 +234,8 @@ public class AutoRiftsPlugin extends Plugin {
             gameStarted = true;
         }
 
-        if (event.getMessage().contains(Constants.GAME_OVER)) {
+        if (event.getMessage().contains(Constants.GAME_OVER) || event.getMessage().contains(Constants.GAME_WIN)) {
 
-            gameStarted = false;
-            setEssenceInPouches(0);
-            attackStarted = false;
-        }
-
-        if (event.getMessage().contains(Constants.GAME_WIN)) {
             gameStarted = false;
             setEssenceInPouches(0);
             attackStarted = false;
@@ -632,6 +626,10 @@ public class AutoRiftsPlugin extends Plugin {
                     return State.CRAFT_ESSENCE;
                 }
 
+                if(hasEnoughFrags() && hasAnyGuardianEssence() && gameStarted){
+                    return State.ENTER_RIFT;
+                }
+
                 if (isPortalSpawned() && !Inventory.full() &&gameStarted) {
                     return State.ENTER_PORTAL;
                 }
@@ -684,11 +682,13 @@ public class AutoRiftsPlugin extends Plugin {
             return State.POWER_GUARDIAN;
         }
 
-        if (shouldDepositRunes()) {
-            if (config.dropRunes()) {
-                return State.DROP_RUNES;
+        if(!config.prioritizePortal()){ //old way - non prioritize portal
+            if (shouldDepositRunes()) {
+                if (config.dropRunes()) {
+                    return State.DROP_RUNES;
+                }
+                return State.DEPOSIT_RUNES;
             }
-            return State.DEPOSIT_RUNES;
         }
 
         if (hasTalisman()) {
@@ -727,6 +727,15 @@ public class AutoRiftsPlugin extends Plugin {
                 return Inventory.full() ? State.ENTER_PORTAL : State.MINE_HUGE;
             } else {
                 return State.ENTER_PORTAL;
+            }
+        }
+
+        if(config.prioritizePortal()){
+            if (shouldDepositRunes()) {
+                if (config.dropRunes()) {
+                    return State.DROP_RUNES;
+                }
+                return State.DEPOSIT_RUNES;
             }
         }
 
@@ -911,7 +920,10 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean isPortalSpawned() {
-        return ObjectUtil.nameContainsNoCase(Constants.PORTAL).filter(tileObject -> tileObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).nearestToPlayer().isPresent();
+        Optional<TileObject> portal = TileObjects.search().withName(Constants.PORTAL).withAction("Enter").withId(Constants.PORTAL_SPAWN).filter(portalObject -> portalObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).first();
+        if(portal.isEmpty()){ return false;}
+
+        return true;
     }
 
 
