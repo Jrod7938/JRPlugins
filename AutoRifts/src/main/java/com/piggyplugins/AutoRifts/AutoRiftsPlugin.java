@@ -909,7 +909,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean isPortalSpawned() {
-        Optional<TileObject> portal = TileObjects.search().withName(Constants.PORTAL).withAction("Enter").withId(43729).filter(portalObject -> portalObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).first();
+        Optional<TileObject> portal = TileObjects.search().withName(Constants.PORTAL).withAction("Enter").withId(Constants.PORTAL_SPAWN).filter(portalObject -> portalObject.getWorldLocation().getY() > Constants.OUTSIDE_BARRIER_Y).first();
         if(portal.isEmpty()){ return false;}
 
         return true;
