@@ -29,11 +29,16 @@ import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.WorldService;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
+import net.runelite.client.util.WorldUtil;
+import net.runelite.http.api.worlds.World;
+import net.runelite.http.api.worlds.WorldRegion;
+import net.runelite.http.api.worlds.WorldResult;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.time.Duration;
@@ -73,6 +78,8 @@ public class AutoRiftsPlugin extends Plugin {
     @Inject
     private ReflectBreakHandler breakHandler;
     @Inject
+    private WorldService worldService;
+    @Inject
     private OverlayManager overlayManager;
     @Inject
     private KeyManager keyManager;
@@ -102,6 +109,7 @@ public class AutoRiftsPlugin extends Plugin {
     private Instant timer;
     private long pauseTime;
     private boolean attackStarted;
+    private int gamesLost = 0;
 
     @Override
     protected void startUp() throws Exception {
@@ -150,6 +158,11 @@ public class AutoRiftsPlugin extends Plugin {
 
         if (pouches.size() == 0 && config.usePouches()) {
             setPouches();
+        }
+
+        if(gamesLost >= 2){
+            hopToGotrWorld();
+            return;
         }
 
         if (Inventory.full()
@@ -234,8 +247,15 @@ public class AutoRiftsPlugin extends Plugin {
             gameStarted = true;
         }
 
-        if (event.getMessage().contains(Constants.GAME_OVER) || event.getMessage().contains(Constants.GAME_WIN)) {
+        if (event.getMessage().contains(Constants.GAME_WIN)) {
+            gamesLost = 0;
+            gameStarted = false;
+            setEssenceInPouches(0);
+            attackStarted = false;
+        }
 
+        if (event.getMessage().contains(Constants.GAME_OVER)) {
+            gamesLost++;
             gameStarted = false;
             setEssenceInPouches(0);
             attackStarted = false;
@@ -1047,5 +1067,66 @@ public class AutoRiftsPlugin extends Plugin {
             breakHandler.startPlugin(this);
             timer = Instant.now();
         }
+    }
+
+    private void hopToGotrWorld(){
+        WorldResult worldResult = worldService.getWorlds();
+        if (worldResult == null) {
+            log.warn("Failed to fetch worlds");
+            return;
+        }
+
+        List<World> worlds = worldResult.getWorlds();
+        if (worlds.isEmpty()) {
+            log.warn("No available worlds");
+            return;
+        }
+        int currentWorldId = client.getWorld();
+        WorldRegion currentWorldRegion = worldService.getWorlds().findWorld(currentWorldId).getRegion();
+
+        List<World> gotrWorlds = new ArrayList<World>();
+
+        for (World gotrWorld : worlds) {
+            if(!gotrWorld.getActivity().equals("Guardians of the Rift") || gotrWorld.getId() == currentWorldId) {continue;}
+
+            gotrWorlds.add(gotrWorld);
+        }
+
+        int highestPopulatedCount = 0;
+        int highestPopulatedID = 0;
+        World highestPopWorld = null;
+        for (World filteredWorld : gotrWorlds) {
+            int playerCount = filteredWorld.getPlayers();
+
+            if(playerCount > highestPopulatedCount){
+                highestPopulatedCount = playerCount;
+                highestPopulatedID = filteredWorld.getId();
+                highestPopWorld = filteredWorld;
+            }
+        }
+        if(highestPopWorld != null){
+            hop(highestPopWorld);
+            gamesLost = 0;
+        }
+    }
+
+    private void hop(net.runelite.http.api.worlds.World world) {
+        final net.runelite.api.World rsWorld = client.createWorld();
+        rsWorld.setActivity(world.getActivity());
+        rsWorld.setAddress(world.getAddress());
+        rsWorld.setId(world.getId());
+        rsWorld.setPlayerCount(world.getPlayers());
+        rsWorld.setLocation(world.getLocation());
+        rsWorld.setTypes(WorldUtil.toWorldTypes(world.getTypes()));
+
+        if (client.getGameState() == GameState.LOGIN_SCREEN) {
+            client.changeWorld(rsWorld);
+            return;
+        }
+
+        log.info("Hopping to random world: {}", rsWorld);
+        net.runelite.api.World quickHopTargetWorld = rsWorld;
+        client.openWorldHopper();
+        client.hopToWorld(quickHopTargetWorld);
     }
 }
