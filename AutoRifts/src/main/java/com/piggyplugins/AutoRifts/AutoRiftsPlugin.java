@@ -274,7 +274,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private int tickDelay() {
-        return ThreadLocalRandom.current().nextInt(0, 3);
+        return config.tickDelay() ? ThreadLocalRandom.current().nextInt(config.tickDelayMin(), config.tickDelayMax()) : 0;
     }
 
     private void handleState(State state) {
@@ -611,7 +611,7 @@ public class AutoRiftsPlugin extends Plugin {
         }
         TileObject barrier = tileObject.get();
         TileObjectInteraction.interact(barrier, "Quick-pass");
-        timeout = tickDelay();
+        timeout = 1;
     }
 
     private void waitForGame() {
@@ -666,7 +666,11 @@ public class AutoRiftsPlugin extends Plugin {
                     return State.ENTER_PORTAL;
                 }
             }
-            return State.ANIMATING;
+            if(client.getLocalPlayer().getAnimation() == 9361 || client.getLocalPlayer().getAnimation() == 791){
+                //lol do nothing, was too lazy to create something else, this works to circumvent the delay with crafting runes and giving to guardian
+            }else{
+                return State.ANIMATING;
+            }
         }
 
         if (pouchesDegraded()) {
@@ -704,10 +708,15 @@ public class AutoRiftsPlugin extends Plugin {
 
         if(!config.prioritizePortal()){ //old way - non prioritize portal
             if (shouldDepositRunes()) {
+
                 if (config.dropRunes()) {
                     return State.DROP_RUNES;
                 }
-                return State.DEPOSIT_RUNES;
+                if(shouldDropSpecificRunes()){
+                    return State.DROP_RUNES;
+                }else{
+                    return State.DEPOSIT_RUNES;
+                }
             }
         }
 
@@ -755,7 +764,11 @@ public class AutoRiftsPlugin extends Plugin {
                 if (config.dropRunes()) {
                     return State.DROP_RUNES;
                 }
-                return State.DEPOSIT_RUNES;
+                if(shouldDropSpecificRunes()){
+                    return State.DROP_RUNES;
+                }else{
+                    return State.DEPOSIT_RUNES;
+                }
             }
         }
 
@@ -791,6 +804,18 @@ public class AutoRiftsPlugin extends Plugin {
 
     private boolean hasUnchargedCells() {
         return InventoryUtil.hasItem(Constants.UNCHARGED_CELLS);
+    }
+
+    private boolean shouldDropSpecificRunes(){
+        String[] runeFilterConfig = config.dropRunesFilter().split(",");
+        for (String rune : runeFilterConfig) {
+            rune = rune.trim();
+            Optional<Widget> runeToDrop = Inventory.search().matchesWildCardNoCase(rune).first();
+            if(runeToDrop.isPresent()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasPowerEssence() {
