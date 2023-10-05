@@ -807,7 +807,8 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     private boolean shouldDropSpecificRunes(){
-        String[] runeFilterConfig = config.dropRunesFilter().split(",");
+        String runeConfigFilterNoSpaces = config.dropRunesFilter().replaceAll("\\s", "");
+        String[] runeFilterConfig = runeConfigFilterNoSpaces.split(",");
         for (String rune : runeFilterConfig) {
             Optional<Widget> runeToDrop = Inventory.search().matchesWildCardNoCase(rune).first();
             if(runeToDrop.isPresent()){
