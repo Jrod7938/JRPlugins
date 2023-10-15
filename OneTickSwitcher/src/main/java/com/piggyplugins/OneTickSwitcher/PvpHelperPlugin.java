@@ -26,6 +26,7 @@ import net.runelite.api.Player;
 import net.runelite.api.PlayerComposition;
 import net.runelite.api.Prayer;
 import net.runelite.api.Skill;
+import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.InteractingChanged;
 import net.runelite.api.events.MenuEntryAdded;
@@ -191,12 +192,23 @@ public class PvpHelperPlugin extends Plugin {
     }
 
     @Subscribe
+    private void onActorDeath(ActorDeath event) {
+        if (target != null & event.getActor().equals(target)) {
+            target = null;
+            if (config.showOverlay()) {
+                valueOverlay.setItemValue(0);
+                valueOverlay.setHidden(true);
+            }
+        }
+    }
+
+    @Subscribe
     private void onInteractingChanged(InteractingChanged event) {
         if (client.getGameState() != GameState.LOGGED_IN
-            || event.getTarget() == null
-            || !(event.getTarget() instanceof Player)
-            || !config.autoFocusTarget()
-            || (client.getLocalPlayer().isInteracting() && !event.getTarget().equals(client.getLocalPlayer().getInteracting()))) {
+                || event.getTarget() == null
+                || !(event.getTarget() instanceof Player)
+                || !config.autoFocusTarget()
+                || (client.getLocalPlayer().isInteracting() && !event.getTarget().equals(client.getLocalPlayer().getInteracting()))) {
             return;
         }
 
@@ -248,10 +260,10 @@ public class PvpHelperPlugin extends Plugin {
             Optional<Player> targetPlayer = Players.search().filter(player -> player.getId() == entry.getIdentifier()).first();
 
             if (targetPlayer.isEmpty()) {
-            if (config.showOverlay()) {
-                valueOverlay.setItemValue(0);
-                valueOverlay.setHidden(true);
-            }
+                if (config.showOverlay()) {
+                    valueOverlay.setItemValue(0);
+                    valueOverlay.setHidden(true);
+                }
                 EthanApiPlugin.sendClientMessage("[PVP Helper] Unable to focus target player");
                 return;
             }
