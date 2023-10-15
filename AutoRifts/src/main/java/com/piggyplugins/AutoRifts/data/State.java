@@ -30,6 +30,7 @@ public enum State {
     AWAITING_TOGGLE,
     FILL_POUCH,
     ERROR,
-    GET_POINTS
+    GET_POINTS,
+    BREAK
 
 }

@@ -133,7 +133,7 @@ public class AutoRiftsPlugin extends Plugin {
 
     @Subscribe
     private void onGameTick(GameTick event) {
-        if (client.getGameState() != GameState.LOGGED_IN || !started) {
+        if (client.getGameState() != GameState.LOGGED_IN || !started || breakHandler.isBreakActive(this)) {
             return;
         }
 
@@ -365,6 +365,9 @@ public class AutoRiftsPlugin extends Plugin {
                 break;
             case DROP_TALISMAN:
                 dropTalisman();
+                break;
+            case BREAK:
+                breakHandler.startBreak(this);
                 break;
         }
     }
@@ -627,6 +630,10 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     public State getCurrentState() {
+        if (!gameStarted && breakHandler.shouldBreak(this)) {
+            return State.BREAK;
+        }
+
         if ((EthanApiPlugin.isMoving() || (client.getLocalPlayer().getAnimation() != -1))) {
             if (pouchesDegraded()) {
                 return State.REPAIR_POUCH;
