@@ -1,5 +1,4 @@
 package com.piggyplugins.ChinBreakHandler.ui;
-
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandler;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.ChinBreakHandler.util.SwingUtilExtended;

@@ -1,12 +1,13 @@
 package com.piggyplugins.ChinBreakHandler;
 
-import com.piggyplugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
-import com.piggyplugins.ChinBreakHandler.util.IntRandomNumberGenerator;
+import com.example.EthanApiPlugin.Collections.Widgets;
 import com.example.PacketUtils.WidgetID;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
+import com.piggyplugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.Getter;
@@ -64,7 +65,7 @@ import java.util.concurrent.TimeUnit;
 @PluginDescriptor(
         name = "Chin break handler",
         description = "Automatically takes breaks for you",
-        tags = {"ethan", "piggy"}
+        tags = {"ethan", "piggy","break","chin"}
 )
 @Slf4j
 public class ChinBreakHandlerPlugin extends Plugin {
@@ -310,26 +311,16 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
                 clientThread.invoke(() ->
                         {
-                            String accountselection = configManager.getConfiguration("chinBreakHandler", "jagexlauncher");
+                            client.setUsername(finalUsername);
+                            client.setPassword(finalPassword);
 
-                            boolean b = Boolean.parseBoolean(accountselection);
-                            if (!b) {
-                                client.setUsername(finalUsername);
-                                client.setPassword(finalPassword);
-                            }
-
+                            sendKey(KeyEvent.VK_ENTER);
+                            sendKey(KeyEvent.VK_ENTER);
+                            sendKey(KeyEvent.VK_ENTER);
                             client.setGameState(GameState.LOGGING_IN);
-
-                            if (!b) {
-                                sendKey(KeyEvent.VK_ENTER);
-                                sendKey(KeyEvent.VK_ENTER);
-                                sendKey(KeyEvent.VK_ENTER);
-                            }
                         }
                 );
 
-            } else {
-                client.setGameState(GameState.LOGGING_IN);
             }
         }
     }
@@ -373,13 +364,21 @@ public class ChinBreakHandlerPlugin extends Plugin {
         }
         else if (state == State.LOGIN_SCREEN && !chinBreakHandler.getActiveBreaks().isEmpty())
         {
+
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetActionPacket(1, 24772680, -1, -1);
             logout = false;
 
             Widget loginScreen = client.getWidget(WidgetInfo.LOGIN_CLICK_TO_PLAY_SCREEN);
-            if (loginScreen != null) {
-                MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetActionPacket(1, 24772680, -1, -1);
-            } else {
+            Widget playButtonText = client.getWidget(WidgetID.LOGIN_CLICK_TO_PLAY_GROUP_ID, 87);
+
+
+            if (playButtonText != null && playButtonText.getText().equals("CLICK HERE TO PLAY"))
+            {
+                click(playButtonText);
+            }
+            else if (loginScreen == null)
+            {
                 state = State.INVENTORY;
             }
         }
@@ -399,6 +398,14 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
             Widget logoutButton = client.getWidget(182, 8);
             Widget logoutDoorButton = client.getWidget(69, 23);
+            Optional<Widget> widget = Widgets.search().withId(4522009).first();
+            if (widget.isPresent()) {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetActionPacket(1, 4522009, -1, -1);
+            } else {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetActionPacket(1, 11927560, -1, -1);
+            }
 
             if (logoutButton != null || logoutDoorButton != null)
             {
@@ -408,11 +415,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
         else if (state == State.LOGOUT_BUTTON)
         {
             Widget logoutButton = client.getWidget(182, 8);
-            if (logoutButton != null) {
-                click(logoutButton);
-            } else if (client.getWidget(4521989) != null && !client.getWidget(4521989).isHidden()) {
-                click(client.getWidget(4521989));
-            }
+            click(logoutButton);
             delay = new IntRandomNumberGenerator(20, 25).nextInt();
         }
         else if (state == State.INVENTORY)
@@ -682,7 +685,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
     public void menuAction(MenuOptionClicked menuOptionClicked, String option, String target, int identifier, MenuAction menuAction, int param0, int param1)
     {
-//        menuOptionClicked.getMenuOption().set.setMenuOption(option);
+//        menuOptionClicked.setMenuOption(option);
 //        menuOptionClicked.setMenuTarget(target);
 //        menuOptionClicked.setId(identifier);
 //        menuOptionClicked.setMenuAction(menuAction);
