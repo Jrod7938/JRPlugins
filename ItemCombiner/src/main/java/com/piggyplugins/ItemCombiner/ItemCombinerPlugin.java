@@ -1,6 +1,7 @@
 package com.piggyplugins.ItemCombiner;
 
 import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.BankInventory;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
@@ -8,16 +9,18 @@ import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.MousePackets;
-import com.example.Packets.MovementPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.ObjectComposition;
+import net.runelite.api.Player;
+import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -56,6 +59,7 @@ public class ItemCombinerPlugin extends Plugin {
     private int afkTicks;
     private boolean deposit;
     private boolean isMaking;
+    private boolean debug = true;
 
     @Provides
     private ItemCombinerConfig getConfig(ConfigManager configManager) {
@@ -78,6 +82,7 @@ public class ItemCombinerPlugin extends Plugin {
         breakHandler.unregisterPlugin(this);
     }
 
+
     @Subscribe
     private void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN
@@ -88,13 +93,12 @@ public class ItemCombinerPlugin extends Plugin {
             afkTicks = 0;
             return;
         }
-        //log.info("Started");
+
+        if (!hasItems(Bank.isOpen())) {
+            isMaking = false;
+        }
 
         if (isMaking) {
-            //log.info("Making");
-            if (isDoneMaking()) {
-                isMaking = false;
-            }
             return;
         }
 
@@ -103,56 +107,19 @@ public class ItemCombinerPlugin extends Plugin {
             return;
         }
 
-        if (deposit) {
-            if (Bank.isOpen()) {
-                Widget widget = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
-                MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetAction(widget, "Deposit", "Deposit inventory");
-                deposit = false;
-            } else {
-                findBank();
-            }
-            return;
-        }
-
-        if (!hasItemOne()) {
-            if (!Bank.isOpen()) {
-                findBank();
-                return;
-            }
-            withdrawItemOne();
-            return;
-        }
-
-        if (!hasItemTwo()) {
-            if (!Bank.isOpen()) {
-                findBank();
-                return;
-            }
-            withdrawItemTwo();
-            return;
-        }
-
-        if (Bank.isOpen()) {
-            MousePackets.queueClickPacket();
-            MovementPackets.queueMovement(client.getLocalPlayer().getWorldLocation());
-            return;
-        }
-
         Widget potionWidget = client.getWidget(17694734);
         if (potionWidget != null && !potionWidget.isHidden()) {
-            //log.info("widget visible");
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(17694734, config.itemTwoAmt());
             isMaking = true;
             return;
         }
 
-        useItems();
-    }
-
-    private boolean isDoneMaking() {
-        return Inventory.getEmptySlots() == config.itemOneAmt();
+        if (hasItems(Bank.isOpen())) {
+            useItems();
+        } else {
+            doBanking();
+        }
     }
 
     private void findBank() {
@@ -172,18 +139,36 @@ public class ItemCombinerPlugin extends Plugin {
         }
     }
 
-    private void withdrawItemOne() {
-        Bank.search()
-                .withName(config.itemOneName())
-                .first()
-                .ifPresent(item -> BankInteraction.withdrawX(item, config.itemOneAmt()));
+    private boolean hasItems(boolean bank) {
+        return bank
+                ? !BankInventory.search().withName(config.itemOneName()).empty() && !BankInventory.search().withName(config.itemTwoName()).empty()
+                : InventoryUtil.hasItem(config.itemOneName()) && InventoryUtil.hasItems(config.itemTwoName());
     }
 
-    private void withdrawItemTwo() {
-        Bank.search()
-                .withName(config.itemTwoName())
-                .first()
-                .ifPresent(item -> BankInteraction.withdrawX(item, config.itemTwoAmt()));
+    private void doBanking() {
+        if (!Bank.isOpen()) {
+            findBank();
+            return;
+        }
+
+        Widget depositInventory = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
+
+        if (depositInventory != null) {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(depositInventory, "Deposit inventory");
+        }
+
+        Bank.search().withName(config.itemOneName()).first().ifPresentOrElse(item -> {
+            BankInteraction.withdrawX(item, config.itemOneAmt());
+        }, () -> {
+            EthanApiPlugin.stopPlugin(this);
+        });
+
+        Bank.search().withName(config.itemTwoName()).first().ifPresentOrElse(item -> {
+            BankInteraction.withdrawX(item, config.itemTwoAmt());
+        }, () -> {
+            EthanApiPlugin.stopPlugin(this);
+        });
     }
 
     private void useItems() {
@@ -193,14 +178,6 @@ public class ItemCombinerPlugin extends Plugin {
         MousePackets.queueClickPacket();
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetOnWidget(itemOne, itemTwo);
-    }
-
-    private boolean hasItemOne() {
-        return Inventory.search().filter(item -> item.getName().contains(config.itemOneName())).first().isPresent();
-    }
-
-    private boolean hasItemTwo() {
-        return Inventory.search().filter(item -> item.getName().contains(config.itemTwoName())).first().isPresent();
     }
 
     private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {
