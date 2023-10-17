@@ -4,6 +4,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Keybind;
+import net.runelite.client.config.Range;
 
 @ConfigGroup("PowerSkiller")
 public interface PowerSkillerConfig extends Config {
@@ -56,6 +57,31 @@ public interface PowerSkillerConfig extends Config {
     default String itemsToKeep() {
         return "coins,rune pouch,divine rune pouch,looting bag,clue scroll";
     }
+    @Range(
+            max = 9
+    )
+    @ConfigItem(
+            name = "Drop Per Tick Min",
+            keyName = "numToDrop1",
+            description = "Minimum amount of items dropped per tick",
+            position = 3
+    )
+    default int dropPerTickOne() {
+        return 1;
+    }
+    @Range(
+            max = 9
+    )
+    @ConfigItem(
+            name = "Drop Per Tick Max",
+            keyName = "numToDrop2",
+            description = "Maximum amount of items dropped per tick",
+            position = 4
+    )
+    default int dropPerTickTwo() {
+        return 3;
+    }
+
 
 //    @ConfigItem(
 //            name = "Empty slots",

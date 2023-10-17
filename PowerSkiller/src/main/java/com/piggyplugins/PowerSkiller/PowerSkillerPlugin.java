@@ -24,6 +24,10 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
 
 import com.google.inject.Inject;
+import net.runelite.client.util.Text;
+import org.apache.commons.lang3.RandomUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -123,7 +127,6 @@ public class PowerSkillerPlugin extends Plugin {
 
     private void findNpc() {
         String npcName = config.objectToInteract();
-
         NPCs.search().withName(npcName).nearestToPlayer().ifPresent(npc -> {
             NPCComposition comp = client.getNpcDefinition(npc.getId());
             NPCInteraction.interact(npc,comp.getActions()[0]); // For fishing spots ?
@@ -134,7 +137,7 @@ public class PowerSkillerPlugin extends Plugin {
         List<Widget> itemsToDrop = Inventory.search()
                 .filter(item -> !shouldKeep(item.getName()) && !isTool(item.getName())).result(); // filter the inventory to only get the items we want to drop
 
-        for (int i = 0; i < Math.min(itemsToDrop.size(), 10); i++) {
+        for (int i = 0; i < Math.min(itemsToDrop.size(),RandomUtils.nextInt(config.dropPerTickOne(), config.dropPerTickTwo())); i++) {
             InventoryInteraction.useItem(itemsToDrop.get(i), "Drop"); // we'll loop through this at a max of 10 times.  can make this a config options.  drops x items per tick (x = 10 in this example)
         }
     }
@@ -142,7 +145,7 @@ public class PowerSkillerPlugin extends Plugin {
     private boolean isInventoryReset() {
         List<Widget> inventory = Inventory.search().result();
         for(Widget item : inventory){
-            if (!shouldKeep(item.getName())) { // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
+            if (!shouldKeep(Text.removeTags(item.getName()))) { // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
                 return false;
             }
         }
@@ -153,13 +156,18 @@ public class PowerSkillerPlugin extends Plugin {
         return state == State.DROP_ITEMS; // if the user is dropping items, we don't want it to proceed until they're all dropped.
     }
 
-    private boolean shouldKeep(String name) {
-        String[] itemsToKeep = config.itemsToKeep().split(","); // split the items listed by comma, no space.
 
-        return Arrays.stream(itemsToKeep) // stream the array using Arrays.stream() from java.util
-                .anyMatch(i -> name.toLowerCase().contains(i.toLowerCase())); // we'll set everything to lowercase, and check if the input name contains any of the items in the itemsToKeep array.
-                // might seem silly, but this is to allow specific items you want to keep without typing the full name.  I also prefer names over ids- you can change this if you like.
+    private boolean shouldKeep(String name) {
+        List<String> itemsToKeep = new ArrayList<>(List.of(config.itemsToKeep().split(","))); // split the items listed by comma. and add them to a list.
+        itemsToKeep.addAll(List.of(config.toolsToUse().split(","))); //We must also check if the tools are included in the Inventory, Rather than equipped, so they are added here
+        return itemsToKeep.stream()// stream the List using Collection.stream() from java.util
+                .anyMatch(i -> Text.removeTags(name.toLowerCase()).contains(i.toLowerCase()));
+        // we'll set everything to lowercase as well as remove the html tags that is included (The color of the item in game),
+        // and check if the input name contains any of the items in the itemsToKeep list.
+        // might seem silly, but this is to allow specific items you want to keep without typing the full name.
+        // We also prefer names to ids here, but you can change this if you like.
     }
+
     private boolean hasTools() {
         //Updated from https://github.com/moneyprinterbrrr/ImpactPlugins/blob/experimental/src/main/java/com/impact/PowerGather/PowerGatherPlugin.java#L196
         //Big thanks hawkkkkkk
