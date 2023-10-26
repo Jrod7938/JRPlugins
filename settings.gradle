@@ -31,5 +31,4 @@ include 'PrayerFlicker'
 include 'RunEnabler'
 include 'SuperglassMake'
 include 'UpkeepPlugin'
-include 'TwoTickThreeTickTeaks'
 
