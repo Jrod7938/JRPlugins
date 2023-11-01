@@ -1,0 +1,286 @@
+package com.piggyplugins.AutoAerial;
+
+import com.example.EthanApiPlugin.Collections.*;
+import com.example.EthanApiPlugin.Collections.query.NPCQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.NPCPackets;
+import com.example.Packets.WidgetPackets;
+import com.google.inject.Inject;
+import com.google.inject.Provides;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.*;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.widgets.Widget;
+import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.input.KeyManager;
+import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
+import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.util.HotkeyListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@PluginDescriptor(name = "AutoAerial", description = "", enabledByDefault = false, tags = {""})
+@Slf4j
+@PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(EthanApiPlugin.class)
+
+public class AutoAerialPlugin extends Plugin {
+
+    public int timeout = 0;
+    public int idleTicks = 0;
+    public boolean started = false;
+
+    @Inject
+    AutoAerialConfig config;
+    @Inject
+    Client client;
+    @Inject
+    private KeyManager keyManager;
+
+    @Provides
+    public AutoAerialConfig getConfig(ConfigManager configManager) {
+        return configManager.getConfig(AutoAerialConfig.class);
+    }
+
+
+    @Override
+    @SneakyThrows
+    public void startUp() {
+        timeout = 0;
+        keyManager.registerKeyListener(toggle);
+    }
+
+    @Override
+    public void shutDown() {
+        timeout = 0;
+        started = false;
+        keyManager.unregisterKeyListener(toggle);
+    }
+
+
+    boolean cutFish = false;
+    boolean dropFish = false;
+
+    @Subscribe
+    public void onGameTick(GameTick event) {
+        Player player = client.getLocalPlayer();
+
+        if (!started || EthanApiPlugin.isMoving()) return;
+
+
+        if (timeout > 0) {
+            timeout--;
+            return;
+        }
+        idleTicks = client.getLocalPlayer().getAnimation() == -1 ? idleTicks + 1 : 0;
+
+
+        //doButterfly(player);
+//        doAerial2();
+    }
+
+    private void doAerial2() {
+        final String[] FISH_NAMES = new String[]{"Bluegill", "Common tench", "Mottled eel", "Greater siren"};
+        Deque<Projectile> projectiles = client.getProjectiles();
+        ArrayList<Projectile> projectileList = new ArrayList<>();
+        projectiles.forEach(projectileList::add);
+
+        Optional<Widget> fish = Inventory.search().nameInList(List.of(FISH_NAMES)).first();
+        Optional<Widget> knife = Inventory.search().withName("Knife").first();
+
+        Optional<NPC> validFishingSpots = NPCs.search().withName("Fishing spot").nearestToPlayer().filter(npc -> {
+            boolean isSpotInteractedWith = !Players.search()
+                    .filter(p -> p.getInteracting() != null && p.getInteracting().equals(npc)).isEmpty();
+
+            boolean isSpotTargetedByProjectile = projectileList.stream().anyMatch(projectile ->
+                    projectile.getTarget() != null &&
+                            projectile.getTarget().equals(npc.getLocalLocation()));
+//
+//            log.info("isSpotInteractedWith: " + isSpotInteractedWith);
+//            log.info("isSpotTargetedByProjectile: " + isSpotTargetedByProjectile);
+
+            if (isSpotInteractedWith || isSpotTargetedByProjectile) {
+                return false;
+            }
+            return true;
+        });
+        Optional<NPC> arrowFishSpot = validFishingSpots.filter(npc -> client.getHintArrowNpc() == npc);
+
+        if (knife.isPresent() && fish.isPresent()) {
+            log.info("cutting fish");
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetOnWidget(knife.get(), fish.get());
+            timeout = 1;
+        }
+
+        if (arrowFishSpot.isPresent()) {
+            log.info("arrow fishing");
+            MousePackets.queueClickPacket();
+            NPCPackets.queueNPCAction(arrowFishSpot.get(), "Catch");
+        }
+
+        if (validFishingSpots.isPresent()) {
+            log.info("fishing");
+            MousePackets.queueClickPacket();
+            NPCPackets.queueNPCAction(validFishingSpots.get(), "Catch");
+        }
+    }
+
+
+    private void doAerial() {
+        final String[] FISH_NAMES = new String[]{"Bluegill", "Common tench", "Mottled eel", "Greater siren"};
+        int fishPerTick = client.getTickCount() % 2 == 0 && client.getLocalPlayer().getAnimation() == -1 ? 2 : 3;
+        Deque<Projectile> projectiles = client.getProjectiles();
+        ArrayList<Projectile> projectileList = new ArrayList<>();
+        projectiles.forEach(projectileList::add);
+
+        List<Widget> fish = Inventory.search().nameInList(List.of(FISH_NAMES)).result();
+        Optional<Widget> knife = Inventory.search().withName("Knife").first();
+
+        Optional<NPC> validFishingSpots = NPCs.search().withName("Fishing spot").nearestToPlayer().filter(npc -> {
+            boolean isSpotInteractedWith = !Players.search()
+                    .filter(p -> p.getInteracting() != null && p.getInteracting().equals(npc)).isEmpty();
+
+            boolean isSpotTargetedByProjectile = projectileList.stream().anyMatch(projectile ->
+                    projectile.getTarget() != null &&
+                            projectile.getTarget().equals(npc.getLocalLocation()));
+//
+//            log.info("isSpotInteractedWith: " + isSpotInteractedWith);
+//            log.info("isSpotTargetedByProjectile: " + isSpotTargetedByProjectile);
+
+            if (isSpotInteractedWith || isSpotTargetedByProjectile) {
+                return false;
+            }
+            return true;
+        });
+        Optional<NPC> arrowFishSpot = validFishingSpots.filter(npc -> client.getHintArrowNpc() == npc);
+
+        boolean hasEnoughBait = Inventory.search().nameContains("Fish chunks").quantityGreaterThan(2).first().isPresent();
+
+        if (cutFish) {
+            log.info("cutting fish");
+            for (int i = 0; i < fishPerTick; i++) {
+                if (fish.isEmpty() || hasEnoughBait) {
+                    log.info("cut false");
+                    cutFish = false;
+                    break;
+                }
+                log.info("cutting fish");
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetOnWidget(fish.get(i), knife.get());
+                timeout =1;
+            }
+            return;
+        }
+        if (dropFish) {
+            log.info("dropping fish");
+            for (int i = 0; i < fishPerTick; i++) {
+                if (fish.isEmpty() || hasEnoughBait) {
+                    log.info("drop false");
+                    dropFish = false;
+                    break;
+                }
+                log.info("dropping fish");
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetAction(fish.get(i), "Drop");
+                timeout = 1;
+            }
+            return;
+        }
+        if (knife.isPresent() && !fish.isEmpty()) {
+            if (Inventory.full()) {
+//                if (!hasEnoughBait)
+                    cutFish = true;
+                timeout = 3;
+                if (!cutFish) {
+                    log.info("dropping fish");
+                    dropFish = true;
+                }
+                return;
+            }
+        }
+
+        if (validFishingSpots.isPresent() && !cutFish && hasEnoughBait) {
+            log.info("fishing");
+            MousePackets.queueClickPacket();
+            NPCPackets.queueNPCAction(validFishingSpots.get(), "Catch");
+            timeout = client.getGameCycle() % 2 == 0 ? 2 : 1;
+        }
+
+    }
+
+    private void doButterfly(Player player) {
+        Optional<NPC> butterfly = NPCs.search().withName("Ruby harvest").withAction("Catch").nearestToPlayer();
+        List<Widget> filledJars = Inventory.search().withAction("Release").withName("Ruby harvest").result();
+        Optional<Widget> emptyJar = Inventory.search().withName("Butterfly jar").first();
+
+        //figure this out yourself
+        checkRunEnergy();
+
+        if (!filledJars.isEmpty()) {
+            filledJars.forEach(jar -> {
+                log.info("RELEASING BUTTERFLY");
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetAction(jar, "Release");
+            });
+        }
+
+        if (player.getInteracting() == null && emptyJar.isPresent()) {
+            if (butterfly.isPresent()) {
+                log.info("CATCHING BUTTERFLY");
+                MousePackets.queueClickPacket();
+                NPCPackets.queueNPCAction(butterfly.get(), "Catch");
+            }
+        }
+    }
+
+    private boolean staminaIsActive() {
+        return client.getVarbit(Varbits.RUN_SLOWED_DEPLETION_ACTIVE).equals(1);
+    }
+
+    private boolean runIsOff() {
+        return EthanApiPlugin.getClient().getVarpValue(173) == 0;
+    }
+
+    private void checkRunEnergy() {
+        if (runIsOff() && client.getEnergy() >= 10 * 100) {
+            toggleRunEnergy();
+        }
+        if (!staminaIsActive()) {
+            if (client.getEnergy() >= 1000 && client.getEnergy() < 7000) {
+                Inventory.search().nameContains("tamina potion").onlyUnnoted().first().ifPresent(potion -> {
+                    MousePackets.queueClickPacket();
+                    WidgetPackets.queueWidgetAction(potion, "Drink");
+                    timeout = 3;
+                });
+            }
+        }
+    }
+
+    private static void toggleRunEnergy() {
+        log.info("turning run on");
+        MousePackets.queueClickPacket();
+        WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
+    }
+
+    private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggle();
+        }
+    };
+
+    public void toggle() {
+        if (client.getGameState() != GameState.LOGGED_IN) {
+            return;
+        }
+        started = !started;
+    }
+}
