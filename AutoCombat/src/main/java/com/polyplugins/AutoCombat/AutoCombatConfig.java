@@ -189,17 +189,6 @@ public interface AutoCombatConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "aggressiveLooting",
-            name = "Aggressive looting?",
-            description = "Allows loot to queued for a kill or 2 later ",
-            position = 2,
-            section = lootingConfig
-    )
-    default boolean aggressiveLooting() {
-        return true;
-    }
-
-    @ConfigItem(
             keyName = "lootNames",
             name = "Loot names",
             description = "",

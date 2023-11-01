@@ -35,6 +35,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 import net.runelite.client.plugins.slayer.SlayerPlugin;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -86,6 +87,7 @@ public class AutoCombatPlugin extends Plugin {
     private boolean hasCombatPot = false;
     private boolean hasBones = false;
     public int idleTicks = 0;
+    public NPC targetNpc = null;
 
     @Override
     protected void startUp() throws Exception {
@@ -99,10 +101,21 @@ public class AutoCombatPlugin extends Plugin {
     protected void shutDown() throws Exception {
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
-        timeout = 0;
-        started = false;
+        nullEverything();
     }
 
+    public void nullEverything() {
+        timeout = 0;
+        lootTrigger = 0;
+        started = false;
+        hasBones = false;
+        hasCombatPot = false;
+        hasPrayerPot = false;
+        hasFood = false;
+        idleTicks = 0;
+        lootQueue.clear();
+        targetNpc = null;
+    }
 
     @Subscribe
     private void onGameTick(GameTick event) {
@@ -120,10 +133,11 @@ public class AutoCombatPlugin extends Plugin {
         hasPrayerPot = supplies.findPrayerPotion() != null;
         hasCombatPot = supplies.findCombatPotion() != null;
         hasBones = supplies.findBone() != null;
-        if (hasBones) {
-            InventoryInteraction.useItem(supplies.findBone(), "Bury");
-            timeout = 1;
-        }
+        //do later,copilot suggest so may as well
+//        if (hasBones) {
+//            InventoryInteraction.useItem(supplies.findBone(), "Bury");
+//            timeout = 1;
+//        }
         if (!lootQueue.isEmpty()) {
             lootTrigger = 0;
             ItemStack itemStack = lootQueue.poll();
@@ -139,7 +153,6 @@ public class AutoCombatPlugin extends Plugin {
                     }
                     if (Inventory.full()) {
                         handleFullInventory();
-
                     }
                 }
                 if (!Inventory.full()) {
@@ -156,11 +169,11 @@ public class AutoCombatPlugin extends Plugin {
                 timeout = 5;
                 return;
             }
-            NPC npc = util.findNpc(config.targetName());
-            if (npc != null) {
+            targetNpc = util.findNpc(config.targetName());
+            if (targetNpc != null) {
 //                log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
-                NPCPackets.queueNPCAction(npc, "Attack");
+                NPCPackets.queueNPCAction(targetNpc, "Attack");
                 timeout = 4;
                 idleTicks = 0;
             }
@@ -235,6 +248,9 @@ public class AutoCombatPlugin extends Plugin {
                 InventoryInteraction.useItem(supplies.findTeleport(), "Break");
                 EthanApiPlugin.stopPlugin(this);
             }
+        }
+        if (bid == Varbits.BOSS_HEALTH_CURRENT) {
+           //use slayer item on slayer creature?
         }
     }
 
