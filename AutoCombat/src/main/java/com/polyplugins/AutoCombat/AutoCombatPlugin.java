@@ -161,7 +161,6 @@ public class AutoCombatPlugin extends Plugin {
                         log.info("Has stackable loot");
                         item.interact(false);
                         timeout = 6;
-                        lootQueue.remove();
                     }
                     if (Inventory.full()) {
                         handleFullInventory();
@@ -170,9 +169,9 @@ public class AutoCombatPlugin extends Plugin {
                 if (!Inventory.full()) {
                     item.interact(false);
                     timeout = 6;
-                    lootQueue.remove();
                 }
             });
+            lootQueue.remove();
         }
 
         if (lootQueue.isEmpty() || idleTicks > 25) {
