@@ -123,7 +123,6 @@ public class AutoCombatPlugin extends Plugin {
     @Subscribe
     private void onGameTick(GameTick event) {
         player = client.getLocalPlayer();
-        targetNpc = util.findNpc(config.targetName());
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
         if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
         if (timeout > 0) {
@@ -146,7 +145,7 @@ public class AutoCombatPlugin extends Plugin {
 //            timeout = 1;
 //        }
         if (!lootQueue.isEmpty()) {
-            lootTrigger = 0;
+//            lootTrigger = 0;
             ItemStack itemStack = lootQueue.poll();
 
             TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
@@ -167,16 +166,20 @@ public class AutoCombatPlugin extends Plugin {
                     item.interact(false);
                     timeout = 5;
                 }
-                if (lootQueue.isEmpty())
-                    lootTrigger = config.numPiles();
+//                if (lootQueue.isEmpty())
+//                    lootTrigger = config.numPiles();
             });
         }
 
-        if ((lootTrigger > 0 && lootQueue.isEmpty()) || idleTicks > 25) {
+        if (lootQueue.isEmpty() || idleTicks > 25) {
             if (util.isInteracting() || util.isBeingInteracted()) {
+                log.info("isBeingInteracted"+util.isBeingInteracted());
+                log.info("isInteracting"+util.isInteracting());
+//                util.getBeingInteracted();
                 timeout = 5;
                 return;
             }
+            targetNpc = util.findNpc(config.targetName());
             if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
                 log.info("1");
                 Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
@@ -190,7 +193,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("2");
 
                 if (targetNpc != null) {
-//                log.info("Should fight, found npc");
+                    log.info("Should fight, found npc");
                     MousePackets.queueClickPacket();
                     NPCPackets.queueNPCAction(targetNpc, "Attack");
                     timeout = 4;
@@ -247,13 +250,17 @@ public class AutoCombatPlugin extends Plugin {
                 }
                 break;
             case PRAYER:
-                if (client.getBoostedSkillLevel(Skill.PRAYER) <= config.usePrayerPotAt()) {
-                    handlePrayerPot();
+                if (config.usePrayerPotion()) {
+                    if (client.getBoostedSkillLevel(Skill.PRAYER) <= config.usePrayerPotAt()) {
+                        handlePrayerPot();
+                    }
                 }
                 break;
             case STRENGTH:
-                if (client.getBoostedSkillLevel(Skill.STRENGTH) <= config.useCombatPotAt()) {
-                    handleCombatPot();
+                if (config.useCombatPotion()) {
+                    if (client.getBoostedSkillLevel(Skill.STRENGTH) <= config.useCombatPotAt()) {
+                        handleCombatPot();
+                    }
                 }
                 break;
         }

@@ -15,19 +15,6 @@ public interface AutoBonerConfig extends Config {
         return Keybind.NOT_SET;
     }
 
-    @Range(
-            max = 10
-    )
-    @ConfigItem(
-            keyName = "bonesPerTick",
-            name = "Bones per tick",
-            description = "How many bones to use on the altar per tick",
-            position = 1
-    )
-    default int bonesPerTick() {
-        return 1;
-    }
-
     @ConfigItem(
             keyName = "boneName",
             name = "Bone name",

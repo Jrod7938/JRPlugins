@@ -28,6 +28,7 @@ allprojects {
 }
 
 dependencies {
+    testImplementation project(path: ':AutoCombat')
     compileOnly project(path: ':AutoBoner')
     testImplementation project(path: ':AutoBoner')
 //    Uncomment for fat jar
@@ -82,7 +83,6 @@ dependencies {
     compileOnly project(path: ':AutoAerial')
     testImplementation project(path: ':AutoAerial')
     compileOnly project(path: ':AutoCombat')
-    testImplementation project(path: ':AutoCombat')
     compileOnly project(path: ':Firemaking')
     testImplementation project(path: ':Firemaking')
 }

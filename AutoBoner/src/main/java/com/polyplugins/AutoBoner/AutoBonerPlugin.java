@@ -74,19 +74,13 @@ public class AutoBonerPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || !started) {
             return;
         }
-
-        for (int i = 0; i < config.bonesPerTick(); i++)
-            TileObjects.search().nameContains(config.altarName()).filter(t -> hasBones()).first().ifPresent(altar -> {
+        Inventory.search().onlyUnnoted().nameContains(config.boneName()).first().ifPresent(bone -> {
+            TileObjects.search().nameContains(config.altarName()).first().ifPresent(altar -> {
                 MousePackets.queueClickPacket();
                 MousePackets.queueClickPacket();
                 ObjectPackets.queueWidgetOnTileObject(Inventory.search().onlyUnnoted().nameContains(config.boneName()).first().get(), altar);
             });
-
-
-    }
-
-    public boolean hasBones() {
-        return Inventory.search().nameContains(config.boneName()).first().isPresent();
+        });
     }
 
     private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {

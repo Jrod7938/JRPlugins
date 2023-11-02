@@ -45,4 +45,10 @@ public class Util {
         return NPCs.search().interactingWithLocal().first().isPresent();
     }
 
+    public NPC getBeingInteracted() {
+        Optional<NPC> npc = NPCs.search().interactingWithLocal().first();
+        log.info("NPC: " + npc.get().getName());
+        return npc.orElse(null);
+    }
+
 }
