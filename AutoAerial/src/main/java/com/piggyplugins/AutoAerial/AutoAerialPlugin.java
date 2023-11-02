@@ -83,7 +83,7 @@ public class AutoAerialPlugin extends Plugin {
 
 
         //doButterfly(player);
-//        doAerial2();
+        doAerial2();
     }
 
     private void doAerial2() {
@@ -131,89 +131,6 @@ public class AutoAerialPlugin extends Plugin {
             MousePackets.queueClickPacket();
             NPCPackets.queueNPCAction(validFishingSpots.get(), "Catch");
         }
-    }
-
-
-    private void doAerial() {
-        final String[] FISH_NAMES = new String[]{"Bluegill", "Common tench", "Mottled eel", "Greater siren"};
-        int fishPerTick = client.getTickCount() % 2 == 0 && client.getLocalPlayer().getAnimation() == -1 ? 2 : 3;
-        Deque<Projectile> projectiles = client.getProjectiles();
-        ArrayList<Projectile> projectileList = new ArrayList<>();
-        projectiles.forEach(projectileList::add);
-
-        List<Widget> fish = Inventory.search().nameInList(List.of(FISH_NAMES)).result();
-        Optional<Widget> knife = Inventory.search().withName("Knife").first();
-
-        Optional<NPC> validFishingSpots = NPCs.search().withName("Fishing spot").nearestToPlayer().filter(npc -> {
-            boolean isSpotInteractedWith = !Players.search()
-                    .filter(p -> p.getInteracting() != null && p.getInteracting().equals(npc)).isEmpty();
-
-            boolean isSpotTargetedByProjectile = projectileList.stream().anyMatch(projectile ->
-                    projectile.getTarget() != null &&
-                            projectile.getTarget().equals(npc.getLocalLocation()));
-//
-//            log.info("isSpotInteractedWith: " + isSpotInteractedWith);
-//            log.info("isSpotTargetedByProjectile: " + isSpotTargetedByProjectile);
-
-            if (isSpotInteractedWith || isSpotTargetedByProjectile) {
-                return false;
-            }
-            return true;
-        });
-        Optional<NPC> arrowFishSpot = validFishingSpots.filter(npc -> client.getHintArrowNpc() == npc);
-
-        boolean hasEnoughBait = Inventory.search().nameContains("Fish chunks").quantityGreaterThan(2).first().isPresent();
-
-        if (cutFish) {
-            log.info("cutting fish");
-            for (int i = 0; i < fishPerTick; i++) {
-                if (fish.isEmpty() || hasEnoughBait) {
-                    log.info("cut false");
-                    cutFish = false;
-                    break;
-                }
-                log.info("cutting fish");
-                MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetOnWidget(fish.get(i), knife.get());
-                timeout =1;
-            }
-            return;
-        }
-        if (dropFish) {
-            log.info("dropping fish");
-            for (int i = 0; i < fishPerTick; i++) {
-                if (fish.isEmpty() || hasEnoughBait) {
-                    log.info("drop false");
-                    dropFish = false;
-                    break;
-                }
-                log.info("dropping fish");
-                MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetAction(fish.get(i), "Drop");
-                timeout = 1;
-            }
-            return;
-        }
-        if (knife.isPresent() && !fish.isEmpty()) {
-            if (Inventory.full()) {
-//                if (!hasEnoughBait)
-                    cutFish = true;
-                timeout = 3;
-                if (!cutFish) {
-                    log.info("dropping fish");
-                    dropFish = true;
-                }
-                return;
-            }
-        }
-
-        if (validFishingSpots.isPresent() && !cutFish && hasEnoughBait) {
-            log.info("fishing");
-            MousePackets.queueClickPacket();
-            NPCPackets.queueNPCAction(validFishingSpots.get(), "Catch");
-            timeout = client.getGameCycle() % 2 == 0 ? 2 : 1;
-        }
-
     }
 
     private void doButterfly(Player player) {
