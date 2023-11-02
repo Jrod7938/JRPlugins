@@ -59,7 +59,6 @@ public class LootHelper {
     /**
      * Takes the loot names and returns as a list with trimmed names
      *
-     * @param names
      * @return
      */
     public List<String> getLootNames() {
