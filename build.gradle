@@ -67,13 +67,13 @@ dependencies {
     testImplementation project(path: ':EthansApi')
     compileOnly project(':PiggyUtils')
     testImplementation project(':PiggyUtils')
-
-    compileOnly project(path: ':RooftopAgility')
-    testImplementation project(path: ':RooftopAgility')
-    compileOnly project(path: ':ItemCombiner')
-    testImplementation project(path: ':ItemCombiner')
-    compileOnly project(path: ':PowerSkiller')
-    testImplementation project(path: ':PowerSkiller')
+//
+//    compileOnly project(path: ':RooftopAgility')
+//    testImplementation project(path: ':RooftopAgility')
+//    compileOnly project(path: ':ItemCombiner')
+//    testImplementation project(path: ':ItemCombiner')
+//    compileOnly project(path: ':PowerSkiller')
+//    testImplementation project(path: ':PowerSkiller')
 
     compileOnly project(path: ':AutoMLM')
     testImplementation project(path: ':AutoMLM')
