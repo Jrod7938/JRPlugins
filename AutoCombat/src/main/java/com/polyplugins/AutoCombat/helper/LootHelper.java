@@ -49,7 +49,7 @@ public class LootHelper {
      */
     public boolean hasStackableLoot(ItemComposition comp) {
         String name = comp.getName();
-        ItemQuery itemQry = Inventory.search().nameContains(name);
+        ItemQuery itemQry = Inventory.search().withName(name);
         if (itemQry.first().isEmpty()) {
             return false;
         }

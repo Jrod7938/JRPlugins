@@ -6,6 +6,7 @@ import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileItems;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.InventoryInteraction;
+import com.example.PacketUtils.WidgetInfoExtended;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
@@ -15,10 +16,8 @@ import com.polyplugins.AutoCombat.util.SuppliesUtil;
 import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.StatChanged;
-import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.events.*;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -36,6 +35,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+
+import net.runelite.client.plugins.opponentinfo.OpponentInfoPlugin;
 
 @PluginDescriptor(
         name = "AutoCombat",
@@ -124,7 +125,7 @@ public class AutoCombatPlugin extends Plugin {
         player = client.getLocalPlayer();
         targetNpc = util.findNpc(config.targetName());
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
-        if(isSlayerNpc)slayerInfo=slayerHelper.getSlayerInfo(targetNpc.getName());
+        if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
         if (timeout > 0) {
             timeout--;
             return;
@@ -152,6 +153,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("Looting: " + item.getTileItem().getId());
                 ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
                 if (comp.isStackable() || comp.getNote() != -1) {
+                    log.info("stackable loot " + comp.getName());
                     if (lootHelper.hasStackableLoot(comp)) {
                         log.info("Has stackable loot");
                         item.interact(false);
@@ -175,21 +177,25 @@ public class AutoCombatPlugin extends Plugin {
                 timeout = 5;
                 return;
             }
-            if (isSlayerNpc && slayerInfo.getDisturbAction() != null) {
-                Optional<NPC> npc = NPCs.search().nameContains(slayerInfo.getUndisturbedName()).first();
+            if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
+                log.info("1");
+                Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
                 if (npc.isPresent()) {
                     MousePackets.queueClickPacket();
                     NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
                     timeout = 5;
                     idleTicks = 0;
                 }
-//                if (targetNpc != null) {
-////                log.info("Should fight, found npc");
-//                    MousePackets.queueClickPacket();
-//                    NPCPackets.queueNPCAction(targetNpc, "Attack");
-//                    timeout = 4;
-//                    idleTicks = 0;
-//                }
+            } else {
+                log.info("2");
+
+                if (targetNpc != null) {
+//                log.info("Should fight, found npc");
+                    MousePackets.queueClickPacket();
+                    NPCPackets.queueNPCAction(targetNpc, "Attack");
+                    timeout = 4;
+                    idleTicks = 0;
+                }
             }
         }
     }
@@ -254,6 +260,19 @@ public class AutoCombatPlugin extends Plugin {
     }
 
     @Subscribe
+    public void onChatMessage(ChatMessage event) {
+        if (event.getMessage().contains("Finish it quick")) {
+            Inventory.search().nameContains(slayerInfo.getItemName()).filter(i -> !i.getName().contains("ay 0")).first().ifPresent(item -> {
+                log.info("Using item: " + item.getName());
+                MousePackets.queueClickPacket();
+                MousePackets.queueClickPacket();
+                NPCPackets.queueWidgetOnNPC(NPCs.search().interactingWithLocal().first().get(), item);
+                timeout = 3;
+            });
+        }
+    }
+
+    @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
         int bid = event.getVarbitId();
         int pid = event.getVarpId();
@@ -264,21 +283,8 @@ public class AutoCombatPlugin extends Plugin {
             }
         }
         if (bid == Varbits.BOSS_HEALTH_CURRENT) {
-            if (!slayerHelper.isSlayerNPC(targetNpc.getName()))
-                return;
-            SlayerNpc info = slayerHelper.getSlayerInfo(targetNpc.getName());
-            Inventory.search().nameContains(info.getItemName()).first().ifPresent(item -> {
-                log.info("Using item: " + item.getName());
-                MousePackets.queueClickPacket();
-                MousePackets.queueClickPacket();
-                NPCPackets.queueWidgetOnNPC(targetNpc, item);
-                timeout = 3;
-            });
-            int curHp = event.getVarbitId();
-            log.info("NPC HP: " + curHp);
-            if (curHp <= info.getUseHp()) {
+            log.info("bhhp");
 
-            }
         }
     }
 

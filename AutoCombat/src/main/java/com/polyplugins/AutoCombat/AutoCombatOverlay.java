@@ -9,15 +9,18 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 
 import javax.inject.Inject;
+import javax.lang.model.type.ArrayType;
 import javax.sound.sampled.Line;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class AutoCombatOverlay extends Overlay {
 
     private final PanelComponent panelComponent = new PanelComponent();
+    private final PanelComponent slPanel = new PanelComponent();
     private final Client client;
     private final AutoCombatPlugin plugin;
 
@@ -34,16 +37,28 @@ public class AutoCombatOverlay extends Overlay {
     @Override
     public Dimension render(Graphics2D graphics) {
         panelComponent.getChildren().clear();
+        slPanel.getChildren().clear();
 
         LineComponent started = buildLine("Started: ", String.valueOf(plugin.started));
         LineComponent timeout = buildLine("Timeout: ", String.valueOf(plugin.timeout));
+        LineComponent idleTicks = buildLine("Idle Ticks: ", String.valueOf(plugin.idleTicks));
         LineComponent lootTrigger = buildLine("Loot Trigger: ", String.valueOf(plugin.lootTrigger));
         LineComponent lootQ = buildLine("Loot Q: ", String.valueOf(plugin.lootQueue.size()));
 
-        panelComponent.getChildren().add(started);
-        panelComponent.getChildren().add(timeout);
-        panelComponent.getChildren().add(lootTrigger);
-        panelComponent.getChildren().add(lootQ);
+        LineComponent isSlayerNpc = buildLine("isSlayerNpc: ", String.valueOf(plugin.isSlayerNpc));
+
+        panelComponent.getChildren().addAll(Arrays.asList(started, timeout, idleTicks, lootTrigger, lootQ));
+
+        panelComponent.getChildren().add(isSlayerNpc);
+
+        if (plugin.isSlayerNpc) {
+            LineComponent undisturbedName = buildLine("Undist: ", String.valueOf(plugin.slayerInfo.getUndisturbedName()));
+            LineComponent disturbAction = buildLine("Disturb: ", String.valueOf(plugin.slayerInfo.getDisturbAction()));
+            LineComponent useHp = buildLine("Use HP: ", String.valueOf(plugin.slayerInfo.getUseHp()));
+            LineComponent itemName = buildLine("Item Name: ", String.valueOf(plugin.slayerInfo.getItemName()));
+            panelComponent.getChildren().addAll(Arrays.asList(undisturbedName, disturbAction, useHp, itemName));
+        }
+
 
         return panelComponent.render(graphics);
     }

@@ -10,7 +10,7 @@ import net.runelite.client.externalplugins.ExternalPluginManager;
 public class PluginTester {
     public static void main(String[] args) throws Exception {
         ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
-                AutoCombatPlugin.class, AutoBonerPlugin.class);
+                AutoCombatPlugin.class);
         RuneLite.main(args);
     }
 }

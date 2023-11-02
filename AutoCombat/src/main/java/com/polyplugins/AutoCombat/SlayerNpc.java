@@ -7,7 +7,7 @@ public enum SlayerNpc {
     DESERT_LIZARD("Desert lizard", "Ice cooler", 5, "", ""),
     GARGOYLE("Gargoyle", "Rock hammer", 8, "", ""),
     MUTATED_ZYGOMITE("Mutated zygomite", "Fungicide spray", 8, "", "Undisturbed Mutated zygomite"),
-    ANCIENT_ZYGOMITE("Ancient zygomite", "Fungicide spray", 8, "Pick", "Ancient fungi");
+    ANCIENT_ZYGOMITE("Ancient Zygomite", "Fungicide spray", 8, "Pick", "Ancient Fungi");
 
     @Getter
     private final String npcName;

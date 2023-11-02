@@ -32,7 +32,7 @@ public class Util {
      * @return The nearest npc, or null if none are found
      */
     public NPC findNpc(String name) {
-        NPCQuery npc = NPCs.search().alive().nameContains(name).withAction("Attack").notInteracting();
+        NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack").notInteracting();
 //        log.info("Found npcs:" + npc.result().size());
         return npc.nearestToPlayer().orElse(null);
     }
