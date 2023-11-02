@@ -6,10 +6,13 @@ import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileItems;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.TileObjectInteraction;
 import com.example.PacketUtils.WidgetInfoExtended;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.ObjectUtil;
 import com.polyplugins.AutoCombat.helper.LootHelper;
 import com.polyplugins.AutoCombat.helper.SlayerHelper;
 import com.polyplugins.AutoCombat.util.SuppliesUtil;
@@ -17,6 +20,7 @@ import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -35,6 +39,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.ThreadLocalRandom;
 
 import net.runelite.client.plugins.opponentinfo.OpponentInfoPlugin;
 
@@ -145,8 +150,7 @@ public class AutoCombatPlugin extends Plugin {
 //            timeout = 1;
 //        }
         if (!lootQueue.isEmpty()) {
-//            lootTrigger = 0;
-            ItemStack itemStack = lootQueue.poll();
+            ItemStack itemStack = lootQueue.peek();
 
             TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
                 log.info("Looting: " + item.getTileItem().getId());
@@ -156,7 +160,8 @@ public class AutoCombatPlugin extends Plugin {
                     if (lootHelper.hasStackableLoot(comp)) {
                         log.info("Has stackable loot");
                         item.interact(false);
-                        timeout = 5;
+                        timeout = 6;
+                        lootQueue.remove();
                     }
                     if (Inventory.full()) {
                         handleFullInventory();
@@ -164,18 +169,14 @@ public class AutoCombatPlugin extends Plugin {
                 }
                 if (!Inventory.full()) {
                     item.interact(false);
-                    timeout = 5;
+                    timeout = 6;
+                    lootQueue.remove();
                 }
-//                if (lootQueue.isEmpty())
-//                    lootTrigger = config.numPiles();
             });
         }
 
         if (lootQueue.isEmpty() || idleTicks > 25) {
             if (util.isInteracting() || util.isBeingInteracted()) {
-                log.info("isBeingInteracted"+util.isBeingInteracted());
-                log.info("isInteracting"+util.isInteracting());
-//                util.getBeingInteracted();
                 timeout = 5;
                 return;
             }
@@ -230,6 +231,7 @@ public class AutoCombatPlugin extends Plugin {
 
     @Subscribe
     public void onNpcLootReceived(NpcLootReceived event) {
+        if (!started) return;
         Collection<ItemStack> items = event.getItems();
         items.stream().filter(item -> {
             ItemComposition comp = itemManager.getItemComposition(item.getId());
@@ -237,37 +239,31 @@ public class AutoCombatPlugin extends Plugin {
         }).forEach(it -> {
             log.info("Adding to lootQueue: " + it.getId());
             lootQueue.add(it);
-            lootTrigger--;
+//            lootTrigger--;
         });
     }
 
     @Subscribe
     public void onStatChanged(StatChanged event) {
-        switch (event.getSkill()) {
-            case HITPOINTS:
-                if (client.getBoostedSkillLevel(Skill.HITPOINTS) <= config.eatAt()) {
-                    handleEating();
-                }
-                break;
-            case PRAYER:
-                if (config.usePrayerPotion()) {
-                    if (client.getBoostedSkillLevel(Skill.PRAYER) <= config.usePrayerPotAt()) {
-                        handlePrayerPot();
-                    }
-                }
-                break;
-            case STRENGTH:
-                if (config.useCombatPotion()) {
-                    if (client.getBoostedSkillLevel(Skill.STRENGTH) <= config.useCombatPotAt()) {
-                        handleCombatPot();
-                    }
-                }
-                break;
+        if (!started) return;
+        if (client.getBoostedSkillLevel(Skill.HITPOINTS) <= config.eatAt()) {
+            handleEating();
+        }
+        if (config.usePrayerPotion()) {
+            if (client.getBoostedSkillLevel(Skill.PRAYER) <= config.usePrayerPotAt()) {
+                handlePrayerPot();
+            }
+        }
+        if (config.useCombatPotion()) {
+            if (client.getBoostedSkillLevel(Skill.STRENGTH) <= config.useCombatPotAt()) {
+                handleCombatPot();
+            }
         }
     }
 
     @Subscribe
     public void onChatMessage(ChatMessage event) {
+        if (!started) return;
         if (event.getMessage().contains("Finish it quick")) {
             Inventory.search().nameContains(slayerInfo.getItemName()).filter(i -> !i.getName().contains("ay 0")).first().ifPresent(item -> {
                 log.info("Using item: " + item.getName());
@@ -281,6 +277,7 @@ public class AutoCombatPlugin extends Plugin {
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {
+        if (!started) return;
         int bid = event.getVarbitId();
         int pid = event.getVarpId();
         if (pid == VarPlayer.SLAYER_TASK_SIZE) {
@@ -288,10 +285,11 @@ public class AutoCombatPlugin extends Plugin {
                 InventoryInteraction.useItem(supplies.findTeleport(), "Break");
                 EthanApiPlugin.stopPlugin(this);
             }
-        }
-        if (bid == Varbits.BOSS_HEALTH_CURRENT) {
-            log.info("bhhp");
-
+        } else if (pid == VarPlayer.CANNON_AMMO) {
+            if (event.getValue() <= ThreadLocalRandom.current().nextInt(4, 12)) {
+                reloadCannon();
+                timeout = 3;
+            }
         }
     }
 
@@ -322,6 +320,19 @@ public class AutoCombatPlugin extends Plugin {
 
     private boolean runIsOff() {
         return EthanApiPlugin.getClient().getVarpValue(173) == 0;
+    }
+
+    private void reloadCannon() {
+        Optional<Widget> cannonball = InventoryUtil.nameContainsNoCase("cannonball").first();
+
+        if (cannonball.isPresent()) {
+            Optional<TileObject> to = ObjectUtil.nameContainsNoCase("dwarf multicannon").nearestToPlayer();
+            if (to.isPresent()) {
+                MousePackets.queueClickPacket();
+                MousePackets.queueClickPacket();
+                ObjectPackets.queueWidgetOnTileObject(cannonball.get(), to.get());
+            }
+        }
     }
 
     private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {

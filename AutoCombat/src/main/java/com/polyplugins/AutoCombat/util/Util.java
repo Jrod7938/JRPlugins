@@ -3,6 +3,8 @@ package com.polyplugins.AutoCombat.util;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.query.NPCQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.Packets.MovementPackets;
 import com.google.inject.Inject;
 import com.polyplugins.AutoCombat.AutoCombatConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,8 @@ public class Util {
     public NPC findNpc(String name) {
         NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack").notInteracting();
 //        log.info("Found npcs:" + npc.result().size());
-        return npc.nearestToPlayer().orElse(null);
+        return npc.filter(n -> client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, n.getWorldLocation()))
+                .nearestToPlayer().orElse(null);
     }
 
     public boolean isInteracting() {
