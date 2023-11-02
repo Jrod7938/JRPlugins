@@ -189,10 +189,21 @@ public interface AutoCombatConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "numPiles",
+            name = "# of piles",
+            description = "Number of piles to loot",
+            position = 2,
+            section = lootingConfig
+    )
+    default int numPiles() {
+        return 1;
+    }
+
+    @ConfigItem(
             keyName = "lootNames",
             name = "Loot names",
             description = "",
-            position = 2,
+            position = 3,
             section = lootingConfig
     )
     default String lootNames() {

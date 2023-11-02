@@ -1,11 +1,10 @@
 package com.polyplugins.AutoCombat;
 
 
-import com.example.EthanApiPlugin.Collections.ETileItem;
 import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileItems;
 import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.InteractionApi.InteractionHelper;
 import com.example.InteractionApi.InventoryInteraction;
 import com.example.Packets.*;
 import com.google.inject.Inject;
@@ -20,7 +19,6 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -33,13 +31,11 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
-import net.runelite.client.plugins.slayer.SlayerPlugin;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
-import java.util.stream.Stream;
 
 @PluginDescriptor(
         name = "AutoCombat",
@@ -86,25 +82,28 @@ public class AutoCombatPlugin extends Plugin {
     private boolean hasPrayerPot = false;
     private boolean hasCombatPot = false;
     private boolean hasBones = false;
+    public boolean isSlayerNpc = false;
+    public SlayerNpc slayerInfo = null;
     public int idleTicks = 0;
     public NPC targetNpc = null;
+    public Player player = null;
 
     @Override
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
         timeout = 0;
-        lootTrigger = 2;
+        lootTrigger = config.numPiles();
     }
 
     @Override
     protected void shutDown() throws Exception {
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
-        nullEverything();
+        resetEverything();
     }
 
-    public void nullEverything() {
+    public void resetEverything() {
         timeout = 0;
         lootTrigger = 0;
         started = false;
@@ -115,10 +114,17 @@ public class AutoCombatPlugin extends Plugin {
         idleTicks = 0;
         lootQueue.clear();
         targetNpc = null;
+        player = null;
+        slayerInfo = null;
+        isSlayerNpc = false;
     }
 
     @Subscribe
     private void onGameTick(GameTick event) {
+        player = client.getLocalPlayer();
+        targetNpc = util.findNpc(config.targetName());
+        isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
+        if(isSlayerNpc)slayerInfo=slayerHelper.getSlayerInfo(targetNpc.getName());
         if (timeout > 0) {
             timeout--;
             return;
@@ -126,7 +132,7 @@ public class AutoCombatPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || EthanApiPlugin.isMoving() || !started) {
             return;
         }
-        if (!util.isInteracting() || client.getLocalPlayer().getAnimation() == -1) idleTicks++;
+        if (!util.isInteracting() || player.getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
@@ -160,7 +166,7 @@ public class AutoCombatPlugin extends Plugin {
                     timeout = 5;
                 }
                 if (lootQueue.isEmpty())
-                    lootTrigger = 2;
+                    lootTrigger = config.numPiles();
             });
         }
 
@@ -169,13 +175,21 @@ public class AutoCombatPlugin extends Plugin {
                 timeout = 5;
                 return;
             }
-            targetNpc = util.findNpc(config.targetName());
-            if (targetNpc != null) {
-//                log.info("Should fight, found npc");
-                MousePackets.queueClickPacket();
-                NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout = 4;
-                idleTicks = 0;
+            if (isSlayerNpc && slayerInfo.getDisturbAction() != null) {
+                Optional<NPC> npc = NPCs.search().nameContains(slayerInfo.getUndisturbedName()).first();
+                if (npc.isPresent()) {
+                    MousePackets.queueClickPacket();
+                    NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
+                    timeout = 5;
+                    idleTicks = 0;
+                }
+//                if (targetNpc != null) {
+////                log.info("Should fight, found npc");
+//                    MousePackets.queueClickPacket();
+//                    NPCPackets.queueNPCAction(targetNpc, "Attack");
+//                    timeout = 4;
+//                    idleTicks = 0;
+//                }
             }
         }
     }
@@ -250,7 +264,21 @@ public class AutoCombatPlugin extends Plugin {
             }
         }
         if (bid == Varbits.BOSS_HEALTH_CURRENT) {
-           //use slayer item on slayer creature?
+            if (!slayerHelper.isSlayerNPC(targetNpc.getName()))
+                return;
+            SlayerNpc info = slayerHelper.getSlayerInfo(targetNpc.getName());
+            Inventory.search().nameContains(info.getItemName()).first().ifPresent(item -> {
+                log.info("Using item: " + item.getName());
+                MousePackets.queueClickPacket();
+                MousePackets.queueClickPacket();
+                NPCPackets.queueWidgetOnNPC(targetNpc, item);
+                timeout = 3;
+            });
+            int curHp = event.getVarbitId();
+            log.info("NPC HP: " + curHp);
+            if (curHp <= info.getUseHp()) {
+
+            }
         }
     }
 

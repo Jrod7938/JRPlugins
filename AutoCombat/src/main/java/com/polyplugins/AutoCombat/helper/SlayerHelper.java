@@ -24,8 +24,7 @@ public class SlayerHelper {
     //get slayer task?
     //call slayer master to get task? prob not its autocb not slayer
 
-    public boolean isSlayerNPC(NPC npc) {
-        String name = npc.getName();
+    public boolean isSlayerNPC(String name) {
         for (SlayerNpc snpc : SlayerNpc.values()) {
             if (snpc.getNpcName().equals(name)) {
                 return true;
@@ -34,9 +33,8 @@ public class SlayerHelper {
         return false;
     }
 
-    public SlayerNpc getSlayerInfo(NPC npc) {
-        String name = npc.getName();
-        if (!isSlayerNPC(npc))
+    public SlayerNpc getSlayerInfo(String name) {
+        if (!isSlayerNPC(name))
             return null;
         return Arrays.stream(SlayerNpc.values()).filter(snpc ->
                 snpc.getNpcName().equals(name)).findFirst().orElse(null);
