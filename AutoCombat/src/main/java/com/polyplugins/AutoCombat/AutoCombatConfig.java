@@ -162,7 +162,7 @@ public interface AutoCombatConfig extends Config {
 
     @ConfigItem(keyName = "shutdownOnTaskDone",
             name = "Stop when task done?",
-            description = "Shutdown when task is done",
+            description = "Teleports away and stops. Untick if you have no task or want to stay",
             position = 8,
             section = autoCombatConfig)
     default boolean shutdownOnTaskDone() {
@@ -186,17 +186,6 @@ public interface AutoCombatConfig extends Config {
     )
     default boolean lootEnabled() {
         return true;
-    }
-
-    @ConfigItem(
-            keyName = "numPiles",
-            name = "# of piles",
-            description = "Number of piles to loot",
-            position = 2,
-            section = lootingConfig
-    )
-    default int numPiles() {
-        return 1;
     }
 
     @ConfigItem(

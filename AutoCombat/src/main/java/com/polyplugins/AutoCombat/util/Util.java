@@ -34,7 +34,7 @@ public class Util {
      * @return The nearest npc, or null if none are found
      */
     public NPC findNpc(String name) {
-        NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack").notInteracting();
+        NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack");
 //        log.info("Found npcs:" + npc.result().size());
         return npc.filter(n -> client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, n.getWorldLocation()))
                 .nearestToPlayer().orElse(null);
@@ -49,9 +49,12 @@ public class Util {
     }
 
     public NPC getBeingInteracted() {
-        Optional<NPC> npc = NPCs.search().interactingWithLocal().first();
-        log.info("NPC: " + npc.get().getName());
-        return npc.orElse(null);
+        Optional<NPC> npcOp = NPCs.search().interactingWithLocal().first();
+        if (npcOp.isEmpty()) return null;
+        log.info("NPC: " + npcOp.get().getName());
+        NPC npc = npcOp.get();
+        log.info("LOS: " + client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, npc.getWorldLocation()));
+        return npcOp.orElse(null);
     }
 
 }

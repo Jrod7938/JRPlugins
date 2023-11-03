@@ -83,7 +83,6 @@ public class AutoCombatPlugin extends Plugin {
     public SlayerHelper slayerHelper;
     public Queue<ItemStack> lootQueue = new LinkedList<>();
 
-    public int lootTrigger = 0;
     private boolean hasFood = false;
     private boolean hasPrayerPot = false;
     private boolean hasCombatPot = false;
@@ -99,7 +98,6 @@ public class AutoCombatPlugin extends Plugin {
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
         timeout = 0;
-        lootTrigger = config.numPiles();
     }
 
     @Override
@@ -111,7 +109,6 @@ public class AutoCombatPlugin extends Plugin {
 
     public void resetEverything() {
         timeout = 0;
-        lootTrigger = 0;
         started = false;
         hasBones = false;
         hasCombatPot = false;
@@ -172,35 +169,36 @@ public class AutoCombatPlugin extends Plugin {
                 }
             });
             lootQueue.remove();
+            if (!lootQueue.isEmpty()) return;
         }
 
-        if (lootQueue.isEmpty() || idleTicks > 25) {
-            if (util.isInteracting() || util.isBeingInteracted()) {
+//        if (lootQueue.isEmpty() || idleTicks > 16) {
+        if (util.isInteracting() || util.isBeingInteracted()) {
+            timeout = 5;
+            return;
+        }
+        targetNpc = util.findNpc(config.targetName());
+        if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
+            log.info("1");
+            Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
+            if (npc.isPresent()) {
+                MousePackets.queueClickPacket();
+                NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
                 timeout = 5;
-                return;
+                idleTicks = 0;
             }
-            targetNpc = util.findNpc(config.targetName());
-            if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
-                log.info("1");
-                Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
-                if (npc.isPresent()) {
-                    MousePackets.queueClickPacket();
-                    NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
-                    timeout = 5;
-                    idleTicks = 0;
-                }
-            } else {
-                log.info("2");
+        } else {
+            log.info("2");
 
-                if (targetNpc != null) {
-                    log.info("Should fight, found npc");
-                    MousePackets.queueClickPacket();
-                    NPCPackets.queueNPCAction(targetNpc, "Attack");
-                    timeout = 4;
-                    idleTicks = 0;
-                }
+            if (targetNpc != null) {
+                log.info("Should fight, found npc");
+                MousePackets.queueClickPacket();
+                NPCPackets.queueNPCAction(targetNpc, "Attack");
+                timeout = 4;
+                idleTicks = 0;
             }
         }
+//        }
     }
 
     private void handleFullInventory() {
@@ -230,7 +228,7 @@ public class AutoCombatPlugin extends Plugin {
 
     @Subscribe
     public void onNpcLootReceived(NpcLootReceived event) {
-        if (!started) return;
+        if (!started || !config.lootEnabled()) return;
         Collection<ItemStack> items = event.getItems();
         items.stream().filter(item -> {
             ItemComposition comp = itemManager.getItemComposition(item.getId());
@@ -238,7 +236,6 @@ public class AutoCombatPlugin extends Plugin {
         }).forEach(it -> {
             log.info("Adding to lootQueue: " + it.getId());
             lootQueue.add(it);
-//            lootTrigger--;
         });
     }
 
@@ -287,7 +284,7 @@ public class AutoCombatPlugin extends Plugin {
         } else if (pid == VarPlayer.CANNON_AMMO) {
             if (event.getValue() <= ThreadLocalRandom.current().nextInt(4, 12)) {
                 reloadCannon();
-                timeout = 3;
+                timeout = 1;
             }
         }
     }

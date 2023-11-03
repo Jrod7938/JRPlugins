@@ -117,7 +117,7 @@ public class AutoAerialPlugin extends Plugin {
             log.info("cutting fish");
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetOnWidget(knife.get(), fish.get());
-            timeout = 1;
+            timeout = 2;
         }
 
         if (arrowFishSpot.isPresent()) {

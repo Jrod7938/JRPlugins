@@ -29,8 +29,11 @@ allprojects {
 
 dependencies {
     testImplementation project(path: ':AutoCombat')
+    testImplementation project(path: ':AutoSulphur')
     compileOnly project(path: ':AutoBoner')
     testImplementation project(path: ':AutoBoner')
+    compileOnly project(path: ':AutoSulphur')
+    testImplementation project(path: ':AutoSulphur')
 //    Uncomment for fat jar
 //    implementation project(path: ':AutoJugHumidifier')
 //    implementation project(path: ':AutoRifts')
