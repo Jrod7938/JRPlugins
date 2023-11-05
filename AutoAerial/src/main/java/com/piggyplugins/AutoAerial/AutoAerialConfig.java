@@ -14,14 +14,4 @@ public interface AutoAerialConfig extends Config {
     default Keybind toggle() {
         return Keybind.NOT_SET;
     }
-
-    @ConfigItem(
-            keyName = "Handle fish at",
-            name = "Handle at",
-            description = "# of fish to cut/drop at",
-            position = 1
-    )
-    default int handleFishAt() {
-        return 6;
-    }
 }

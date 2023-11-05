@@ -133,30 +133,6 @@ public class AutoAerialPlugin extends Plugin {
         }
     }
 
-    private void doButterfly(Player player) {
-        Optional<NPC> butterfly = NPCs.search().withName("Ruby harvest").withAction("Catch").nearestToPlayer();
-        List<Widget> filledJars = Inventory.search().withAction("Release").withName("Ruby harvest").result();
-        Optional<Widget> emptyJar = Inventory.search().withName("Butterfly jar").first();
-
-        //figure this out yourself
-        checkRunEnergy();
-
-        if (!filledJars.isEmpty()) {
-            filledJars.forEach(jar -> {
-                log.info("RELEASING BUTTERFLY");
-                MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetAction(jar, "Release");
-            });
-        }
-
-        if (player.getInteracting() == null && emptyJar.isPresent()) {
-            if (butterfly.isPresent()) {
-                log.info("CATCHING BUTTERFLY");
-                MousePackets.queueClickPacket();
-                NPCPackets.queueNPCAction(butterfly.get(), "Catch");
-            }
-        }
-    }
 
     private boolean staminaIsActive() {
         return client.getVarbit(Varbits.RUN_SLOWED_DEPLETION_ACTIVE).equals(1);

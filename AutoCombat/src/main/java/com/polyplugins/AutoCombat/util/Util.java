@@ -8,10 +8,7 @@ import com.example.Packets.MovementPackets;
 import com.google.inject.Inject;
 import com.polyplugins.AutoCombat.AutoCombatConfig;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.ItemComposition;
-import net.runelite.api.NPC;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
@@ -40,17 +37,17 @@ public class Util {
                 .nearestToPlayer().orElse(null);
     }
 
-    public boolean isInteracting() {
-        return client.getLocalPlayer().isInteracting();
+    public boolean inMulti(){
+        return client.getVarbitValue(Varbits.MULTICOMBAT_AREA) == 1;
     }
 
-    public boolean isBeingInteracted() {
-        return NPCs.search().interactingWithLocal().first().isPresent();
-    }
 
     public NPC getBeingInteracted() {
         Optional<NPC> npcOp = NPCs.search().interactingWithLocal().first();
-        if (npcOp.isEmpty()) return null;
+        if (npcOp.isEmpty()) {
+            log.info("getBeingInteracted NULL");
+            return null;
+        }
         log.info("NPC: " + npcOp.get().getName());
         NPC npc = npcOp.get();
         log.info("LOS: " + client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, npc.getWorldLocation()));

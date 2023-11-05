@@ -136,17 +136,6 @@ public interface AutoCombatConfig extends Config {
         return "Chicken";
     }
 
-    @ConfigItem(
-            keyName = "useTeleport",
-            name = "Teleport?",
-            description = "Uses teleport tabs",
-            position = 6,
-            section = autoCombatConfig
-    )
-    default boolean useTeleport() {
-        return true;
-    }
-
     @Range(
             min = 2,
             max = 90

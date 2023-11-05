@@ -28,12 +28,33 @@ allprojects {
 }
 
 dependencies {
+
+    // Add modules here like so, so you can run the ExamplePluginTest
+    compileOnly project(path: ':EthansApi')
+    testImplementation project(path: ':EthansApi')
+    compileOnly project(':PiggyUtils')
+    testImplementation project(':PiggyUtils')
+
+    compileOnly project(path: ':AutoMLM')
+    testImplementation project(path: ':AutoMLM')
+
+    compileOnly project(path: ':AutoSmith')
+    testImplementation project(path: ':AutoSmith')
+
+    compileOnly project(path: ':AutoAerial')
+    testImplementation project(path: ':AutoAerial')
+
+    compileOnly project(path: ':AutoCombat')
     testImplementation project(path: ':AutoCombat')
-    testImplementation project(path: ':AutoSulphur')
+
+    compileOnly project(path: ':Firemaking')
+    testImplementation project(path: ':Firemaking')
+
     compileOnly project(path: ':AutoBoner')
     testImplementation project(path: ':AutoBoner')
-    compileOnly project(path: ':AutoSulphur')
-    testImplementation project(path: ':AutoSulphur')
+
+    compileOnly project(path: ':ButterflyCatcher')
+    testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
 //    implementation project(path: ':AutoJugHumidifier')
 //    implementation project(path: ':AutoRifts')
@@ -66,11 +87,6 @@ dependencies {
 //    implementation project(path: ':VardorvisHelper')
 //    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 
-    // Add modules here like so, so you can run the ExamplePluginTest
-    compileOnly project(path: ':EthansApi')
-    testImplementation project(path: ':EthansApi')
-    compileOnly project(':PiggyUtils')
-    testImplementation project(':PiggyUtils')
 //
 //    compileOnly project(path: ':RooftopAgility')
 //    testImplementation project(path: ':RooftopAgility')
@@ -79,15 +95,6 @@ dependencies {
 //    compileOnly project(path: ':PowerSkiller')
 //    testImplementation project(path: ':PowerSkiller')
 
-    compileOnly project(path: ':AutoMLM')
-    testImplementation project(path: ':AutoMLM')
-    compileOnly project(path: ':AutoSmith')
-    testImplementation project(path: ':AutoSmith')
-    compileOnly project(path: ':AutoAerial')
-    testImplementation project(path: ':AutoAerial')
-    compileOnly project(path: ':AutoCombat')
-    compileOnly project(path: ':Firemaking')
-    testImplementation project(path: ':Firemaking')
 }
 
 sourceSets {

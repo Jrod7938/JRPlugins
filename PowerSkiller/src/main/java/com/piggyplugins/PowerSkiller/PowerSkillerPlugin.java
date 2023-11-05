@@ -1,19 +1,13 @@
 package com.piggyplugins.PowerSkiller;
 
-import com.example.EthanApiPlugin.Collections.Equipment;
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.Collections.NPCs;
-import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.InventoryInteraction;
 import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.google.inject.Provides;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.NPCComposition;
-import net.runelite.api.ObjectComposition;
+import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
@@ -72,6 +66,7 @@ public class PowerSkillerPlugin extends Plugin {
         state = getNextState();
         handleState();
     }
+
     private void handleState() {
         switch (state) {
             case FIND_OBJECT:
@@ -117,19 +112,19 @@ public class PowerSkillerPlugin extends Plugin {
 
     private void findObject() {
         String objectName = config.objectToInteract();
-
         TileObjects.search().withName(objectName).nearestToPlayer().ifPresent(tileObject -> {
             ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
             TileObjectInteraction.interact(tileObject, comp.getActions()[0]); // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
             // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
         });
+
     }
 
     private void findNpc() {
         String npcName = config.objectToInteract();
         NPCs.search().withName(npcName).nearestToPlayer().ifPresent(npc -> {
             NPCComposition comp = client.getNpcDefinition(npc.getId());
-            NPCInteraction.interact(npc,comp.getActions()[0]); // For fishing spots ?
+            NPCInteraction.interact(npc, comp.getActions()[0]); // For fishing spots ?
         });
     }
 
@@ -137,14 +132,14 @@ public class PowerSkillerPlugin extends Plugin {
         List<Widget> itemsToDrop = Inventory.search()
                 .filter(item -> !shouldKeep(item.getName()) && !isTool(item.getName())).result(); // filter the inventory to only get the items we want to drop
 
-        for (int i = 0; i < Math.min(itemsToDrop.size(),RandomUtils.nextInt(config.dropPerTickOne(), config.dropPerTickTwo())); i++) {
+        for (int i = 0; i < Math.min(itemsToDrop.size(), RandomUtils.nextInt(config.dropPerTickOne(), config.dropPerTickTwo())); i++) {
             InventoryInteraction.useItem(itemsToDrop.get(i), "Drop"); // we'll loop through this at a max of 10 times.  can make this a config options.  drops x items per tick (x = 10 in this example)
         }
     }
 
     private boolean isInventoryReset() {
         List<Widget> inventory = Inventory.search().result();
-        for(Widget item : inventory){
+        for (Widget item : inventory) {
             if (!shouldKeep(Text.removeTags(item.getName()))) { // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
                 return false;
             }

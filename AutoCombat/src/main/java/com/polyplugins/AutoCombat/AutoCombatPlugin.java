@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.ObjectUtil;
+import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import com.polyplugins.AutoCombat.helper.LootHelper;
 import com.polyplugins.AutoCombat.helper.SlayerHelper;
 import com.polyplugins.AutoCombat.util.SuppliesUtil;
@@ -126,7 +127,10 @@ public class AutoCombatPlugin extends Plugin {
     private void onGameTick(GameTick event) {
         player = client.getLocalPlayer();
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
+
         if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
+        if (!PlayerUtil.isInteracting() || player.getAnimation() == -1) idleTicks++;
+        else idleTicks = 0;
         if (timeout > 0) {
             timeout--;
             return;
@@ -134,8 +138,6 @@ public class AutoCombatPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || EthanApiPlugin.isMoving() || !started) {
             return;
         }
-        if (!util.isInteracting() || player.getAnimation() == -1) idleTicks++;
-        else idleTicks = 0;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
         hasPrayerPot = supplies.findPrayerPotion() != null;
@@ -172,14 +174,12 @@ public class AutoCombatPlugin extends Plugin {
             if (!lootQueue.isEmpty()) return;
         }
 
-//        if (lootQueue.isEmpty() || idleTicks > 16) {
-        if (util.isInteracting() || util.isBeingInteracted()) {
+        if (PlayerUtil.isInteracting() || PlayerUtil.isBeingInteracted()) {
             timeout = 5;
             return;
         }
         targetNpc = util.findNpc(config.targetName());
         if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
-            log.info("1");
             Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
             if (npc.isPresent()) {
                 MousePackets.queueClickPacket();
@@ -188,8 +188,6 @@ public class AutoCombatPlugin extends Plugin {
                 idleTicks = 0;
             }
         } else {
-            log.info("2");
-
             if (targetNpc != null) {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
@@ -198,7 +196,6 @@ public class AutoCombatPlugin extends Plugin {
                 idleTicks = 0;
             }
         }
-//        }
     }
 
     private void handleFullInventory() {
