@@ -187,4 +187,15 @@ public interface RooftopAgilityConfig extends Config {
     default int enableRun() {
         return 50;
     }
+
+    @ConfigItem(
+            keyName = "highAlch",
+            name = "High Alch",
+            description = "Items you want to high alch, supports wildcards '*'",
+            position = 16,
+            section = agilitySection
+    )
+    default String highAlch() {
+        return "Rune *";
+    }
 }

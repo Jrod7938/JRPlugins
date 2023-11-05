@@ -1,5 +1,6 @@
 package com.piggyplugins.RooftopAgility;
 
+import com.example.PacketUtils.WidgetInfoExtended;
 import com.piggyplugins.PiggyUtils.API.BankUtil;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
@@ -90,6 +91,8 @@ public class RooftopAgilityPlugin extends Plugin {
     @Getter
     private boolean startAgility;
     private Tile markOfGraceTile;
+    private boolean highAlch;
+    private int highAlchTimeout;
 
     private WorldPoint CAMELOT_TELE_LOC = new WorldPoint(2705, 3463, 0);
 
@@ -111,11 +114,9 @@ public class RooftopAgilityPlugin extends Plugin {
 
     private void findObstacle() {
         Obstacles obstacle = Obstacles.getObstacle(client.getLocalPlayer().getWorldLocation());
-        log.info(""+obstacle.getObstacleId());
         if (obstacle != null) {
             Optional<TileObject> tileObject = TileObjects.search().withId(obstacle.getObstacleId()).first();
             if (tileObject.isPresent() && !client.getLocalPlayer().isInteracting()) {
-                log.info("Sending Packet");
                 TileObjectInteraction.interact(tileObject.get(), TileObjectQuery.getObjectComposition(tileObject.get()).getActions()[0]);
             }
         }
@@ -129,10 +130,8 @@ public class RooftopAgilityPlugin extends Plugin {
         if (breakHandler.shouldBreak(this)) {
             return State.HANDLE_BREAK;
         }
+
         if (timeout > 0) {
-            if (shouldRestock()) {
-                return State.RESTOCK_ITEMS;
-            }
             if (!config.foodName().isEmpty()
                     && client.getBoostedSkillLevel(Skill.HITPOINTS) < config.lowHP()) {
                 Optional<Widget> food = InventoryUtil.nameContainsNoCase(config.foodName()).first();
@@ -145,9 +144,13 @@ public class RooftopAgilityPlugin extends Plugin {
             if (runIsOff() && client.getEnergy() >= config.enableRun() * 100) {
                 return State.ENABLE_RUN;
             }
-
             return State.TIMEOUT;
         }
+
+        if (shouldAlch()) {
+            return State.HIGH_ALCH;
+        }
+
         if (shouldCastTeleport()) {
             return State.CAST_CAMELOT_TELEPORT;
         }
@@ -159,16 +162,19 @@ public class RooftopAgilityPlugin extends Plugin {
         if (shouldEatSummerPie()) {
             return State.EAT_SUMMER_PIE;
         }
+
         Obstacles currentObstacle = Obstacles.getObstacle(client.getLocalPlayer().getWorldLocation());
         if (currentObstacle == null) {
             timeout = tickDelay();
             return State.MOVING;
         }
+
         if (currentObstacle.getBankID() > 0 && shouldRestock()) {
             if (TileObjects.search().withId(currentObstacle.getBankID()).nearestToPlayer().isPresent()) {
                 return State.RESTOCK_ITEMS;
             }
         }
+
         if (markOfGrace != null && markOfGraceTile != null && config.mogPickup() && (!Inventory.full() || Inventory.getItemAmount(ItemID.MARK_OF_GRACE) > 0)) {
             if (currentObstacle.getLocation().distanceTo(markOfGraceTile.getWorldLocation()) == 0) {
                 if (markOfGraceTile.getGroundItems().contains(markOfGrace)) {
@@ -196,16 +202,20 @@ public class RooftopAgilityPlugin extends Plugin {
         return State.ANIMATING;
     }
 
+    private boolean shouldAlch() {
+        return highAlchTimeout <= 0 && !config.highAlch().isEmpty() && highAlch;
+    }
+
     private void eatFood() {
-        Optional<Widget> cake = InventoryUtil.nameContainsNoCase(config.foodName()).first();
-        if (cake.isPresent()) {
+        Optional<Widget> food = InventoryUtil.nameContainsNoCase(config.foodName()).first();
+        if (food.isPresent()) {
             MousePackets.queueClickPacket();
-            InventoryInteraction.useItem(cake.get(), "Eat");
+            InventoryInteraction.useItem(food.get(), "Eat");
         }
     }
 
     public String getElapsedTime() {
-        if(!startAgility){
+        if (!startAgility) {
             return "00:00:00";
         }
         Duration duration = Duration.between(timer, Instant.now());
@@ -227,6 +237,7 @@ public class RooftopAgilityPlugin extends Plugin {
         mogInventoryCount = -1;
         marksPerHour = 0;
     }
+
     private void resetValsNoTimer() {
         markOfGraceTile = null;
         startAgility = false;
@@ -250,10 +261,19 @@ public class RooftopAgilityPlugin extends Plugin {
     }
 
     private boolean shouldRestock() {
-        if (config.foodName().isEmpty()) {
+        if (config.foodName().isEmpty() && !config.boostWithPie()) {
             return false;
         }
-        return !InventoryUtil.hasItem(config.foodName());
+
+        if (!config.foodName().isBlank()) {
+            return Inventory.search().nameContains(config.foodName().toLowerCase()).empty();
+        }
+
+        if (config.boostWithPie()) {
+            return Inventory.search().matchesWildCardNoCase("*summer pie*").empty();
+        }
+
+        return false;
     }
 
     private void restockItems() {
@@ -271,7 +291,7 @@ public class RooftopAgilityPlugin extends Plugin {
                 }
             }
             if (config.boostWithPie() && !InventoryUtil.hasItem("summer pie")) {
-                Optional<Widget> bankPie = BankUtil.nameContainsNoCase("summer pie").first();
+                Optional<Widget> bankPie = Bank.search().withId(ItemID.SUMMER_PIE).first();
                 if (bankPie.isPresent()) {
                     BankInteraction.withdrawX(bankPie.get(), 10);
                     return;
@@ -312,6 +332,7 @@ public class RooftopAgilityPlugin extends Plugin {
         overlayManager.add(overlay);
         keyManager.registerKeyListener(agilityToggle);
         breakHandler.registerPlugin(this);
+        highAlch = !config.highAlch().isBlank();
     }
 
     @Override
@@ -325,9 +346,17 @@ public class RooftopAgilityPlugin extends Plugin {
     @Subscribe
     private void onGameTick(GameTick event) {
         player = client.getLocalPlayer();
-        if (player == null || !startAgility || !REGION_IDS.contains(client.getLocalPlayer().getWorldLocation().getRegionID()) || breakHandler.isBreakActive(this)) {
+        if (player == null
+                || !startAgility
+                || !REGION_IDS.contains(client.getLocalPlayer().getWorldLocation().getRegionID())
+                || breakHandler.isBreakActive(this)) {
             return;
         }
+
+        if (highAlchTimeout > 0) {
+            highAlchTimeout--;
+        }
+
         marksPerHour = (int) getMarksPH();
         state = getCurrentState();
         switch (state) {
@@ -376,6 +405,22 @@ public class RooftopAgilityPlugin extends Plugin {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
                 break;
+            case OUT_OF_SUMMER_PIES:
+                EthanApiPlugin.sendClientMessage("[RooftopAgility] Out of summer pies!  Stopping plugin");
+                EthanApiPlugin.stopPlugin(this);
+                break;
+            case HIGH_ALCH:
+                String[] itemsToAlch = config.highAlch().replace(", ", ",").split(",");
+                Widget highAlch = client.getWidget(WidgetInfoExtended.SPELL_HIGH_LEVEL_ALCHEMY.getPackedId());
+                if (itemsToAlch.length > 0 && highAlch != null) {
+                    Inventory.search().onlyNoted().matchesWildCardNoCase(itemsToAlch[0]).first().ifPresentOrElse(item -> {
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetOnWidget(highAlch, item);
+                        highAlchTimeout = 5;
+                    }, () -> {
+                        this.highAlch = false;
+                    });
+                }
         }
     }
 
