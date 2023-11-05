@@ -8,6 +8,7 @@ import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.google.inject.Provides;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
@@ -15,15 +16,14 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 import com.google.inject.Inject;
 import net.runelite.client.util.Text;
 import org.apache.commons.lang3.RandomUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 @PluginDescriptor(
@@ -38,17 +38,23 @@ public class PowerSkillerPlugin extends Plugin {
     private PowerSkillerConfig config;
     @Inject
     private KeyManager keyManager;
+    @Inject
+    private OverlayManager overlayManager;
+//    @Inject
+//    private PowerSkillerOverlay overlay;
     private State state;
     private boolean started;
 
     @Override
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);
+//        overlayManager.add(overlay);
     }
 
     @Override
     protected void shutDown() throws Exception {
         keyManager.unregisterKeyListener(toggle);
+//        overlayManager.remove(overlay);
     }
 
     @Provides
@@ -112,13 +118,49 @@ public class PowerSkillerPlugin extends Plugin {
 
     private void findObject() {
         String objectName = config.objectToInteract();
-        TileObjects.search().withName(objectName).nearestToPlayer().ifPresent(tileObject -> {
-            ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
-            TileObjectInteraction.interact(tileObject, comp.getActions()[0]); // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
-            // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
-        });
-
+        if (config.useForestryTreeNotClosest()) {
+            TileObjects.search().withName(objectName).nearestToPoint(getObjectWMostPlayers()).ifPresent(tileObject -> {
+                ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
+                TileObjectInteraction.interact(tileObject, comp.getActions()[0]);
+            });
+        } else {
+            TileObjects.search().withName(objectName).nearestToPlayer().ifPresent(tileObject -> {
+                ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
+                TileObjectInteraction.interact(tileObject, comp.getActions()[0]); // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
+                // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
+            });
+        }
     }
+
+    /**
+     * Tile w most players on it within 2 tiles of the object we're looking for
+     * @return
+     */
+    public WorldPoint getObjectWMostPlayers() {
+        String objectName = config.objectToInteract();
+        Map<WorldPoint, Integer> playerCounts = new HashMap<>();
+        WorldPoint mostPlayersTile = null;
+        int highestCount = 0;
+        List<TileObject> objects = TileObjects.search().withName(objectName).result();
+
+        List<Player> players = Players.search().notLocalPlayer().result();
+
+        for (TileObject object : objects) {
+            for (Player player : players) {
+                if (player.getWorldLocation().distanceTo(object.getWorldLocation()) <= 2) {
+                    WorldPoint playerTile = player.getWorldLocation();
+                    playerCounts.put(playerTile, playerCounts.getOrDefault(playerTile, 0) + 1);
+                    if (playerCounts.get(playerTile) > highestCount) {
+                        highestCount = playerCounts.get(playerTile);
+                        mostPlayersTile = playerTile;
+                    }
+                }
+            }
+        }
+
+        return mostPlayersTile;
+    }
+
 
     private void findNpc() {
         String npcName = config.objectToInteract();

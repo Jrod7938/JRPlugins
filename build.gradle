@@ -92,8 +92,8 @@ dependencies {
 //    testImplementation project(path: ':RooftopAgility')
 //    compileOnly project(path: ':ItemCombiner')
 //    testImplementation project(path: ':ItemCombiner')
-//    compileOnly project(path: ':PowerSkiller')
-//    testImplementation project(path: ':PowerSkiller')
+    compileOnly project(path: ':PowerSkiller')
+    testImplementation project(path: ':PowerSkiller')
 
 }
 

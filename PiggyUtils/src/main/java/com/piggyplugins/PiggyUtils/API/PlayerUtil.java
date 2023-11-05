@@ -27,7 +27,7 @@ public class PlayerUtil {
     }
 
     public static boolean isRunning() {
-        return EthanApiPlugin.getClient().getVarpValue(173) == 0;
+        return client.getVarpValue(173) == 0;
     }
 
     public static boolean inMulti() {
@@ -44,6 +44,7 @@ public class PlayerUtil {
 
     /**
      * Slayer task count
+     *
      * @return
      */
     public static int getTaskCount() {
