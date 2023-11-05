@@ -73,7 +73,7 @@ public class ButterflyPlugin extends Plugin {
 
     private void doButterfly() {
         Optional<NPC> butterfly = NPCs.search().withName(config.butterfly()).withAction("Catch").nearestToPlayer();
-        List<Widget> filledJars = Inventory.search().withAction("Release").withName("Ruby harvest").result();
+        List<Widget> filledJars = Inventory.search().withAction("Release").withName(config.butterfly()).result();
         Optional<Widget> emptyJar = Inventory.search().withName("Butterfly jar").first();
 
         checkRunEnergy();
