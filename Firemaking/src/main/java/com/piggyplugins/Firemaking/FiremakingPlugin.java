@@ -69,7 +69,6 @@ public class FiremakingPlugin extends Plugin {
     private int lastStartTile = -1;
     private boolean firstFire = true;
 
-
     @Override
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);

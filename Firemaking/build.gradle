@@ -25,7 +25,7 @@ test {
 task PiggyJar(type: Jar) {
     manifest {
     }
-    baseName = 'aio-use'
+    baseName = 'firemaking'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

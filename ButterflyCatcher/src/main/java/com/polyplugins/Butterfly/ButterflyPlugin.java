@@ -7,7 +7,7 @@ import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.PiggyUtils.API.PlayerUtil;
+//import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
@@ -38,7 +38,6 @@ public class ButterflyPlugin extends Plugin {
     private KeyManager keyManager;
     private boolean started = false;
     public int timeout = 0;
-
     @Provides
     private ButterflyConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(ButterflyConfig.class);

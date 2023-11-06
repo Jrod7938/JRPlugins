@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
@@ -64,7 +65,6 @@ public class AutoAerialPlugin extends Plugin {
         keyManager.unregisterKeyListener(toggle);
     }
 
-
     boolean cutFish = false;
     boolean dropFish = false;
 
@@ -80,10 +80,18 @@ public class AutoAerialPlugin extends Plugin {
             return;
         }
         idleTicks = client.getLocalPlayer().getAnimation() == -1 ? idleTicks + 1 : 0;
-
+//        WidgetInfo.DIALOG_DOUBLE_SPRITE_SPRITE1
+//        if (client.getWidget(15007746) != null) {
+//            log.info("clicking continue");
+//            WidgetPackets.queueResumePause(15007746, -1);
+////            timeout = 1;
+//        }
+        Widgets.search().withTextContains("Click here to continue").first().ifPresent(widget -> {
+            WidgetPackets.queueResumePause(widget.getId(), -1);
+        });
 
         //doButterfly(player);
-        doAerial2();
+//        doAerial2();
     }
 
     private void doAerial2() {

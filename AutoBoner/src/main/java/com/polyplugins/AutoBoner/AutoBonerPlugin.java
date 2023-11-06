@@ -49,7 +49,6 @@ public class AutoBonerPlugin extends Plugin {
     private AutoBonerConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(AutoBonerConfig.class);
     }
-
     @Override
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);

@@ -1,6 +1,9 @@
-package com.piggyplugins.PiggyUtils.API;
+package com.polyplugins.AutoCombat.util;
+
 
 import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.google.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.Varbits;

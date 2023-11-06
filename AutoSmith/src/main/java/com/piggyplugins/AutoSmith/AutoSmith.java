@@ -37,7 +37,6 @@ public class AutoSmith extends Plugin {
     public int timeout = 0;
     public int idleTicks = 0;
     public boolean started = false;
-
     @Inject
     Client client;
     @Inject
