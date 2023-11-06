@@ -35,8 +35,8 @@ dependencies {
     compileOnly project(':PiggyUtils')
     testImplementation project(':PiggyUtils')
 
-    compileOnly project(path: ':AutoMLM')
-    testImplementation project(path: ':AutoMLM')
+//    compileOnly project(path: ':AutoMLM')
+//    testImplementation project(path: ':AutoMLM')
 
     compileOnly project(path: ':AutoSmith')
     testImplementation project(path: ':AutoSmith')

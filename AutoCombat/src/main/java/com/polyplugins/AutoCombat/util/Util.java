@@ -31,13 +31,15 @@ public class Util {
      * @return The nearest npc, or null if none are found
      */
     public NPC findNpc(String name) {
-        NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack");
+        NPCQuery npc = NPCs.search().alive().withNameIgnoreCase(name).withAction("Attack").filter(
+                n -> !n.isInteracting() || (n.isInteracting() && n instanceof Player &&
+                        n.getInteracting().equals(client.getLocalPlayer()))
+        );
 //        log.info("Found npcs:" + npc.result().size());
-        return npc.filter(n -> client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, n.getWorldLocation()))
-                .nearestToPlayer().orElse(null);
+        return npc.nearestToPlayer().orElse(null);
     }
 
-    public boolean inMulti(){
+    public boolean inMulti() {
         return client.getVarbitValue(Varbits.MULTICOMBAT_AREA) == 1;
     }
 

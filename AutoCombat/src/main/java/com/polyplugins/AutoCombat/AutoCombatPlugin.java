@@ -129,7 +129,7 @@ public class AutoCombatPlugin extends Plugin {
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
 
         if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
-        if (!PlayerUtil.isInteracting() || player.getAnimation() == -1) idleTicks++;
+        if (!PlayerUtil.isInteracting(client) || player.getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
         if (timeout > 0) {
             timeout--;
@@ -174,7 +174,7 @@ public class AutoCombatPlugin extends Plugin {
             if (!lootQueue.isEmpty()) return;
         }
 
-        if (PlayerUtil.isInteracting() || PlayerUtil.isBeingInteracted()) {
+        if (PlayerUtil.isInteracting(client) || PlayerUtil.isBeingInteracted()) {
             timeout = 5;
             return;
         }

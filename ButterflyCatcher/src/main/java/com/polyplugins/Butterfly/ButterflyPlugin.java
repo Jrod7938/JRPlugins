@@ -100,7 +100,7 @@ public class ButterflyPlugin extends Plugin {
 
 
     private void checkRunEnergy() {
-        if (PlayerUtil.isRunning() && PlayerUtil.runEnergy() <= 10) {
+        if (PlayerUtil.isRunning(client) && PlayerUtil.runEnergy(client) <= 10) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
         }
@@ -108,7 +108,7 @@ public class ButterflyPlugin extends Plugin {
     }
 
     private void checkStamina() {
-        if (!PlayerUtil.isStaminaActive() && PlayerUtil.runEnergy() <= 70) {
+        if (!PlayerUtil.isStaminaActive(client) && PlayerUtil.runEnergy(client) <= 70) {
             Inventory.search().onlyUnnoted().nameContains("Stamina pot").withAction("Drink").first().ifPresent(stamina -> {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetAction(stamina, "Drink");
