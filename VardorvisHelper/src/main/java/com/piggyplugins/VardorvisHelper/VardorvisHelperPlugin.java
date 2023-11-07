@@ -1,6 +1,8 @@
 package com.piggyplugins.VardorvisHelper;
 
 import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.EthanApiPlugin.Collections.Widgets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import net.runelite.api.Projectile;
 import net.runelite.api.SpriteID;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ProjectileMoved;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
@@ -19,6 +22,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 import com.google.inject.Inject;
+
+import java.util.List;
 
 @Slf4j
 @PluginDescriptor(
@@ -144,6 +149,8 @@ public class VardorvisHelperPlugin extends Plugin {
                 handleRangeFirstGameTick();
             }
         }
+        doBloodCaptcha();
+
     }
 
     @Subscribe
@@ -171,6 +178,16 @@ public class VardorvisHelperPlugin extends Plugin {
                     mageFirst = false;
                 }
             }
+        }
+    }
+
+    /**
+     * 1 tick blood captcha. Thanks @Lunatik
+     */
+    private void doBloodCaptcha() {
+        List<Widget> captchaBlood = Widgets.search().hiddenState(false).withAction("Destroy").result();
+        if (!captchaBlood.isEmpty()) {
+            captchaBlood.forEach(x -> WidgetPackets.queueWidgetAction(x, "Destroy"));
         }
     }
 
