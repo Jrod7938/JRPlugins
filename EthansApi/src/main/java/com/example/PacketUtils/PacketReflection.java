@@ -58,7 +58,7 @@ public class PacketReflection {
             clientMouseLastLastPressedTimeMillis = clientInstance.getClass().getDeclaredField(ObfuscatedNames.clientMouseLastLastPressedTimeMillis);
         } catch (Exception e) {
             e.printStackTrace();
-            log.warn("Failed to load com.plugins.Packets Into Client");
+            log.warn("Failed to load Into Client");
             return false;
         }
         return true;
@@ -66,8 +66,7 @@ public class PacketReflection {
 
     @SneakyThrows
     public static void writeObject(String obfname, Object buffer, Object input) {
-        Method bufferMethod = BufferMethods.class.getDeclaredMethod(obfname, Object.class, int.class);
-        bufferMethod.invoke(null, buffer, input);
+        BufferMethods.makeBufferCall(obfname, buffer, (Integer) input);
     }
 
     @SneakyThrows
