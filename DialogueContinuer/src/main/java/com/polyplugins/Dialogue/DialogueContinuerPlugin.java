@@ -1,6 +1,7 @@
 package com.polyplugins.Dialogue;
 
 
+import com.example.EthanApiPlugin.Collections.Widgets;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.*;
 import com.google.inject.Inject;
@@ -28,34 +29,18 @@ import net.runelite.client.util.HotkeyListener;
 public class DialogueContinuerPlugin extends Plugin {
     @Inject
     private Client client;
-    @Inject
-    private DialogueContinuerConfig config;
-    @Inject
-    private DialogueContinuerOverlay overlay;
-    @Inject
-    private KeyManager keyManager;
-    @Inject
-    private OverlayManager overlayManager;
-    @Inject
-    private ClientThread clientThread;
     private boolean started = false;
     public int timeout = 0;
 
-    @Provides
-    private DialogueContinuerConfig getConfig(ConfigManager configManager) {
-        return configManager.getConfig(DialogueContinuerConfig.class);
-    }
 
     @Override
     protected void startUp() throws Exception {
-        keyManager.registerKeyListener(toggle);
-        overlayManager.add(overlay);
+
         timeout = 0;
     }
+
     @Override
     protected void shutDown() throws Exception {
-        keyManager.unregisterKeyListener(toggle);
-        overlayManager.remove(overlay);
         timeout = 0;
     }
 
@@ -70,30 +55,21 @@ public class DialogueContinuerPlugin extends Plugin {
             return;
         }
 
-    }
-
-    private void checkRunEnergy() {
-        if (runIsOff() && client.getEnergy() >= 30 * 100) {
+        Widgets.search().withParentId(14352385).withTextContains("[").withTextContains("]").first().ifPresent(widget -> {
+            String text = widget.getText();
+            int index = text.indexOf("]");
+            String option = text.substring(index - 1, index).trim();
+            log.info("Dialogue option: " + option);
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
-        }
+            WidgetPackets.queueResumePause(widget.getId(), Integer.parseInt(option));
+            timeout = 1;
+        });
+        Widgets.search().withTextContains("Click here to continue").first().ifPresent(widget -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueResumePause(widget.getId(), -1);
+            timeout = 0;
+        });
+
     }
 
-    private boolean runIsOff() {
-        return EthanApiPlugin.getClient().getVarpValue(173) == 0;
-    }
-
-    private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {
-        @Override
-        public void hotkeyPressed() {
-            toggle();
-        }
-    };
-
-    public void toggle() {
-        if (client.getGameState() != GameState.LOGGED_IN) {
-            return;
-        }
-        started = !started;
-    }
 }

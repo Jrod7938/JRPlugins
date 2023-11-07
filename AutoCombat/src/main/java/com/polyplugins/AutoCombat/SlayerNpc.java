@@ -6,7 +6,7 @@ public enum SlayerNpc {
     ROCKSLUG("Rockslug", "Bag of salt", 5, "",  ""),
     DESERT_LIZARD("Desert lizard", "Ice cooler", 5, "", ""),
     GARGOYLE("Gargoyle", "Rock hammer", 8, "", ""),
-    MUTATED_ZYGOMITE("Mutated zygomite", "Fungicide spray", 8, "", "Undisturbed Mutated zygomite"),
+    MUTATED_ZYGOMITE("Mutated zygomite", "Fungicide spray", 8, "Pick", "Mutated Fungi"),
     ANCIENT_ZYGOMITE("Ancient Zygomite", "Fungicide spray", 8, "Pick", "Ancient Fungi");
 
     @Getter

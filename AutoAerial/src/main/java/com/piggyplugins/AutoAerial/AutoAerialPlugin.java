@@ -22,6 +22,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.util.HotkeyListener;
+import net.runelite.client.util.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +66,6 @@ public class AutoAerialPlugin extends Plugin {
         keyManager.unregisterKeyListener(toggle);
     }
 
-    boolean cutFish = false;
-    boolean dropFish = false;
-
     @Subscribe
     public void onGameTick(GameTick event) {
         Player player = client.getLocalPlayer();
@@ -80,18 +78,8 @@ public class AutoAerialPlugin extends Plugin {
             return;
         }
         idleTicks = client.getLocalPlayer().getAnimation() == -1 ? idleTicks + 1 : 0;
-//        WidgetInfo.DIALOG_DOUBLE_SPRITE_SPRITE1
-//        if (client.getWidget(15007746) != null) {
-//            log.info("clicking continue");
-//            WidgetPackets.queueResumePause(15007746, -1);
-////            timeout = 1;
-//        }
-        Widgets.search().withTextContains("Click here to continue").first().ifPresent(widget -> {
-            WidgetPackets.queueResumePause(widget.getId(), -1);
-        });
 
-        //doButterfly(player);
-//        doAerial2();
+        doAerial2();
     }
 
     private void doAerial2() {

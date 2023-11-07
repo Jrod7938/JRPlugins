@@ -39,4 +39,5 @@ include 'AutoSmith'
 include 'Firemaking'
 include 'AutoBoner'
 include 'ButterflyCatcher'
+include 'DialogueContinuer'
 

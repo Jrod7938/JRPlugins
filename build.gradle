@@ -34,6 +34,8 @@ dependencies {
     testImplementation project(path: ':EthansApi')
     compileOnly project(':PiggyUtils')
     testImplementation project(':PiggyUtils')
+    compileOnly project(path: ':DialogueContinuer')
+    testImplementation project(path: ':DialogueContinuer')
 
 //    compileOnly project(path: ':AutoMLM')
 //    testImplementation project(path: ':AutoMLM')

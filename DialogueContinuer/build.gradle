@@ -2,18 +2,36 @@ plugins {
     id 'java'
 }
 
-group = 'com.polyplugins'
-version = '1.0.3'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    compileOnly project(":EthansApi")
+    compileOnly project(":PiggyUtils")
 }
+
+sourceSets {
+
+    main {
+
+        java {
+            srcDir "src"
+        }
+
+    }
+}
+
+group 'com.polyplugins'
+version '1.0.0'
 
 test {
     useJUnitPlatform()
 }
+
+task PiggyJar(type: Jar) {
+    manifest {
+    }
+    baseName = 'dialogue'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+tasks.register("prepareKotlinBuildScriptModel"){}
