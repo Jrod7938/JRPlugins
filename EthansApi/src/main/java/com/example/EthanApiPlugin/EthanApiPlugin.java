@@ -103,7 +103,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("ay");
+            skullField = player.getClass().getDeclaredField("ar");
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * 705058777;
+            var1 = skullField.getInt(player) * -110809851;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
@@ -141,6 +141,7 @@ public class EthanApiPlugin extends Plugin {
                 return SkullIcon.DEAD_MAN_ONE;
         }
     }
+
 
     public static boolean isQuickPrayerActive(QuickPrayer prayer) {
         return (client.getVarbitValue(4102) & (int) Math.pow(2, prayer.getIndex())) == Math.pow(2, prayer.getIndex());
@@ -173,7 +174,7 @@ public class EthanApiPlugin extends Plugin {
                 }
                 int value = declaredField.getInt(npc);
                 declaredField.setInt(npc, 4795789);
-                if (npc.getAnimation() == 1375718357 * 4795789) {
+                if (npc.getAnimation() == -760216869 * 4795789) {
                     animationField = declaredField.getName();
                     declaredField.setInt(npc, value);
                     declaredField.setAccessible(false);
@@ -188,7 +189,7 @@ public class EthanApiPlugin extends Plugin {
         }
         Field animation = npc.getClass().getSuperclass().getDeclaredField(animationField);
         animation.setAccessible(true);
-        int anim = animation.getInt(npc) * 1375718357;
+        int anim = animation.getInt(npc) * -760216869;
         animation.setAccessible(false);
         return anim;
     }
@@ -197,7 +198,7 @@ public class EthanApiPlugin extends Plugin {
     public static int pathLength(NPC npc) {
         Field pathLength = npc.getClass().getSuperclass().getDeclaredField("bs");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(npc) * 609746431;
+        int path = pathLength.getInt(npc) * -1742381503;
         pathLength.setAccessible(false);
         return path;
     }
@@ -206,7 +207,7 @@ public class EthanApiPlugin extends Plugin {
     public static int pathLength(Player player) {
         Field pathLength = player.getClass().getSuperclass().getDeclaredField("bs");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(player) * 609746431;
+        int path = pathLength.getInt(player) * -1742381503;
         pathLength.setAccessible(false);
         return path;
     }
