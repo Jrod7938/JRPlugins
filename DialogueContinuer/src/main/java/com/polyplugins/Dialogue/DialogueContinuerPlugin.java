@@ -32,7 +32,6 @@ public class DialogueContinuerPlugin extends Plugin {
     private boolean started = false;
     public int timeout = 0;
 
-
     @Override
     protected void startUp() throws Exception {
 
@@ -65,6 +64,7 @@ public class DialogueContinuerPlugin extends Plugin {
             timeout = 1;
         });
         Widgets.search().withTextContains("Click here to continue").first().ifPresent(widget -> {
+
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(widget.getId(), -1);
             timeout = 0;

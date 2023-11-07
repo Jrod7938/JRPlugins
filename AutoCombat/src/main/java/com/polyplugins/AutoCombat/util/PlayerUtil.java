@@ -41,6 +41,8 @@ public class PlayerUtil {
 
     public static boolean isBeingInteracted() {
         return NPCs.search().interactingWithLocal().first().isPresent();
+    } public static boolean isBeingInteracted(String name) {
+        return NPCs.search().withName(name).interactingWithLocal().first().isPresent();
     }
 
     /**

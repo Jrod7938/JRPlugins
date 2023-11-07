@@ -93,6 +93,7 @@ public class AutoCombatPlugin extends Plugin {
     public int idleTicks = 0;
     public NPC targetNpc = null;
     public Player player = null;
+    private boolean looting = false;
 
     @Override
     protected void startUp() throws Exception {
@@ -129,6 +130,7 @@ public class AutoCombatPlugin extends Plugin {
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
 
         if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
+
         if (!PlayerUtil.isInteracting(client) || player.getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
         if (timeout > 0) {
@@ -138,17 +140,17 @@ public class AutoCombatPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || EthanApiPlugin.isMoving() || !started) {
             return;
         }
+
+        if (lootQueue.isEmpty()) looting = false;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
         hasPrayerPot = supplies.findPrayerPotion() != null;
         hasCombatPot = supplies.findCombatPotion() != null;
         hasBones = supplies.findBone() != null;
-        //do later,copilot suggest so may as well
-//        if (hasBones) {
-//            InventoryInteraction.useItem(supplies.findBone(), "Bury");
-//            timeout = 1;
-//        }
+
         if (!lootQueue.isEmpty()) {
+            looting = true;
+            log.info("lootq");
             ItemStack itemStack = lootQueue.peek();
 
             TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
@@ -159,7 +161,6 @@ public class AutoCombatPlugin extends Plugin {
                     if (lootHelper.hasStackableLoot(comp)) {
                         log.info("Has stackable loot");
                         item.interact(false);
-                        timeout = 6;
                     }
                     if (Inventory.full()) {
                         handleFullInventory();
@@ -167,15 +168,15 @@ public class AutoCombatPlugin extends Plugin {
                 }
                 if (!Inventory.full()) {
                     item.interact(false);
-                    timeout = 6;
                 }
             });
+            timeout = 3;
             lootQueue.remove();
             if (!lootQueue.isEmpty()) return;
         }
 
-        if (PlayerUtil.isInteracting(client) || PlayerUtil.isBeingInteracted()) {
-            timeout = 5;
+        if (PlayerUtil.isInteracting(client) || looting) {
+            timeout = 6;
             return;
         }
         targetNpc = util.findNpc(config.targetName());
@@ -184,7 +185,7 @@ public class AutoCombatPlugin extends Plugin {
             if (npc.isPresent()) {
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
-                timeout = 5;
+                timeout = 6;
                 idleTicks = 0;
             }
         } else {
@@ -192,7 +193,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout = 4;
+                timeout =6;
                 idleTicks = 0;
             }
         }

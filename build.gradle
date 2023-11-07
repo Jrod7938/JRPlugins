@@ -36,6 +36,8 @@ dependencies {
     testImplementation project(':PiggyUtils')
     compileOnly project(path: ':DialogueContinuer')
     testImplementation project(path: ':DialogueContinuer')
+    compileOnly project(path: ':KittenFeeder')
+    testImplementation project(path: ':KittenFeeder')
 
 //    compileOnly project(path: ':AutoMLM')
 //    testImplementation project(path: ':AutoMLM')
