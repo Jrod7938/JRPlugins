@@ -20,7 +20,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 @PluginDescriptor(
-        name = "DialogueContinuer",
+        name = "<html><font color=\"#7ecbf2\">[PJ]</font>Dialogue Continuer</html>",
         description = "Continues conversation and automates quest helper dialogue",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

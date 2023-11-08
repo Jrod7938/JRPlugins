@@ -28,7 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@PluginDescriptor(name = "AutoAerial", description = "", enabledByDefault = false, tags = {""})
+@PluginDescriptor(name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoAerial</html>",
+        description = "",
+        enabledByDefault = false,
+        tags = {"poly","plugin"})
 @Slf4j
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDependency(EthanApiPlugin.class)

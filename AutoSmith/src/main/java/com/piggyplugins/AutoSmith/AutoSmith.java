@@ -29,7 +29,10 @@ import net.runelite.client.util.HotkeyListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-@PluginDescriptor(name = "AutoSmith", description = "", enabledByDefault = false, tags = {""})
+@PluginDescriptor(name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoSmith</html>",
+        description = "",
+        enabledByDefault = false,
+        tags = {"poly", "plugin"})
 @Slf4j
 @PluginDependency(PacketUtilsPlugin.class)
 @PluginDependency(EthanApiPlugin.class)

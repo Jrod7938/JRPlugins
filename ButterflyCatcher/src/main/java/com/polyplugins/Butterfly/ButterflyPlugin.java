@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "Butterfly Catcher",
+        name = "<html><font color=\"#7ecbf2\">[PJ]</font>Butterfly Catcher</html>",
         description = "Catches and releases butterflies",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

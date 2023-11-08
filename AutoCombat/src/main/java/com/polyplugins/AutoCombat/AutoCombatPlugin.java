@@ -45,7 +45,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.runelite.client.plugins.opponentinfo.OpponentInfoPlugin;
 
 @PluginDescriptor(
-        name = "AutoCombat",
+        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoCombat</html>",
         description = "Kills shit",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

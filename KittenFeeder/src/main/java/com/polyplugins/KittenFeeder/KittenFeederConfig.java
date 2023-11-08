@@ -22,7 +22,17 @@ public interface KittenFeederConfig extends Config {
             position = 1
     )
     default int frequency() {
-        return 1;
+        return 20;
+    }
+
+    @ConfigItem(
+            keyName = "stroke",
+            name = "Stroke",
+            description = "Stroke your kitten",
+            position = 2
+    )
+    default boolean stroke() {
+        return true;
     }
 
 }

@@ -37,10 +37,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @PluginDescriptor(
-        name = "AutoFiremaking",
+        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoFiremaking</html>",
         description = "",
         enabledByDefault = false,
-        tags = {"", ""}
+        tags = {"poly", "plugin"}
 )
 @Slf4j
 public class FiremakingPlugin extends Plugin {
