@@ -29,12 +29,10 @@ import net.runelite.client.util.HotkeyListener;
 public class DialogueContinuerPlugin extends Plugin {
     @Inject
     private Client client;
-    private boolean started = false;
     public int timeout = 0;
 
     @Override
     protected void startUp() throws Exception {
-
         timeout = 0;
     }
 
@@ -50,7 +48,7 @@ public class DialogueContinuerPlugin extends Plugin {
             timeout--;
             return;
         }
-        if (client.getGameState() != GameState.LOGGED_IN || !started) {
+        if (client.getGameState() != GameState.LOGGED_IN) {
             return;
         }
 
