@@ -31,7 +31,7 @@ public interface PowerSkillerConfig extends Config {
     @ConfigItem(
             name = "Object",
             keyName = "objectToInteract",
-            description = "Game obejct you will be interacting with",
+            description = "Game object you will be interacting with",
             position = 0
     )
     default String objectToInteract() {
@@ -57,6 +57,7 @@ public interface PowerSkillerConfig extends Config {
     default String itemsToKeep() {
         return "coins,rune pouch,divine rune pouch,looting bag,clue scroll";
     }
+
     @Range(
             max = 9
     )
@@ -69,6 +70,7 @@ public interface PowerSkillerConfig extends Config {
     default int dropPerTickOne() {
         return 1;
     }
+
     @Range(
             max = 9
     )
@@ -80,6 +82,16 @@ public interface PowerSkillerConfig extends Config {
     )
     default int dropPerTickTwo() {
         return 3;
+    }
+//      not sure if this is possible
+    @ConfigItem(
+            name = "Forestry Tree",
+            keyName = "dropItems",
+            description = "Object w most players,UNCHECK IF NOT WC",
+            position = 5
+    )
+    default boolean useForestryTreeNotClosest() {
+        return false;
     }
 
 

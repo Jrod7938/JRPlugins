@@ -59,6 +59,11 @@ public class NPCQuery {
         return this;
     }
 
+    public NPCQuery withNameIgnoreCase(String name) {
+        npcs = npcs.stream().filter(npcs -> npcs.getName() != null && npcs.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
+        return this;
+    }
+
     public NPCQuery nameContains(String name) {
         npcs = npcs.stream().filter(npcs -> npcs.getName() != null && npcs.getName().contains(name)).collect(Collectors.toList());
         return this;

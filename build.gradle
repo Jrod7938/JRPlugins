@@ -29,6 +29,39 @@ allprojects {
 }
 
 dependencies {
+
+    // Add modules here like so, so you can run the ExamplePluginTest
+    compileOnly project(path: ':EthansApi')
+    testImplementation project(path: ':EthansApi')
+    compileOnly project(':PiggyUtils')
+    testImplementation project(':PiggyUtils')
+    compileOnly project(path: ':DialogueContinuer')
+    testImplementation project(path: ':DialogueContinuer')
+    compileOnly project(path: ':KittenFeeder')
+    testImplementation project(path: ':KittenFeeder')
+    compileOnly project(path: ':AutoChompy')
+    testImplementation project(path: ':AutoChompy')
+
+//    compileOnly project(path: ':AutoMLM')
+//    testImplementation project(path: ':AutoMLM')
+
+    compileOnly project(path: ':AutoSmith')
+    testImplementation project(path: ':AutoSmith')
+
+    compileOnly project(path: ':AutoAerial')
+    testImplementation project(path: ':AutoAerial')
+
+    compileOnly project(path: ':AutoCombat')
+    testImplementation project(path: ':AutoCombat')
+
+    compileOnly project(path: ':Firemaking')
+    testImplementation project(path: ':Firemaking')
+
+    compileOnly project(path: ':AutoBoner')
+    testImplementation project(path: ':AutoBoner')
+
+    compileOnly project(path: ':ButterflyCatcher')
+    testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
     implementation project(path: ':AutoJugHumidifier')
     implementation project(path: ':AutoRifts')
@@ -62,9 +95,14 @@ dependencies {
     implementation project(path: ':DropParty')
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 
-    // Add modules here like so, so you can run the ExamplePluginTest
-    compileOnly project(path: ':EthansApi')
-    testImplementation project(path: ':EthansApi')
+//
+//    compileOnly project(path: ':RooftopAgility')
+//    testImplementation project(path: ':RooftopAgility')
+//    compileOnly project(path: ':ItemCombiner')
+//    testImplementation project(path: ':ItemCombiner')
+    compileOnly project(path: ':PowerSkiller')
+    testImplementation project(path: ':PowerSkiller')
+
 }
 
 sourceSets {
