@@ -26,6 +26,8 @@ import net.runelite.client.ui.overlay.infobox.Timer;
 import net.runelite.client.util.HotkeyListener;
 import net.runelite.client.task.Scheduler;
 
+import java.util.Optional;
+
 
 @PluginDescriptor(
         name = "<html><font color=\"#7ecbf2\">[PJ]</font>Kitten Feeder</html>",
@@ -38,8 +40,12 @@ public class KittenFeederPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
+    private ClientThread clientThread;
+    @Inject
     private KittenFeederConfig config;
     public int timeout = 0;
+    private boolean interactNext = false;
+    private boolean strokeNext = false;
     @Inject
     public ItemManager itemManager;
 
@@ -51,9 +57,11 @@ public class KittenFeederPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        timeout = minutesToGameTicks(config.frequency());
-        EthanApiPlugin.sendClientMessage("Kitten Feeder started");
-        EthanApiPlugin.sendClientMessage("ONLY FEEDS EVERY `X` MINUTES - DONT BLAME ME IF YOUR CAT DIES");
+        clientThread.invokeLater(() -> {
+            timeout = minutesToGameTicks(config.frequency());
+            EthanApiPlugin.sendClientMessage("Kitten Feeder started");
+            EthanApiPlugin.sendClientMessage("ONLY FEEDS EVERY `X` MINUTES - DONT BLAME ME IF YOUR CAT DIES");
+        });
     }
 
     @Override
@@ -64,37 +72,61 @@ public class KittenFeederPlugin extends Plugin {
 
     @Subscribe
     private void onGameTick(GameTick event) {
+        if (client.getGameState() != GameState.LOGGED_IN) {
+            return;
+        }
         if (!hasFollower()) {
             EthanApiPlugin.sendClientMessage("NO FOLLOWER, STOPPING");
             EthanApiPlugin.stopPlugin(this);
         }
+        log.info("timeout: " + timeout);
         if (timeout > 0) {
             timeout--;
             return;
         }
-        if (client.getGameState() != GameState.LOGGED_IN) {
+        if (interactNext) {
+            interactNext = false;
+            log.info("interact");
+            kitten().ifPresent(npc -> {
+                MousePackets.queueClickPacket();
+                NPCPackets.queueNPCAction(npc, "Interact");
+                strokeNext = true;
+            });
+            timeout = 2;
             return;
         }
-        NPCs.search().withName("Kitten").interactingWithLocal().first().ifPresent(npc -> {
+        if (strokeNext) {
+            strokeNext = false;
+            log.info("stroke");
+            Widgets.search().withText("Interact with kitten").hiddenState(false).first().ifPresent(widget -> {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueResumePause(widget.getId(), 1);
+            });
+            timeout = minutesToGameTicks(config.frequency());
+            return;
+        }
+
+
+        kitten().ifPresent(npc -> {
             Inventory.search().onlyUnnoted().withName(config.food()).first().ifPresentOrElse(item -> {
                 MousePackets.queueClickPacket();
                 MousePackets.queueClickPacket();
                 NPCPackets.queueWidgetOnNPC(npc, item);
                 if (config.stroke()) {
-                    MousePackets.queueClickPacket();
-                    NPCPackets.queueNPCAction(npc, "Interact");
+                    interactNext = true;
                 }
+                timeout = interactNext ? 3 : minutesToGameTicks(config.frequency());
             }, () -> {
                 EthanApiPlugin.sendClientMessage(String.format("NO %s FOUND, STOPPING", config.food()));
                 EthanApiPlugin.stopPlugin(this);
             });
         });
 
-        Widgets.search().withText("Interact with kitten").hiddenState(false).first().ifPresent(widget -> {
-            MousePackets.queueClickPacket();
-            WidgetPackets.queueResumePause(widget.getId(), 1);
-        });
 
+    }
+
+    private Optional<NPC> kitten() {
+        return NPCs.search().withName("Kitten").interactingWithLocal().first();
     }
 
     private boolean hasFollower() {
