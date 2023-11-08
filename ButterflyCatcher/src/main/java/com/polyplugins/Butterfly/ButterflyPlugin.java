@@ -66,6 +66,7 @@ public class ButterflyPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || !started) {
             return;
         }
+        checkRunEnergy();
         doButterfly();
 
     }
@@ -100,6 +101,7 @@ public class ButterflyPlugin extends Plugin {
 
     private void checkRunEnergy() {
         if (PlayerUtil.isRunning(client) && PlayerUtil.runEnergy(client) <= 10) {
+            log.info("Run");
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
         }
@@ -108,6 +110,7 @@ public class ButterflyPlugin extends Plugin {
 
     private void checkStamina() {
         if (!PlayerUtil.isStaminaActive(client) && PlayerUtil.runEnergy(client) <= 70) {
+            log.info("Stamina");
             Inventory.search().onlyUnnoted().nameContains("Stamina pot").withAction("Drink").first().ifPresent(stamina -> {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetAction(stamina, "Drink");
