@@ -155,8 +155,8 @@ public class FiremakingPlugin extends Plugin {
 
     public boolean isStandingOnFire() {
         WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
-        return TileObjects.search().nameContains("Fire").result().stream()
-                .anyMatch(toad -> toad.getWorldLocation().equals(playerLocation));
+        return TileObjects.search().nameContains("ire").result().stream()
+                .anyMatch(fire -> fire.getWorldLocation().equals(playerLocation));
     }
 
     private void handleStartFire() {
