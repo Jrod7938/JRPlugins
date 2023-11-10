@@ -25,8 +25,10 @@ public class AutoChompyOverlay extends Overlay {
     private AutoChompyOverlay(Client client, AutoChompyPlugin plugin) {
         this.client = client;
         this.plugin = plugin;
-        setPosition(OverlayPosition.DYNAMIC);
+
+        setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
+        setDragTargetable(true);
 
     }
 
@@ -35,10 +37,12 @@ public class AutoChompyOverlay extends Overlay {
         panelComponent.getChildren().clear();
 
         LineComponent timeout = buildLine("Timeout: ", String.valueOf(plugin.timeout));
-
+        LineComponent state = buildLine("State: ", String.valueOf(plugin.state));
         panelComponent.getChildren().add(timeout);
+        panelComponent.getChildren().add(state);
 
-        return null;
+
+        return panelComponent.render(graphics);
     }
 
     /**

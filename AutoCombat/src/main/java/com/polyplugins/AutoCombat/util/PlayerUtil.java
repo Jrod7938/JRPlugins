@@ -10,38 +10,40 @@ import net.runelite.api.Varbits;
 
 
 public class PlayerUtil {
-//
-//    @Inject
-//    static Client client;
+
+    @Inject
+    static Client client;
 
     /**
      * Run energy the way we'd use it
      *
      * @return
      */
-    public static int runEnergy(Client client) {
+    public static int runEnergy() {
         return client.getEnergy() * 100;
     }
 
-    public static boolean isStaminaActive(Client client) {
+    public static boolean isStaminaActive() {
         return client.getVarbitValue(Varbits.RUN_SLOWED_DEPLETION_ACTIVE) == 1;
     }
 
-    public static boolean isRunning(Client client) {
+    public static boolean isRunning() {
         return client.getVarpValue(173) == 0;
     }
 
-    public static boolean inMulti(Client client) {
+    public static boolean inMulti() {
         return client.getVarbitValue(Varbits.MULTICOMBAT_AREA) == 1;
     }
 
-    public static boolean isInteracting(Client client) {
+    public static boolean isInteracting() {
         return client.getLocalPlayer().isInteracting();
     }
 
     public static boolean isBeingInteracted() {
         return NPCs.search().interactingWithLocal().first().isPresent();
-    } public static boolean isBeingInteracted(String name) {
+    }
+
+    public static boolean isBeingInteracted(String name) {
         return NPCs.search().withName(name).interactingWithLocal().first().isPresent();
     }
 
@@ -50,7 +52,7 @@ public class PlayerUtil {
      *
      * @return
      */
-    public static int getTaskCount(Client client) {
+    public static int getTaskCount() {
         return client.getVarpValue(VarPlayer.SLAYER_TASK_SIZE);
     }
 

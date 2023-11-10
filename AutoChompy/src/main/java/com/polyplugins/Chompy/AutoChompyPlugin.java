@@ -1,9 +1,11 @@
 package com.polyplugins.Chompy;
 
 
+import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.query.EquipmentItemQuery;
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
 import com.example.EthanApiPlugin.Collections.query.NPCQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
@@ -51,13 +53,14 @@ public class AutoChompyPlugin extends Plugin {
     private OverlayManager overlayManager;
     @Inject
     private ClientThread clientThread;
-    private boolean started = false;
+    public boolean started = false;
     public int timeout = 0;
-    private State state = State.WAITING;
-    private NPCQuery swampToads;
-    private NPCQuery bloatedToads;
-    private ItemQuery bloatedToadsItem;
-    private NPCQuery birds;
+    public State state = State.WAITING;
+    public NPCQuery swampToads;
+    public NPCQuery bloatedToads;
+    public ItemQuery bloatedToadsItem;
+    public NPCQuery birds;
+    private int ammoId = -1;
 
     @Provides
     private AutoChompyConfig getConfig(ConfigManager configManager) {
@@ -69,10 +72,7 @@ public class AutoChompyPlugin extends Plugin {
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
         timeout = 0;
-        swampToads = NPCs.search().nameContains("wamp toad").withAction("Inflate");
-        bloatedToads = NPCs.search().nameContains("loated Toad");
-        bloatedToadsItem = Inventory.search().nameContains("loated toad");
-        birds = NPCs.search().nameContains("ompy bird").withAction("Attack");
+        clientThread.invoke(this::setVals);
     }
 
     @Override
@@ -81,31 +81,59 @@ public class AutoChompyPlugin extends Plugin {
         overlayManager.remove(overlay);
         timeout = 0;
         started = false;
-        swampToads = null;
-        bloatedToads = null;
-        bloatedToadsItem = null;
-        birds = null;
+        unsetVals();
     }
 
 
     @Subscribe
     private void onGameTick(GameTick event) {
+        if (client.getGameState() != GameState.LOGGED_IN || !started) {
+            return;
+        }
         if (timeout > 0) {
             timeout--;
             return;
         }
-        if (client.getGameState() != GameState.LOGGED_IN || !started) {
-            return;
-        }
+        setVals();
         determineNextState();
         doChompy();
     }
 
+    private void unsetVals() {
+        swampToads = null;
+        bloatedToads = null;
+        bloatedToadsItem = null;
+        birds = null;
+        ammoId = -1;
+    }
+
+    public void setVals() {
+        if (ammoId < 0) {
+            Equipment.search().filter(item -> {
+                String name = item.getName();
+                return name.contains("gre arrow") || name.contains("brutal arrow");
+            }).first().ifPresentOrElse(item -> {
+                ammoId = item.getEquipmentItemId();
+            }, () -> {
+                EthanApiPlugin.sendClientMessage("No Ogre arrows or Brutal arrows found");
+                EthanApiPlugin.stopPlugin(this);
+            });
+        }
+        swampToads = NPCs.search().nameContains("wamp toad").withAction("Inflate");
+        bloatedToads = NPCs.search().nameContains("loated Toad");
+        bloatedToadsItem = Inventory.search().nameContains("loated toad");
+        birds = NPCs.search().alive().nameContains("ompy bird").withAction("Attack");
+    }
+
     private void doChompy() {
         checkRunEnergy();
-//        log.info(state.toString());
-        log.info(getNearestFreeTile().toString());
-
+        log.info(state.toString());
+        log.info("Ammo id: " + ammoId);
+//        log.info(getNearestFreeTile().toString());
+        if (Equipment.search().withId(ammoId).empty()) {
+            EthanApiPlugin.sendClientMessage("No Ogre arrows or Brutal arrows left");
+            EthanApiPlugin.stopPlugin(this);
+        }
         switch (state) {
             case KILL_BIRD:
                 handleKillBird();
@@ -128,11 +156,11 @@ public class AutoChompyPlugin extends Plugin {
     private void determineNextState() {
         if (!birds.empty()) {
             state = State.KILL_BIRD;
-        } else if (Inventory.search().nameContains("bellows (").empty() && !TileObjects.search().nameContains("wamp bubble").empty()) {
+        } else if (!hasFilledBellows() && !TileObjects.search().nameContains("wamp bubble").empty()) {
             state = State.FILL_BELLOWS;
-        } else if (bloatedToads.result().size() < 3 && !bloatedToadsItem.empty()) {
+        } else if (!bloatedToadsItem.empty()) {
             state = State.DROP_TOAD;
-        } else if (bloatedToadsItem.empty()) {
+        } else if (bloatedToadsItem.empty() && hasFilledBellows()) {
             state = State.INFLATE_TOAD;
         }
     }
@@ -145,11 +173,15 @@ public class AutoChompyPlugin extends Plugin {
     }
 
     private void handleFillBellows() {
-        MousePackets.queueClickPacket();
         TileObjects.search().nameContains("wamp bubble").nearestToPlayer().ifPresent(tileObject -> {
+            MousePackets.queueClickPacket();
             TileObjectInteraction.interact(tileObject, "Suck");
-            timeout = 1;
+            timeout = Inventory.search().nameContains("bellows").result().size() * 4;
         });
+    }
+
+    public boolean hasFilledBellows() {
+        return Inventory.search().nameContains("bellows (").first().isPresent();
     }
 
     public boolean isStandingOnToad() {
@@ -163,9 +195,11 @@ public class AutoChompyPlugin extends Plugin {
             MousePackets.queueClickPacket();
             MovementPackets.queueMovement(getNearestFreeTile().get());
             timeout = 3;
+        } else {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(bloatedToadsItem.first().get(), "Drop");
+            timeout = 2;
         }
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetAction(bloatedToadsItem.first().get(), "Drop");
     }
 
     private Optional<WorldPoint> getNearestFreeTile() {
@@ -186,8 +220,8 @@ public class AutoChompyPlugin extends Plugin {
     }
 
     private void handleInflateToad() {
-        MousePackets.queueClickPacket();
         swampToads.nearestToPlayer().ifPresent(npc -> {
+            MousePackets.queueClickPacket();
             NPCPackets.queueNPCAction(npc, "Inflate");
             timeout = 1;
         });
