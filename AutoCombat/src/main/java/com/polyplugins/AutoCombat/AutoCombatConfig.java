@@ -15,60 +15,6 @@ public interface AutoCombatConfig extends Config {
         return Keybind.NOT_SET;
     }
 
-
-    @ConfigSection(
-            name = "Game Tick Configuration",
-            description = "Configure how to handles game tick delays, 1 game tick equates to roughly 600ms",
-            position = 1,
-            closedByDefault = true
-    )
-    String delayTickConfig = "delayTickConfig";
-
-    @Range(
-            max = 10
-    )
-    @ConfigItem(
-            keyName = "tickDelayMin",
-            name = "Game Tick Min",
-            description = "",
-            position = 2,
-            section = delayTickConfig
-    )
-    default int tickDelayMin() {
-        return 1;
-    }
-
-    @Range(
-            max = 10
-    )
-    @ConfigItem(
-            keyName = "tickDelayMax",
-            name = "Game Tick Max",
-            description = "",
-            position = 3,
-            section = delayTickConfig
-    )
-    default int tickDelayMax() {
-        return 3;
-    }
-
-    @ConfigItem(
-            keyName = "tickDelayEnabled",
-            name = "Tick delay",
-            description = "enables some tick delays",
-            position = 4,
-            section = delayTickConfig
-    )
-    default boolean tickDelay() {
-        return true;
-    }
-
-    @ConfigSection(
-            name = "Auto Combat Configuration",
-            description = "Configure how to handles game tick delays, 1 game tick equates to roughly 600ms",
-            position = 2,
-            closedByDefault = false
-    )
     String autoCombatConfig = "autoCombatConfig";
 
     @ConfigItem(
@@ -155,6 +101,15 @@ public interface AutoCombatConfig extends Config {
             position = 8,
             section = autoCombatConfig)
     default boolean shutdownOnTaskDone() {
+        return false;
+    }
+
+    @ConfigItem(keyName = "buryBones",
+            name = "Bury bones?",
+            description = "Will bury ANY bone in your inventory",
+            position = 9,
+            section = autoCombatConfig)
+    default boolean buryBones() {
         return false;
     }
 

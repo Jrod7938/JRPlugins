@@ -141,6 +141,12 @@ public class AutoCombatPlugin extends Plugin {
             return;
         }
 
+        Inventory.search().onlyUnnoted().withAction("Bury").filter(b -> config.buryBones()).first().ifPresent(bone -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(bone, "Bury");
+            timeout = 1;
+        });
+
         if (lootQueue.isEmpty()) looting = false;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
@@ -162,12 +168,12 @@ public class AutoCombatPlugin extends Plugin {
                         log.info("Has stackable loot");
                         item.interact(false);
                     }
-                    if (Inventory.full()) {
-                        handleFullInventory();
-                    }
                 }
                 if (!Inventory.full()) {
                     item.interact(false);
+                } else {
+                    EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update");
+                    EthanApiPlugin.stopPlugin(this);
                 }
             });
             timeout = 3;
@@ -176,7 +182,7 @@ public class AutoCombatPlugin extends Plugin {
         }
 
         if (PlayerUtil.isInteracting(client) || looting) {
-            timeout = 6;
+            timeout = 4;
             return;
         }
         targetNpc = util.findNpc(config.targetName());
@@ -193,7 +199,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout =6;
+                timeout = 6;
                 idleTicks = 0;
             }
         }
