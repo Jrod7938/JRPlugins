@@ -25,7 +25,6 @@ public class AutoChompyOverlay extends Overlay {
     private AutoChompyOverlay(Client client, AutoChompyPlugin plugin) {
         this.client = client;
         this.plugin = plugin;
-
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
         setLayer(OverlayLayer.ABOVE_SCENE);
         setDragTargetable(true);

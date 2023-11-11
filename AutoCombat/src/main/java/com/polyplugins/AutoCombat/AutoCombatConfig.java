@@ -15,6 +15,13 @@ public interface AutoCombatConfig extends Config {
         return Keybind.NOT_SET;
     }
 
+
+    @ConfigSection(
+            name = "Auto Combat Configuration",
+            description = "Configure how to handles game tick delays, 1 game tick equates to roughly 600ms",
+            position = 2,
+            closedByDefault = false
+    )
     String autoCombatConfig = "autoCombatConfig";
 
     @ConfigItem(

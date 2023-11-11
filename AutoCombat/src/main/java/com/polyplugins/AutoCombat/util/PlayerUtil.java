@@ -10,6 +10,7 @@ import net.runelite.api.Varbits;
 
 
 public class PlayerUtil {
+//
 
 //    @Inject
 //    static Client client;
@@ -41,9 +42,7 @@ public class PlayerUtil {
 
     public static boolean isBeingInteracted() {
         return NPCs.search().interactingWithLocal().first().isPresent();
-    }
-
-    public static boolean isBeingInteracted(String name) {
+    } public static boolean isBeingInteracted(String name) {
         return NPCs.search().withName(name).interactingWithLocal().first().isPresent();
     }
 

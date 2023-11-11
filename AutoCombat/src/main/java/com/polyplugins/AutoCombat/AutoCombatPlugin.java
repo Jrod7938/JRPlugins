@@ -182,7 +182,7 @@ public class AutoCombatPlugin extends Plugin {
         }
 
         if (PlayerUtil.isInteracting(client) || looting) {
-            timeout = 4;
+            timeout = 6;
             return;
         }
         targetNpc = util.findNpc(config.targetName());
@@ -199,7 +199,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout = 6;
+                timeout =6;
                 idleTicks = 0;
             }
         }

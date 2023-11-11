@@ -91,17 +91,10 @@ public class JadAutoPrayersPlugin extends Plugin {
 
     @Subscribe
     public void onAnimationChanged(AnimationChanged event) {
-        if (!(event.getActor() instanceof NPC)) {
-            return;
-        }
-
-        if (event.getActor().getName() == null) {
-            return;
-        }
-
-        if (event.getActor().getName().toLowerCase().contains("jad")) {
-            this.setupJadPrayers((NPC) event.getActor());
-        }
+        NpcUtil.nameContainsNoCase("-jad")
+                .filter(npc -> !npc.getName().toLowerCase().contains("jalrek-jad")
+                        && !npc.getName().toLowerCase().contains("tzrek-jad"))
+                .nearestToPlayer().ifPresent(this::setupJadPrayers);
     }
 
     private void setupJadPrayers(NPC npc) {
@@ -114,6 +107,9 @@ public class JadAutoPrayersPlugin extends Plugin {
     }
 
     private boolean inFight() {
-        return NpcUtil.nameContainsNoCase("-jad").nearestToPlayer().isPresent();
+        return NpcUtil.nameContainsNoCase("-jad")
+                .filter(npc -> !npc.getName().toLowerCase().contains("jalrek-jad")
+                        && !npc.getName().toLowerCase().contains("tzrek-jad"))
+                .nearestToPlayer().isPresent();
     }
 }

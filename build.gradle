@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'net.researchgate.release' version '2.8.1'
 }
 
 allprojects {
@@ -34,16 +35,13 @@ dependencies {
     testImplementation project(path: ':EthansApi')
     compileOnly project(':PiggyUtils')
     testImplementation project(':PiggyUtils')
+
     compileOnly project(path: ':DialogueContinuer')
     testImplementation project(path: ':DialogueContinuer')
     compileOnly project(path: ':KittenFeeder')
     testImplementation project(path: ':KittenFeeder')
     compileOnly project(path: ':AutoChompy')
     testImplementation project(path: ':AutoChompy')
-
-//    compileOnly project(path: ':AutoMLM')
-//    testImplementation project(path: ':AutoMLM')
-
     compileOnly project(path: ':AutoSmith')
     testImplementation project(path: ':AutoSmith')
 
@@ -62,36 +60,37 @@ dependencies {
     compileOnly project(path: ':ButterflyCatcher')
     testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
-//    implementation project(path: ':AutoJugHumidifier')
-//    implementation project(path: ':AutoRifts')
-//    implementation project(path: ':AutoTele')
-//    implementation project(path: ':CalvarionHelper')
-//    implementation project(path: ':CannonReloader')
-//    implementation project(path: ':E3T4G')
-//    implementation project(path: ':EthansApi')
-//    implementation project(path: ':ChinBreakHandler')
-//    implementation project(path: ':GauntletFlicker')
-//    implementation project(path: ':Harpoon2Ticker')
-//    implementation project(path: ':HerbCleaner')
-//    implementation project(path: ':ItemCombiner')
-//    implementation project(path: ':ItemDropper')
-//    implementation project(path: ':JadAutoPrayers')
-//    implementation project(path: ':LavaRunecrafter')
-//    implementation project(path: ':NightmareHelper')
-//    implementation project(path: ':OneTickSwitcher')
-//    implementation project(path: ':PiggyUtils')
-//    implementation project(path: ':PowerSkiller')
-//    implementation project(path: ':PrayerFlicker')
-//    implementation project(path: ':PrayAgainstPlayer')
-//    implementation project(path: ':RooftopAgility')
-//    implementation project(path: ':RunEnabler')
-//    implementation project(path: ':ShiftClickWalker')
-//    implementation project(path: ':SixHourLog')
-//    implementation project(path: ':SpeedDartMaker')
-//    implementation project(path: ':SuperglassMake')
-//    implementation project(path: ':UpkeepPlugin')
-//    implementation project(path: ':VardorvisHelper')
-//    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation project(path: ':AutoJugHumidifier')
+    implementation project(path: ':AutoRifts')
+    implementation project(path: ':AutoTele')
+    implementation project(path: ':CalvarionHelper')
+    implementation project(path: ':CannonReloader')
+    implementation project(path: ':E3T4G')
+    implementation project(path: ':EthansApi')
+    implementation project(path: ':ChinBreakHandler')
+    implementation project(path: ':GauntletFlicker')
+    implementation project(path: ':Harpoon2Ticker')
+    implementation project(path: ':HerbCleaner')
+    implementation project(path: ':ItemCombiner')
+    implementation project(path: ':ItemDropper')
+    implementation project(path: ':JadAutoPrayers')
+    implementation project(path: ':LavaRunecrafter')
+    implementation project(path: ':NightmareHelper')
+    implementation project(path: ':OneTickSwitcher')
+    implementation project(path: ':PiggyUtils')
+    implementation project(path: ':PowerSkiller')
+    implementation project(path: ':PrayerFlicker')
+    implementation project(path: ':PrayAgainstPlayer')
+    implementation project(path: ':RooftopAgility')
+    implementation project(path: ':RunEnabler')
+    implementation project(path: ':ShiftClickWalker')
+    implementation project(path: ':SixHourLog')
+    implementation project(path: ':SpeedDartMaker')
+    implementation project(path: ':SuperglassMake')
+    implementation project(path: ':UpkeepPlugin')
+    implementation project(path: ':VardorvisHelper')
+    implementation project(path: ':DropParty')
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 
 //
 //    compileOnly project(path: ':RooftopAgility')
@@ -115,7 +114,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.3'
+version = '1.0.15'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
