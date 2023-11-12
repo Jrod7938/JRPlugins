@@ -294,7 +294,9 @@ public class PowerSkillerPlugin extends Plugin {
     };
 
     private boolean shouldBank() {
-        return config.shouldBank() && (NPCs.search().withAction("Bank").first().isPresent() || TileObjects.search().withAction("Bank").first().isPresent()) || TileObjects.search().withAction("Collect").first().isPresent() && !bankPin;
+        return config.shouldBank() &&
+                (NPCs.search().withAction("Bank").first().isPresent() || TileObjects.search().withAction("Bank").first().isPresent()
+                || TileObjects.search().withAction("Collect").first().isPresent() && !bankPin);
     }
 
     public void toggle() {
