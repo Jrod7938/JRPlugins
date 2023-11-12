@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font> Gauntlet Flicker and Switcher</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Gauntlet Assist</html>",
         description = "Made by Ethan Vann, maintained by Piggy Plugins",
         tags = {"ethan"}
 )

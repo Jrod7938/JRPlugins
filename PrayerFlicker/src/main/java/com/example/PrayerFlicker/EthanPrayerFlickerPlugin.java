@@ -29,8 +29,8 @@ import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font> Ethan PrayerFlickerPlugin</html>",
-        description = "prayer flicker for quick prayers",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Prayer Flicker</html>",
+        description = "prayer flicker for quick prayers by Ethan Vann, maintained by Piggy Plugins",
         enabledByDefault = false,
         tags = {"ethan"}
 )
