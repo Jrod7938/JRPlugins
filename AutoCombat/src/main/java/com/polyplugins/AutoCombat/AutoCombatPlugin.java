@@ -13,9 +13,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.API.ObjectUtil;
+import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import com.polyplugins.AutoCombat.helper.LootHelper;
 import com.polyplugins.AutoCombat.helper.SlayerHelper;
-import com.polyplugins.AutoCombat.util.PlayerUtil;
 import com.polyplugins.AutoCombat.util.SuppliesUtil;
 import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +81,8 @@ public class AutoCombatPlugin extends Plugin {
     @Inject
     public LootHelper lootHelper;
     @Inject
+    public PlayerUtil playerUtil;
+    @Inject
     public SlayerHelper slayerHelper;
     public Queue<ItemStack> lootQueue = new LinkedList<>();
 
@@ -129,9 +131,18 @@ public class AutoCombatPlugin extends Plugin {
         player = client.getLocalPlayer();
         isSlayerNpc = slayerHelper.isSlayerNPC(config.targetName());
 
-        if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
+        if (isSlayerNpc) {
+            slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
+            playerUtil.getBeingInteracted(config.targetName()).first().ifPresent(n -> {
+                if (n.getHealthRatio() == -1) return;
+                if (n.getHealthRatio() <= slayerInfo.getUseHp()) {
+                    slayerHelper.useSlayerItem(slayerInfo.getItemName());
+                    timeout = 3;
+                }
+            });
+        }
 
-        if (!PlayerUtil.isInteracting(client) || player.getAnimation() == -1) idleTicks++;
+        if (!playerUtil.isInteracting() || player.getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
         if (timeout > 0) {
             timeout--;
@@ -141,6 +152,13 @@ public class AutoCombatPlugin extends Plugin {
             return;
         }
 
+
+        Inventory.search().onlyUnnoted().withAction("Bury").filter(b -> config.buryBones()).first().ifPresent(bone -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(bone, "Bury");
+            timeout = 1;
+        });
+
         if (lootQueue.isEmpty()) looting = false;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
@@ -148,11 +166,10 @@ public class AutoCombatPlugin extends Plugin {
         hasCombatPot = supplies.findCombatPotion() != null;
         hasBones = supplies.findBone() != null;
 
+
         if (!lootQueue.isEmpty()) {
             looting = true;
-            log.info("lootq");
             ItemStack itemStack = lootQueue.peek();
-
             TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
                 log.info("Looting: " + item.getTileItem().getId());
                 ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
@@ -162,38 +179,38 @@ public class AutoCombatPlugin extends Plugin {
                         log.info("Has stackable loot");
                         item.interact(false);
                     }
-                    if (Inventory.full()) {
-                        handleFullInventory();
-                    }
                 }
                 if (!Inventory.full()) {
                     item.interact(false);
+                } else {
+                    EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update");
+                    EthanApiPlugin.stopPlugin(this);
                 }
             });
             timeout = 3;
             lootQueue.remove();
-            if (!lootQueue.isEmpty()) return;
+            return;
         }
-
-        if (PlayerUtil.isInteracting(client) || looting) {
+        if (playerUtil.isInteracting() || looting) {
             timeout = 6;
             return;
         }
         targetNpc = util.findNpc(config.targetName());
-        if (isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
-            Optional<NPC> npc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
-            if (npc.isPresent()) {
+        if (targetNpc == null && isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
+            Optional<NPC> disturbNpc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
+            log.info("Disturbing " + slayerInfo.getUndisturbedName());
+            disturbNpc.ifPresent(npc -> {
                 MousePackets.queueClickPacket();
-                NPCPackets.queueNPCAction(npc.get(), slayerInfo.getDisturbAction());
+                NPCPackets.queueNPCAction(disturbNpc.get(), slayerInfo.getDisturbAction());
                 timeout = 6;
                 idleTicks = 0;
-            }
+            });
         } else {
             if (targetNpc != null) {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout =6;
+                timeout = 6;
                 idleTicks = 0;
             }
         }
@@ -258,16 +275,8 @@ public class AutoCombatPlugin extends Plugin {
     @Subscribe
     public void onChatMessage(ChatMessage event) {
         if (!started) return;
-        if (event.getMessage().contains("Finish it quick")) {
-            Inventory.search().nameContains(slayerInfo.getItemName()).filter(i -> !i.getName().contains("ay 0")).first().ifPresent(item -> {
-                log.info("Using item: " + item.getName());
-                MousePackets.queueClickPacket();
-                MousePackets.queueClickPacket();
-                NPCPackets.queueWidgetOnNPC(NPCs.search().interactingWithLocal().first().get(), item);
-                timeout = 3;
-            });
-        }
     }
+
 
     @Subscribe
     public void onVarbitChanged(VarbitChanged event) {

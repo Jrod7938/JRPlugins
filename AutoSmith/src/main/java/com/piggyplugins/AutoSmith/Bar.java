@@ -1,15 +1,21 @@
 package com.piggyplugins.AutoSmith;
 
+import lombok.Getter;
+
 public enum Bar {
-    BRONZE, IRON, STEEL, MITHRIL, ADAMANT;
+    BRONZE("Bronze bar"),
+    IRON("Iron bar"),
+    STEEL("Steel bar"),
+    MITHRIL("Mithril bar"),
+    ADAMANTITE("Adamantite bar"),
+    RUNITE("Runite bar");
 
-    @Override
-    public String toString() {
-        return name().charAt(0) + name().substring(1).toLowerCase() + " bar";
-    }
 
-    public String platebody() {
-        return name().charAt(0) + name().substring(1).toLowerCase() + " platebody";
+    @Getter
+    private String name;
+
+    Bar(String name) {
+        this.name = name;
     }
 
 }

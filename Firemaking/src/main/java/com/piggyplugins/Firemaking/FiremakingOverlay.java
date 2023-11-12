@@ -1,4 +1,4 @@
-package com.polyplugins.Chompy;
+package com.piggyplugins.Firemaking;
 
 
 import com.example.EthanApiPlugin.Collections.TileObjects;
@@ -13,16 +13,17 @@ import net.runelite.client.ui.overlay.components.PanelComponent;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.sound.sampled.Line;
 import java.awt.*;
 import java.util.Optional;
 
-public class AutoChompyOverlay extends Overlay {
+public class FiremakingOverlay extends Overlay {
     private final PanelComponent panelComponent = new PanelComponent();
     private final Client client;
-    private final AutoChompyPlugin plugin;
+    private final FiremakingPlugin plugin;
 
     @Inject
-    private AutoChompyOverlay(Client client, AutoChompyPlugin plugin) {
+    private FiremakingOverlay(Client client, FiremakingPlugin plugin) {
         this.client = client;
         this.plugin = plugin;
         setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
@@ -35,11 +36,25 @@ public class AutoChompyOverlay extends Overlay {
     public Dimension render(Graphics2D graphics) {
         panelComponent.getChildren().clear();
 
+        LineComponent logName = buildLine("Logs: ", plugin.logName);
         LineComponent timeout = buildLine("Timeout: ", String.valueOf(plugin.timeout));
-        LineComponent state = buildLine("State: ", String.valueOf(plugin.state));
-        panelComponent.getChildren().add(timeout);
-        panelComponent.getChildren().add(state);
 
+        panelComponent.getChildren().add(logName);
+
+        if (plugin.location != null) {
+            LineComponent location = buildLine("Location: ", plugin.location.toString());
+            panelComponent.getChildren().add(location);
+        }
+        panelComponent.getChildren().add(timeout);
+
+        if (plugin.startTiles != null) {
+            String lineString = String.format("%s/%s",
+                    plugin.lastStartTile + 1,
+                    plugin.startTiles.size());
+            LineComponent line = buildLine("Line: ", lineString);
+            panelComponent.getChildren().add(line);
+
+        }
 
         return panelComponent.render(graphics);
     }
