@@ -3,10 +3,12 @@ package com.piggyplugins.ItemCombiner;
 import com.example.EthanApiPlugin.Collections.Bank;
 import com.example.EthanApiPlugin.Collections.BankInventory;
 import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
+import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
@@ -16,10 +18,13 @@ import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.NPC;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.Player;
+import net.runelite.api.TileObject;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
@@ -33,6 +38,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Item Combiner</html>",
@@ -123,16 +129,25 @@ public class ItemCombinerPlugin extends Plugin {
     }
 
     private void findBank() {
-        TileObjects.search()
-                .filter(tileObject -> {
-                    ObjectComposition objectComposition = TileObjectQuery.getObjectComposition(tileObject);
-                    return objectComposition.getName().toLowerCase().contains("bank") ||
-                            Arrays.stream(objectComposition.getActions()).anyMatch(action -> action != null && action.toLowerCase().contains("bank"));
-                })
-                .nearestToPlayer()
-                .ifPresent(tileObject -> {
-                    TileObjectInteraction.interact(tileObject, "Use", "Bank");
-                });
+        Optional<TileObject> chest = TileObjects.search().withName("Bank chest").nearestToPlayer();
+        Optional<NPC> banker = NPCs.search().withAction("Bank").nearestToPlayer();
+        Optional<TileObject> booth = TileObjects.search().withAction("Bank").nearestToPlayer();
+        if (chest.isPresent()){
+            TileObjectInteraction.interact(chest.get(), "Use");
+            return;
+        }
+        if (booth.isPresent()){
+            TileObjectInteraction.interact(booth.get(), "Bank");
+            return;
+        }
+        if (banker.isPresent()){
+            NPCInteraction.interact(banker.get(), "Bank");
+            return;
+        }
+        if (!chest.isPresent() && !booth.isPresent() && !banker.isPresent()){
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
+            EthanApiPlugin.stopPlugin(this);
+        }
 
         if (!deposit) {
             deposit = true;

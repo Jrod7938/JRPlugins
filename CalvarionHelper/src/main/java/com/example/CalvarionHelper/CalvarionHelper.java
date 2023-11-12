@@ -15,7 +15,8 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import java.util.HashMap;
 
 @PluginDescriptor(
-        name = "CalvarionHelper",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> CalvarionHelper </html>",
+        description = "CalvarionHelper by EthanVann, maintained by Piggy Plugins",
         enabledByDefault = false,
         tags = {"ethan"}
 )

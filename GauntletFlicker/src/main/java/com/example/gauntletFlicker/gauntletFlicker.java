@@ -32,8 +32,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @PluginDescriptor(
-        name = "Gauntlet Flicker and Switcher",
-        description = "",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Gauntlet Assist</html>",
+        description = "Made by Ethan Vann, maintained by Piggy Plugins",
         tags = {"ethan"}
 )
 @Slf4j
