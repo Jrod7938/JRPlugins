@@ -9,6 +9,7 @@ import com.example.Packets.ObjectPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.SneakyThrows;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -39,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @PluginDescriptor(
-        name = "Lava Runecrafter",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Lava Runecrafter </html>",
         description = "",
         enabledByDefault = false,
         tags = {"ethan"}
@@ -56,6 +57,9 @@ public class LavaRunecrafterPlugin extends Plugin {
     @Inject
     LavaRunecrafterPluginConfig config;
 
+    @Inject
+    private ReflectBreakHandler breakHandler;
+
 
     @Provides
     public LavaRunecrafterPluginConfig getConfig(ConfigManager configManager) {
@@ -67,12 +71,14 @@ public class LavaRunecrafterPlugin extends Plugin {
     public void startUp() {
         timeout = 0;
         pouches = new HashMap<>();
+        breakHandler.registerPlugin(this);
     }
 
     @Override
     public void shutDown() {
         timeout = 0;
         pouches = new HashMap<>();
+        breakHandler.unregisterPlugin(this);
     }
 
 
@@ -89,6 +95,10 @@ public class LavaRunecrafterPlugin extends Plugin {
     @Subscribe
     @SneakyThrows
     public void onGameTick(GameTick event) {
+        if (client.getGameState() != GameState.LOGGED_IN || breakHandler.isBreakActive(this)) {
+            return;
+        }
+
         if (hadbook != null) {
             if (!Widgets.search().withTextContains("What do you want?").hiddenState(false).empty() || !Widgets.search().withTextContains("Can you repair").hiddenState(false).empty()) {
                 MousePackets.queueClickPacket();
@@ -147,6 +157,11 @@ public class LavaRunecrafterPlugin extends Plugin {
                         return;
                     }
                 }
+
+                if (breakHandler.shouldBreak(this)) {
+                    breakHandler.startBreak(this);
+                }
+
                 if (EthanApiPlugin.isMoving()) {
                     return;
                 }
