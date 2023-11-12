@@ -144,6 +144,15 @@ public interface PowerSkillerConfig extends Config {
     default int dropPerTickTwo() {
         return 3;
     }
+    @ConfigItem(
+            name = "Forestry Tree",
+            keyName = "dropItems",
+            description = "Object w most players,UNCHECK IF NOT WC",
+            position = 5
+    )
+    default boolean useForestryTreeNotClosest() {
+        return false;
+    }
 
 //    Artifact from when hutch wrote everything for dirty UIMs. we keep cuz its funny.
 //    @ConfigItem(

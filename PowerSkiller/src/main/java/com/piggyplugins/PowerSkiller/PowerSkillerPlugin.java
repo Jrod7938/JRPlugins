@@ -9,6 +9,7 @@ import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.google.inject.Provides;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
@@ -51,16 +52,16 @@ public class PowerSkillerPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        bankPin=false;
+        bankPin = false;
         keyManager.registerKeyListener(toggle);
-            this.overlayManager.add(overlay);
+        this.overlayManager.add(overlay);
     }
 
     @Override
     protected void shutDown() throws Exception {
-        bankPin=false;
+        bankPin = false;
         keyManager.unregisterKeyListener(toggle);
-            this.overlayManager.remove(overlay);
+        this.overlayManager.remove(overlay);
     }
 
     @Provides
@@ -77,16 +78,17 @@ public class PowerSkillerPlugin extends Plugin {
         state = getNextState();
         handleState();
     }
+
     private void handleState() {
         switch (state) {
             case BANK:
-                if(Widgets.search().withId(13959169).first().isPresent()){
-                bankPin=true;
-                return;
+                if (Widgets.search().withId(13959169).first().isPresent()) {
+                    bankPin = true;
+                    return;
                 }
-                if(Widgets.search().withId(786445).first().isEmpty()){
+                if (Widgets.search().withId(786445).first().isEmpty()) {
                     TileObjects.search().withAction("Bank").nearestToPlayer().ifPresent(tileObject -> {
-                        TileObjectInteraction.interact(tileObject,"Bank");
+                        TileObjectInteraction.interact(tileObject, "Bank");
                         return;
                     });
                     NPCs.search().withAction("Bank").nearestToPlayer().ifPresent(npc -> {
@@ -96,20 +98,20 @@ public class PowerSkillerPlugin extends Plugin {
                         return;
                     });
                     TileObjects.search().withName("Bank chest").nearestToPlayer().ifPresent(tileObject -> {
-                        TileObjectInteraction.interact(tileObject,"Use");
+                        TileObjectInteraction.interact(tileObject, "Use");
                         return;
                     });
-                    if(TileObjects.search().withAction("Bank").nearestToPlayer().isEmpty() && NPCs.search().withAction("Bank").nearestToPlayer().isEmpty()){
+                    if (TileObjects.search().withAction("Bank").nearestToPlayer().isEmpty() && NPCs.search().withAction("Bank").nearestToPlayer().isEmpty()) {
                         EthanApiPlugin.sendClientMessage("Bank is not found, move to an area with a bank.");
                     }
 
                     return;
 
                 }
-                List<Widget> items= BankInventory.search().result();
-                for(Widget item : items){
-                    if(!isTool(item.getName().toLowerCase()) && !shouldKeep(item.getName().toLowerCase())){
-                        BankInventoryInteraction.useItem(item,"Deposit-All");
+                List<Widget> items = BankInventory.search().result();
+                for (Widget item : items) {
+                    if (!isTool(item.getName().toLowerCase()) && !shouldKeep(item.getName().toLowerCase())) {
+                        BankInventoryInteraction.useItem(item, "Deposit-All");
                         return;
                     }
                 }
@@ -142,22 +144,21 @@ public class PowerSkillerPlugin extends Plugin {
             // if the user doesn't have tools we don't want it to do anything at all lol, maybe stop the plugin if you want.
             return State.MISSING_TOOLS;
         }
-        if(timeout>0){
+        if (timeout > 0) {
             return State.TIMEOUT;
         }
 
         if (shouldBank() && Inventory.full() || (Bank.isOpen() && !isInventoryReset())) {
-            if(shouldBank() && !isInventoryReset()){
+            if (shouldBank() && !isInventoryReset()) {
                 return State.BANK;
             }
         }
 
-        if ((isDroppingItems() && !isInventoryReset()) ||!shouldBank() && Inventory.full()) {
+        if ((isDroppingItems() && !isInventoryReset()) || !shouldBank() && Inventory.full()) {
             // if the user should be dropping items, we'll check if they're done
             // should sit at this state til it's finished.
             return State.DROP_ITEMS;
         }
-
 
 
         // default it'll look for an object.
@@ -166,29 +167,58 @@ public class PowerSkillerPlugin extends Plugin {
 
     private void findObject() {
         String objectName = config.objectToInteract();
-
-        TileObjects.search().withName(objectName).nearestToPlayer().ifPresent(tileObject -> {
-            ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
-            if(Arrays.stream(comp.getActions()).anyMatch(action->action.equalsIgnoreCase(config.expectedAction()))){
-                TileObjectInteraction.interact(tileObject, config.expectedAction());
-            }
-            else{
+        if (config.useForestryTreeNotClosest()) {
+            TileObjects.search().withName(objectName).nearestToPoint(getObjectWMostPlayers()).ifPresent(tileObject -> {
+                ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
                 TileObjectInteraction.interact(tileObject, comp.getActions()[0]);
-                EthanApiPlugin.sendClientMessage("Expected action not found, using first entry");
-            }
- // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
-            // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
-        });
+            });
+        } else {
+            TileObjects.search().withName(objectName).nearestToPlayer().ifPresent(tileObject -> {
+                ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
+                TileObjectInteraction.interact(tileObject, comp.getActions()[0]); // find the object we're looking for.  this specific example will only work if the first Action the object has is the one that interacts with it.
+                // don't *always* do this, you can manually type the possible actions. eg. "Mine", "Chop", "Cook", "Climb".
+            });
+        }
     }
+
+    /**
+     * Tile w most players on it within 2 tiles of the object we're looking for
+     *
+     * @return That tile or the player's tile if failed(such as doing forestry option when alone by trees)
+     */
+    public WorldPoint getObjectWMostPlayers() {
+        String objectName = config.objectToInteract();
+        Map<WorldPoint, Integer> playerCounts = new HashMap<>();
+        WorldPoint mostPlayersTile = null;
+        int highestCount = 0;
+        List<TileObject> objects = TileObjects.search().withName(objectName).result();
+
+        List<Player> players = Players.search().notLocalPlayer().result();
+
+        for (TileObject object : objects) {
+            for (Player player : players) {
+                if (player.getWorldLocation().distanceTo(object.getWorldLocation()) <= 2) {
+                    WorldPoint playerTile = player.getWorldLocation();
+                    playerCounts.put(playerTile, playerCounts.getOrDefault(playerTile, 0) + 1);
+                    if (playerCounts.get(playerTile) > highestCount) {
+                        highestCount = playerCounts.get(playerTile);
+                        mostPlayersTile = playerTile;
+                    }
+                }
+            }
+        }
+
+        return mostPlayersTile == null ? client.getLocalPlayer().getWorldLocation() : mostPlayersTile;
+    }
+
 
     private void findNpc() {
         String npcName = config.objectToInteract();
         NPCs.search().withName(npcName).nearestToPlayer().ifPresent(npc -> {
             NPCComposition comp = client.getNpcDefinition(npc.getId());
-            if(Arrays.stream(comp.getActions()).anyMatch(action->action.equalsIgnoreCase(config.expectedAction()))){
+            if (Arrays.stream(comp.getActions()).anyMatch(action -> action.equalsIgnoreCase(config.expectedAction()))) {
                 NPCInteraction.interact(npc, config.expectedAction()); // For fishing spots ?
-            }
-            else{
+            } else {
                 NPCInteraction.interact(npc, comp.getActions()[0]);
             }
 
@@ -199,14 +229,14 @@ public class PowerSkillerPlugin extends Plugin {
         List<Widget> itemsToDrop = Inventory.search()
                 .filter(item -> !shouldKeep(item.getName()) && !isTool(item.getName())).result(); // filter the inventory to only get the items we want to drop
 
-        for (int i = 0; i < Math.min(itemsToDrop.size(),RandomUtils.nextInt(config.dropPerTickOne(), config.dropPerTickTwo())); i++) {
+        for (int i = 0; i < Math.min(itemsToDrop.size(), RandomUtils.nextInt(config.dropPerTickOne(), config.dropPerTickTwo())); i++) {
             InventoryInteraction.useItem(itemsToDrop.get(i), "Drop"); // we'll loop through this at a max of 10 times.  can make this a config options.  drops x items per tick (x = 10 in this example)
         }
     }
 
     private boolean isInventoryReset() {
         List<Widget> inventory = Inventory.search().result();
-        for(Widget item : inventory){
+        for (Widget item : inventory) {
             if (!shouldKeep(Text.removeTags(item.getName()))) { // using our shouldKeep method, we can filter the items here to only include the ones we want to drop.
                 return false;
             }
@@ -245,8 +275,8 @@ public class PowerSkillerPlugin extends Plugin {
         return numInventoryTools + numEquippedTools >= tools.length; // if the size of tools and the filtered inventory is the same, we have our tools.
     }
 
-    private void setTimeout(){
-        timeout = RandomUtils.nextInt(config.tickdelayMin(),config.tickDelayMax());
+    private void setTimeout() {
+        timeout = RandomUtils.nextInt(config.tickdelayMin(), config.tickDelayMax());
     }
 
     private boolean isTool(String name) {
@@ -263,8 +293,8 @@ public class PowerSkillerPlugin extends Plugin {
         }
     };
 
-    private boolean shouldBank(){
-        return config.shouldBank() && (NPCs.search().withAction("Bank").first().isPresent() || TileObjects.search().withAction("Bank").first().isPresent()) || TileObjects.search().withAction("Collect").first().isPresent()  && !bankPin;
+    private boolean shouldBank() {
+        return config.shouldBank() && (NPCs.search().withAction("Bank").first().isPresent() || TileObjects.search().withAction("Bank").first().isPresent()) || TileObjects.search().withAction("Collect").first().isPresent() && !bankPin;
     }
 
     public void toggle() {
