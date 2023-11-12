@@ -81,6 +81,8 @@ public class AutoCombatPlugin extends Plugin {
     @Inject
     public LootHelper lootHelper;
     @Inject
+    public PlayerUtil playerUtil;
+    @Inject
     public SlayerHelper slayerHelper;
     public Queue<ItemStack> lootQueue = new LinkedList<>();
 
@@ -131,7 +133,7 @@ public class AutoCombatPlugin extends Plugin {
 
         if (isSlayerNpc) slayerInfo = slayerHelper.getSlayerInfo(config.targetName());
 
-        if (!PlayerUtil.isInteracting(client) || player.getAnimation() == -1) idleTicks++;
+        if (!playerUtil.isInteracting() || player.getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
         if (timeout > 0) {
             timeout--;
@@ -180,8 +182,7 @@ public class AutoCombatPlugin extends Plugin {
             lootQueue.remove();
             if (!lootQueue.isEmpty()) return;
         }
-
-        if (PlayerUtil.isInteracting(client) || looting) {
+        if (playerUtil.isInteracting() || looting) {
             timeout = 6;
             return;
         }
@@ -199,7 +200,7 @@ public class AutoCombatPlugin extends Plugin {
                 log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
-                timeout =6;
+                timeout = 6;
                 idleTicks = 0;
             }
         }

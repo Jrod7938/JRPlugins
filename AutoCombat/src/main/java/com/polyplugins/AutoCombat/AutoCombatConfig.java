@@ -19,16 +19,27 @@ public interface AutoCombatConfig extends Config {
     @ConfigSection(
             name = "Auto Combat Configuration",
             description = "Configure how to handles game tick delays, 1 game tick equates to roughly 600ms",
-            position = 2,
+            position = 1,
             closedByDefault = false
     )
     String autoCombatConfig = "autoCombatConfig";
 
     @ConfigItem(
+            keyName = "targetName",
+            name = "Target name",
+            description = "",
+            position = 1,
+            section = autoCombatConfig
+    )
+    default String targetName() {
+        return "Chicken";
+    }
+
+    @ConfigItem(
             keyName = "useCombatPotion",
             name = "Combat potions?",
             description = "Uses regular or super combat potions",
-            position = 1,
+            position = 2,
             section = autoCombatConfig
     )
     default boolean useCombatPotion() {
@@ -43,7 +54,7 @@ public interface AutoCombatConfig extends Config {
             keyName = "useCombatAt",
             name = "Use at",
             description = "What level to use combat potions at",
-            position = 2,
+            position = 3,
             section = autoCombatConfig
     )
 
@@ -55,7 +66,7 @@ public interface AutoCombatConfig extends Config {
             keyName = "usePrayerPotion",
             name = "Prayer potions?",
             description = "Uses prayer potions",
-            position = 3,
+            position = 4,
             section = autoCombatConfig
     )
     default boolean usePrayerPotion() {
@@ -70,23 +81,12 @@ public interface AutoCombatConfig extends Config {
             keyName = "usePrayerAt",
             name = "Use at",
             description = "What level to use prayer potions at, prayer or super restore",
-            position = 4,
+            position = 5,
             section = autoCombatConfig
     )
 
     default int usePrayerPotAt() {
         return 20;
-    }
-
-    @ConfigItem(
-            keyName = "targetName",
-            name = "Target name",
-            description = "",
-            position = 5,
-            section = autoCombatConfig
-    )
-    default String targetName() {
-        return "Chicken";
     }
 
     @Range(
@@ -96,7 +96,7 @@ public interface AutoCombatConfig extends Config {
     @ConfigItem(keyName = "eatAt",
             name = "Eat at",
             description = "What HP to eat at",
-            position = 7,
+            position = 6,
             section = autoCombatConfig)
     default int eatAt() {
         return 50;

@@ -2,7 +2,7 @@ package com.piggyplugins.Firemaking;
 
 import net.runelite.client.config.*;
 
-@ConfigGroup("Firemaking")
+@ConfigGroup("AutoFiremaking")
 public interface FiremakingConfig extends Config {
     @ConfigItem(
             keyName = "Toggle",
@@ -14,18 +14,28 @@ public interface FiremakingConfig extends Config {
         return Keybind.NOT_SET;
     }
 
+    @ConfigItem(
+            keyName = "location",
+            name = "Location",
+            description = "",
+            position = 1
+    )
+    default FiremakingLocation getLocation() {
+        return FiremakingLocation.GE;
+    }
+
     @Range(
             min = 1,
             max = 10
     )
     @ConfigItem(
-            keyName = "logs",
+            keyName = "logName",
             name = "Logs",
             description = "",
-            position = 1
+            position = 2
     )
     default String getLogs() {
-        return "Magic logs";
+        return "Mahogany logs";
     }
 
 }
