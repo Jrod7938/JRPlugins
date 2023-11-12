@@ -31,7 +31,7 @@ public class Util {
      * @return The nearest npc, or null if none are found
      */
     public NPC findNpc(String name) {
-        NPCQuery npc = NPCs.search().alive().withName(name).withAction("Attack").filter(
+        NPCQuery npc = NPCs.search().alive().withNameIgnoreCase(name).withAction("Attack").filter(
                 n -> !n.isInteracting() || (n.isInteracting() && n instanceof Player &&
                         n.getInteracting().equals(client.getLocalPlayer()))
         );
