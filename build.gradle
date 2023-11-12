@@ -63,6 +63,15 @@ dependencies {
     compileOnly project(path: ':ButterflyCatcher')
     testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
+    implementation project(path: ':AutoAerial')
+    implementation project(path: ':AutoBoner')
+    implementation project(path: ':AutoChompy')
+    implementation project(path: ':AutoCombat')
+    implementation project(path: ':AutoSmith')
+    implementation project(path: ':ButterflyCatcher')
+    implementation project(path: ':DialogContinuer')
+    implementation project(path: ':Firemaking')
+    implementation project(path: ':KittenFeeder')
     implementation project(path: ':AutoJugHumidifier')
     implementation project(path: ':AutoRifts')
     implementation project(path: ':AutoTele')
@@ -117,7 +126,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.15'
+version = '1.0.16'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {

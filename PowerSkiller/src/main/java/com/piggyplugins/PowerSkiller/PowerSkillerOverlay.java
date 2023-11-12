@@ -1,79 +1,53 @@
 package com.piggyplugins.PowerSkiller;
 
-
-import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.google.common.base.Strings;
-import net.runelite.api.*;
-import net.runelite.api.Point;
-import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
-import net.runelite.client.ui.overlay.*;
+import com.google.inject.Inject;
+import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
-import net.runelite.client.ui.overlay.components.PanelComponent;
+import net.runelite.client.ui.overlay.components.TitleComponent;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.awt.*;
-import java.util.Optional;
 
-public class PowerSkillerOverlay extends Overlay {
-    private final PanelComponent panelComponent = new PanelComponent();
-    private final Client client;
+public class PowerSkillerOverlay extends OverlayPanel {
+
     private final PowerSkillerPlugin plugin;
 
     @Inject
-    private PowerSkillerOverlay(Client client, PowerSkillerPlugin plugin) {
-        this.client = client;
+    private PowerSkillerOverlay(PowerSkillerPlugin plugin) {
+        super(plugin);
         this.plugin = plugin;
-        setPosition(OverlayPosition.DYNAMIC);
-        setLayer(OverlayLayer.ABOVE_SCENE);
-
+        setPosition(OverlayPosition.BOTTOM_LEFT);
+        setPreferredSize(new Dimension(160, 160));
     }
+
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        panelComponent.getChildren().clear();
-        if (plugin.getObjectWMostPlayers() != null) {
-            renderTile(graphics, LocalPoint.fromWorld(client, plugin.getObjectWMostPlayers()), Color.RED, Color.RED, "MOST");
-        }
+        panelComponent.setPreferredSize(new Dimension(200, 320));
+        panelComponent.getChildren().add(TitleComponent.builder()
+                .text("Piggy Power Skiller")
+                .color(new Color(255, 157, 249))
+                .build());
+        panelComponent.getChildren().add(TitleComponent.builder()
+                .text(plugin.started ? "Running" : "Paused")
+                .color(plugin.started ? Color.GREEN : Color.RED)
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("State: ")
+                .leftColor(new Color(255, 157, 249))
+                .right(plugin.state==null || !plugin.started ? "STOPPED" : plugin.state.name())
+                .rightColor(Color.WHITE)
+                .build());
 
-//        LineComponent timeout = buildLine("Timeout: ", String.valueOf(plugin.timeout));
-//        panelComponent.getChildren().add(timeout);
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Trying to: ")
+                .leftColor(new Color(255, 157, 249))
+                .right(plugin.config.expectedAction() +" " + plugin.config.objectToInteract() )
+                .rightColor(Color.WHITE)
+                .build());
 
-        return null;
+
+
+        return super.render(graphics);
     }
-
-    /**
-     * Builds a line component with the given left and right text
-     *
-     * @param left
-     * @param right
-     * @return Returns a built line component with White left text and Yellow right text
-     */
-    private LineComponent buildLine(String left, String right) {
-        return LineComponent.builder()
-                .left(left)
-                .right(right)
-                .leftColor(Color.WHITE)
-                .rightColor(Color.YELLOW)
-                .build();
-    }
-
-    private void renderTile(final Graphics2D graphics, final LocalPoint dest, final Color color, final Color fillColor, @Nullable String label) {
-        if (dest == null) {
-            return;
-        }
-        final Polygon poly = Perspective.getCanvasTilePoly(client, dest);
-        if (poly == null) {
-            return;
-        }
-        OverlayUtil.renderPolygon(graphics, poly, color, fillColor, new BasicStroke((float) 1.5));
-        if (!Strings.isNullOrEmpty(label)) {
-            Point canvasTextLocation = Perspective.getCanvasTextLocation(client, graphics, dest, label, 0);
-            if (canvasTextLocation != null) {
-                OverlayUtil.renderTextLocation(graphics, canvasTextLocation, label, color);
-            }
-        }
-    }
-
 }

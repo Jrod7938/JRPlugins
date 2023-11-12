@@ -2,10 +2,13 @@ package com.piggyplugins.HerbCleaner;
 
 import com.example.EthanApiPlugin.Collections.Bank;
 import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.MousePackets;
 import com.example.Packets.MovementPackets;
@@ -15,11 +18,7 @@ import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.ItemID;
-import net.runelite.api.ObjectComposition;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -135,17 +134,26 @@ public class HerbCleanerPlugin extends Plugin {
         }
     }
 
-    private void findBank() {
-        TileObjects.search()
-                .filter(tileObject -> {
-                    ObjectComposition objectComposition = TileObjectQuery.getObjectComposition(tileObject);
-                    return getName().toLowerCase().contains("bank") ||
-                            Arrays.stream(objectComposition.getActions()).anyMatch(action -> action != null && action.toLowerCase().contains("bank"));
-                })
-                .nearestToPlayer()
-                .ifPresent(tileObject -> {
-                            TileObjectInteraction.interact(tileObject, "Use", "Bank");
-                        });
+    private void findBank(){
+        Optional<TileObject> chest = TileObjects.search().withName("Bank chest").nearestToPlayer();
+        Optional<NPC> banker = NPCs.search().withAction("Bank").nearestToPlayer();
+        Optional<TileObject> booth = TileObjects.search().withAction("Bank").nearestToPlayer();
+        if (chest.isPresent()){
+            TileObjectInteraction.interact(chest.get(), "Use");
+            return;
+        }
+        if (booth.isPresent()){
+            TileObjectInteraction.interact(booth.get(), "Bank");
+            return;
+        }
+        if (banker.isPresent()){
+            NPCInteraction.interact(banker.get(), "Bank");
+            return;
+        }
+        if (!chest.isPresent() && !booth.isPresent() && !banker.isPresent()){
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
+            EthanApiPlugin.stopPlugin(this);
+        }
     }
 
     private void handleBank() {

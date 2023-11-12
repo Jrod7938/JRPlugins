@@ -29,7 +29,7 @@ import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 
 @PluginDescriptor(
-        name = "Ethan PrayerFlickerPlugin",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Ethan PrayerFlickerPlugin</html>",
         description = "prayer flicker for quick prayers",
         enabledByDefault = false,
         tags = {"ethan"}
