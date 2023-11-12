@@ -2,8 +2,11 @@ package com.polyplugins.AutoCombat.helper;
 
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
+import com.example.Packets.MousePackets;
+import com.example.Packets.NPCPackets;
 import com.google.inject.Inject;
 import com.polyplugins.AutoCombat.SlayerNpc;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.widgets.Widget;
@@ -13,16 +16,14 @@ import net.runelite.client.game.ItemManager;
 import java.util.Arrays;
 import java.util.Optional;
 
-
+@Slf4j
 public class SlayerHelper {
     @Inject
     private Client client;
     @Inject
     private ClientThread clientThread;
 
-    //do stuff like check name against slayer npcs that require items to finish off
-    //get slayer task?
-    //call slayer master to get task? prob not its autocb not slayer
+
 
     public boolean isSlayerNPC(String name) {
         for (SlayerNpc snpc : SlayerNpc.values()) {
@@ -39,6 +40,16 @@ public class SlayerHelper {
         return Arrays.stream(SlayerNpc.values()).filter(snpc ->
                 snpc.getNpcName().equals(name)).findFirst().orElse(null);
 
+    }
+
+    public void useSlayerItem(String itemName) {
+        Inventory.search().nameContains(itemName).filter(i -> !i.getName().contains("ay 0")).first().ifPresent(item -> {
+            log.info("Using item: " + item.getName());
+            MousePackets.queueClickPacket();
+            MousePackets.queueClickPacket();
+            NPCPackets.queueWidgetOnNPC(NPCs.search().interactingWithLocal().first().get(), item);
+
+        });
     }
 
 }

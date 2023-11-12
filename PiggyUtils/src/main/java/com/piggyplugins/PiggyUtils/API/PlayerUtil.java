@@ -1,7 +1,7 @@
 package com.piggyplugins.PiggyUtils.API;
 
 import com.example.EthanApiPlugin.Collections.NPCs;
-import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.EthanApiPlugin.Collections.query.NPCQuery;
 import com.google.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.VarPlayer;
@@ -9,11 +9,8 @@ import net.runelite.api.Varbits;
 
 
 public class PlayerUtil {
+    @Inject
     private Client client;
-
-    PlayerUtil(Client client) {
-        this.client = client;
-    }
 
     /**
      * Run energy the way we'd use it
@@ -45,7 +42,11 @@ public class PlayerUtil {
     }
 
     public boolean isBeingInteracted(String name) {
-        return NPCs.search().withName(name).interactingWithLocal().first().isPresent();
+        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal().first().isPresent();
+    }
+
+    public NPCQuery getBeingInteracted(String name) {
+        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal();
     }
 
     /**
@@ -53,7 +54,7 @@ public class PlayerUtil {
      *
      * @return
      */
-    public  int getTaskCount(Client client) {
+    public int getTaskCount( ) {
         return client.getVarpValue(VarPlayer.SLAYER_TASK_SIZE);
     }
 
