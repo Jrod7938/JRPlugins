@@ -69,7 +69,7 @@ dependencies {
     implementation project(path: ':AutoCombat')
     implementation project(path: ':AutoSmith')
     implementation project(path: ':ButterflyCatcher')
-    implementation project(path: ':DialogContinuer')
+    implementation project(path: ':DialogueContinuer')
     implementation project(path: ':Firemaking')
     implementation project(path: ':KittenFeeder')
     implementation project(path: ':AutoJugHumidifier')
