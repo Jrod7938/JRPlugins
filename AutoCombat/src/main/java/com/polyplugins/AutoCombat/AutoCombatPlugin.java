@@ -136,7 +136,6 @@ public class AutoCombatPlugin extends Plugin {
             playerUtil.getBeingInteracted(config.targetName()).first().ifPresent(n -> {
                 if (n.getHealthRatio() == -1) return;
                 if (n.getHealthRatio() <= slayerInfo.getUseHp()) {
-                    log.info("Using item" + slayerInfo.getItemName());
                     slayerHelper.useSlayerItem(slayerInfo.getItemName());
                     timeout = 3;
                 }
