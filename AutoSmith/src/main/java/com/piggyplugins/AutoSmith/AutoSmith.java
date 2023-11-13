@@ -3,6 +3,7 @@ package com.piggyplugins.AutoSmith;
 import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.PacketUtils.PacketUtilsPlugin;
@@ -55,7 +56,7 @@ public class AutoSmith extends Plugin {
         timeout = 0;
         isSmithing = false;
         keyManager.registerKeyListener(toggle);
-        log.info(config.bar().toString() + " - " + config.item().toString());
+        log.info(config.bar().getName() + " - " + config.item().toString());
     }
 
     @Override
@@ -104,8 +105,8 @@ public class AutoSmith extends Plugin {
             if (client.getWidget(WidgetInfo.SMITHING_INVENTORY_ITEMS_CONTAINER) != null) {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetAction(client.getWidget(config.item().getWidgetInfo().getPackedId()), "Smith", "Smith set");
-//                this.timeout = 26;
-                timeout = (int) (5 * Math.ceil(27 / config.item().getBarsRequired()));
+                isSmithing = true;
+                timeout = 5 * (27 / config.item().getBarsRequired());
             } else if (anvil.isPresent()) {
                 boolean action = TileObjectInteraction.interact(anvil.get(), "Smith");
                 if (!action)
@@ -114,7 +115,7 @@ public class AutoSmith extends Plugin {
             }
         }
 
-        if (!hasEnoughBars() || !InventoryUtil.hasItem("Hammer")) {
+        if (!hasEnoughBars() || Inventory.getItemAmount("Hammer") == 0) {
             findBank();
             bankHandler();
         }
@@ -122,11 +123,11 @@ public class AutoSmith extends Plugin {
     }
 
     private boolean hasEnoughBars() {
-        return (Inventory.getItemAmount(config.bar().toString()) >= config.item().getBarsRequired());
+        return (Inventory.getItemAmount(config.bar().getName()) >= config.item().getBarsRequired());
     }
 
     private boolean canSmithBars() {
-        return Inventory.search().withName(config.bar().toString()).result().size() > 5 && !Inventory.search().withName("Hammer").empty();
+        return Inventory.search().withName(config.bar().getName()).result().size() > 5 && !Inventory.search().withName("Hammer").empty();
     }
 
     private void findBank() {
@@ -148,35 +149,31 @@ public class AutoSmith extends Plugin {
 
     private void bankHandler() {
         if (!Bank.isOpen()) return;
-        ItemQuery barQuery = Bank.search().withName(config.bar().toString());
-        ItemQuery hammerQuery = Bank.search().withName("Hammer");
 
-        Widget widget = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
-
-        depositAllButHammerBars();
-
-        Optional<Widget> bar = barQuery.first();
-        Optional<Widget> hammer = hammerQuery.first();
-        if (!InventoryUtil.hasItem("Hammer")) {
-//            log.info("no hammer,withdraw");
+        Widget depositInventory = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
+        if (depositInventory != null) {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetAction(hammer.get(), "Withdraw-1");
+            WidgetPackets.queueWidgetAction(depositInventory, "Deposit inventory");
         }
-        if (!Inventory.full()) {
-            MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetAction(bar.get(), "Withdraw-All");
-        }
-        timeout = 2;
-    }
 
-    private void depositAllButHammerBars() {
-        BankInventory.search().filter(
-                item -> !item.getName().contains("Hammer") && !item.getName().contains(config.bar().toString())
-        ).result().forEach(item -> {
-//            log.info("depositing " + item.getName());
+        Bank.search().withName("Hammer").first().ifPresentOrElse(hammer -> {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetAction(item, "Deposit-All");
+            WidgetPackets.queueWidgetAction(hammer, "Withdraw-1");
+//            BankInteraction.withdrawX(hammer, 1);
+        }, () -> {
+            if (Inventory.getItemAmount("Hammer") > 0) return;
+            EthanApiPlugin.sendClientMessage("No hammer in bank or inventory");
+            EthanApiPlugin.stopPlugin(this);
         });
+        Bank.search().withName(config.bar().getName()).first().ifPresentOrElse(bar -> {
+//            BankInteraction.withdrawX(bar, 27);
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(bar, "Withdraw-All");
+        }, () -> {
+            EthanApiPlugin.sendClientMessage("No bars left");
+            EthanApiPlugin.stopPlugin(this);
+        });
+        timeout = 1;
     }
 
     private boolean runIsOff() {
