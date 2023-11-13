@@ -20,7 +20,7 @@ public class PluginTester {
         ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
                 AutoCombatPlugin.class, AutoAerialPlugin.class, AutoBonerPlugin.class,
                 ButterflyPlugin.class, FiremakingPlugin.class, DialogueContinuerPlugin.class,
-                KittenFeederPlugin.class, AutoChompyPlugin.class, PowerSkillerPlugin.class, AutoSmith.class);
+                KittenFeederPlugin.class, AutoChompyPlugin.class, PowerSkillerPlugin.class);
         RuneLite.main(args);
     }
 }
