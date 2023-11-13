@@ -630,7 +630,7 @@ public class AutoRiftsPlugin extends Plugin {
     }
 
     public State getCurrentState() {
-        if (!gameStarted && breakHandler.shouldBreak(this)) {
+        if (!gameStarted && !isInAltar() && breakHandler.shouldBreak(this)) {
             return State.BREAK;
         }
 
