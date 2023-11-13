@@ -12,7 +12,7 @@ public enum Bar {
 
 
     @Getter
-    private String name;
+    private final String name;
 
     Bar(String name) {
         this.name = name;
