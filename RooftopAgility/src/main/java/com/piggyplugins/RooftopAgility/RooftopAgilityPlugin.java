@@ -266,7 +266,7 @@ public class RooftopAgilityPlugin extends Plugin {
         }
 
         if (!config.foodName().isBlank()) {
-            return Inventory.search().nameContains(config.foodName().toLowerCase()).empty();
+            return InventoryUtil.nameContainsNoCase(config.foodName()).empty();
         }
 
         if (config.boostWithPie()) {
