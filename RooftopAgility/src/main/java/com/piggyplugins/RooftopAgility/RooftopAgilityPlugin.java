@@ -131,6 +131,10 @@ public class RooftopAgilityPlugin extends Plugin {
             return State.HANDLE_BREAK;
         }
 
+        if (isBankPinOpen()){
+            return State.BANK_PIN_WAIT;
+        }
+
         if (timeout > 0) {
             if (!config.foodName().isEmpty()
                     && client.getBoostedSkillLevel(Skill.HITPOINTS) < config.lowHP()) {
@@ -315,6 +319,14 @@ public class RooftopAgilityPlugin extends Plugin {
         }
     }
 
+    private boolean isBankPinOpen() {
+        Widget bankPinWidget = client.getWidget(213, 0);
+        if (bankPinWidget == null){
+            return false;
+        }
+        return !bankPinWidget.isHidden();
+    }
+
     private void eatSummerPie() {
         InventoryUtil.nameContainsNoCase("summer pie").first().ifPresent(item -> {
             InventoryInteraction.useItem(item, "Eat");
@@ -374,6 +386,7 @@ public class RooftopAgilityPlugin extends Plugin {
                 restockItems();
                 break;
             case MOVING:
+            case BANK_PIN_WAIT:
                 break;
             case CAST_CAMELOT_TELEPORT:
                 Optional<Widget> camelotSpellIcon = Widgets.search().withId(14286880).first();

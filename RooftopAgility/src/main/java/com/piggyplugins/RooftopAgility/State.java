@@ -14,5 +14,6 @@ public enum State {
     OUT_OF_SUMMER_PIES,
     EAT_FOOD,
     ENABLE_RUN,
-    HIGH_ALCH
+    HIGH_ALCH,
+    BANK_PIN_WAIT
 }
