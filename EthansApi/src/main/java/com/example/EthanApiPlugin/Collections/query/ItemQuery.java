@@ -10,13 +10,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.util.Text;
 import net.runelite.client.util.WildcardMatcher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -36,6 +30,18 @@ public class ItemQuery {
 
     public ItemQuery withAction(String action) {
         items = items.stream().filter(item -> Arrays.asList(item.getActions()).contains(action)).collect(Collectors.toList());
+        return this;
+    }
+    public ItemQuery tradeAble() {
+        items = items.stream().filter(item -> itemManager.getItemComposition(item.getItemId()).isTradeable()).collect(Collectors.toList());
+        return this;
+    }
+    public ItemQuery differenceInValueLessThan(int difference) {
+        items = items.stream().filter(item -> Math.abs(itemManager.getItemComposition(item.getItemId()).getHaPrice() - itemManager.getItemPriceWithSource(item.getItemId(),true)) < difference).collect(Collectors.toList());
+        return this;
+    }
+    public ItemQuery priceOver(int price) {
+        items = items.stream().filter(item -> itemManager.getItemComposition(item.getItemId()).getHaPrice() >= price).collect(Collectors.toList());
         return this;
     }
 
@@ -74,7 +80,7 @@ public class ItemQuery {
         items = items.stream().filter(item -> ids.contains(item.getItemId())).collect(Collectors.toList());
         return this;
     }
-    
+
     public ItemQuery nameInList(List<String> names) {
         items = items.stream()
                 .filter(item -> names.stream()
@@ -101,6 +107,12 @@ public class ItemQuery {
         items = items.stream().filter(this::isNoted).collect(Collectors.toList());
         return this;
     }
+
+    public ItemQuery onlyStackable() {
+        items = items.stream().filter(this::isStackable).collect(Collectors.toList());
+        return this;
+    }
+
 
     public ItemQuery onlyUnnoted() {
         items = items.stream().filter(item -> !isNoted(item)).collect(Collectors.toList());
@@ -132,5 +144,11 @@ public class ItemQuery {
     public boolean isNoted(Widget item) {
         ItemComposition itemComposition = EthanApiPlugin.itemDefs.get(item.getItemId());
         return itemComposition.getNote() != -1;
+    }
+
+    @SneakyThrows
+    public boolean isStackable(Widget item) {
+        ItemComposition itemComposition = EthanApiPlugin.itemDefs.get(item.getItemId());
+        return itemComposition.isStackable();
     }
 }

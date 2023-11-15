@@ -20,17 +20,9 @@ import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.GameState;
-import net.runelite.api.ItemID;
-import net.runelite.api.ObjectComposition;
-import net.runelite.api.Player;
-import net.runelite.api.Skill;
-import net.runelite.api.Tile;
-import net.runelite.api.TileItem;
-import net.runelite.api.TileObject;
+import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -52,6 +44,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
@@ -426,7 +419,7 @@ public class RooftopAgilityPlugin extends Plugin {
                 String[] itemsToAlch = config.highAlch().replace(", ", ",").split(",");
                 Widget highAlch = client.getWidget(WidgetInfoExtended.SPELL_HIGH_LEVEL_ALCHEMY.getPackedId());
                 if (itemsToAlch.length > 0 && highAlch != null) {
-                    Inventory.search().onlyNoted().matchesWildCardNoCase(itemsToAlch[0]).first().ifPresentOrElse(item -> {
+                    Inventory.search().onlyStackable().matchesWildCardNoCase(itemsToAlch[0]).first().ifPresentOrElse(item -> {
                         MousePackets.queueClickPacket();
                         WidgetPackets.queueWidgetOnWidget(highAlch, item);
                         highAlchTimeout = 5;
@@ -435,6 +428,12 @@ public class RooftopAgilityPlugin extends Plugin {
                     });
                 }
         }
+    }
+
+    @SneakyThrows
+    private boolean isStackable(Widget item) {
+        ItemComposition itemComposition = EthanApiPlugin.itemDefs.get(item.getItemId());
+        return itemComposition.isStackable();
     }
 
     @Subscribe
