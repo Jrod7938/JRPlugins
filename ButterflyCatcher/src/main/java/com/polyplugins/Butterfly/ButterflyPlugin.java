@@ -7,7 +7,7 @@ import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-//import com.piggyplugins.PiggyUtils.API.PlayerUtil;
+import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
@@ -35,9 +35,12 @@ public class ButterflyPlugin extends Plugin {
     @Inject
     private ButterflyConfig config;
     @Inject
+    private PlayerUtil playerUtil;
+    @Inject
     private KeyManager keyManager;
     private boolean started = false;
     public int timeout = 0;
+
     @Provides
     private ButterflyConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(ButterflyConfig.class);
@@ -80,7 +83,7 @@ public class ButterflyPlugin extends Plugin {
 
         if (!filledJars.isEmpty()) {
             filledJars.forEach(jar -> {
-                log.info("RELEASING BUTTERFLY");
+//                log.info("RELEASING BUTTERFLY");
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetAction(jar, "Release");
             });
@@ -88,7 +91,7 @@ public class ButterflyPlugin extends Plugin {
 
         if (client.getLocalPlayer().getInteracting() == null && emptyJar.isPresent()) {
             if (butterfly.isPresent()) {
-                log.info("CATCHING BUTTERFLY");
+//                log.info("CATCHING BUTTERFLY");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(butterfly.get(), "Catch");
             }
@@ -100,7 +103,7 @@ public class ButterflyPlugin extends Plugin {
 
 
     private void checkRunEnergy() {
-        if (PlayerUtil.isRunning(client) && PlayerUtil.runEnergy(client) <= 10) {
+        if (playerUtil.isRunning() && playerUtil.runEnergy() <= 10) {
             log.info("Run");
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
@@ -109,7 +112,7 @@ public class ButterflyPlugin extends Plugin {
     }
 
     private void checkStamina() {
-        if (!PlayerUtil.isStaminaActive(client) && PlayerUtil.runEnergy(client) <= 70) {
+        if (!playerUtil.isStaminaActive() && playerUtil.runEnergy() <= 70) {
             log.info("Stamina");
             Inventory.search().onlyUnnoted().nameContains("Stamina pot").withAction("Drink").first().ifPresent(stamina -> {
                 MousePackets.queueClickPacket();

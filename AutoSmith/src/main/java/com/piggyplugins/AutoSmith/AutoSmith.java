@@ -76,18 +76,15 @@ public class AutoSmith extends Plugin {
     public void onGameTick(GameTick event) {
         if (!started) return;
 
-        if (client.getLocalPlayer().getAnimation() == -1) {
-            idleTicks++;
-        } else {
+        idleTicks += client.getLocalPlayer().getAnimation() == -1 ? 1 : 0;
+        
+        if (idleTicks > 10 || !hasEnoughBars()) {
+            timeout = 0;
             idleTicks = 0;
         }
 
         if (timeout > 0) {
             timeout--;
-            if (idleTicks > 10 || !hasEnoughBars()) {
-                timeout = 0;
-                idleTicks = 0;
-            }
             return;
         }
 

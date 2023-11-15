@@ -41,6 +41,8 @@ dependencies {
     testImplementation project(path: ':KittenFeeder')
     compileOnly project(path: ':AutoChompy')
     testImplementation project(path: ':AutoChompy')
+    compileOnly project(path: ':AutoTrapper')
+    testImplementation project(path: ':AutoTrapper')
 
 //    compileOnly project(path: ':AutoMLM')
 //    testImplementation project(path: ':AutoMLM')

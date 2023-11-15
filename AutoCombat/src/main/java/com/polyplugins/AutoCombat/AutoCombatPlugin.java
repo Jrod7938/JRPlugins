@@ -55,7 +55,7 @@ public class AutoCombatPlugin extends Plugin {
     @Inject
     private Client client;
     @Inject
-    private AutoCombatConfig config;
+    public AutoCombatConfig config;
     @Inject
     private AutoCombatOverlay overlay;
     @Inject
@@ -171,12 +171,12 @@ public class AutoCombatPlugin extends Plugin {
             looting = true;
             ItemStack itemStack = lootQueue.peek();
             TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
-                log.info("Looting: " + item.getTileItem().getId());
+//                log.info("Looting: " + item.getTileItem().getId());
                 ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
                 if (comp.isStackable() || comp.getNote() != -1) {
-                    log.info("stackable loot " + comp.getName());
+//                    log.info("stackable loot " + comp.getName());
                     if (lootHelper.hasStackableLoot(comp)) {
-                        log.info("Has stackable loot");
+//                        log.info("Has stackable loot");
                         item.interact(false);
                     }
                 }
@@ -198,7 +198,7 @@ public class AutoCombatPlugin extends Plugin {
         targetNpc = util.findNpc(config.targetName());
         if (targetNpc == null && isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
             Optional<NPC> disturbNpc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
-            log.info("Disturbing " + slayerInfo.getUndisturbedName());
+//            log.info("Disturbing " + slayerInfo.getUndisturbedName());
             disturbNpc.ifPresent(npc -> {
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(disturbNpc.get(), slayerInfo.getDisturbAction());
@@ -207,7 +207,7 @@ public class AutoCombatPlugin extends Plugin {
             });
         } else {
             if (targetNpc != null) {
-                log.info("Should fight, found npc");
+//                log.info("Should fight, found npc");
                 MousePackets.queueClickPacket();
                 NPCPackets.queueNPCAction(targetNpc, "Attack");
                 timeout = 6;
@@ -249,7 +249,7 @@ public class AutoCombatPlugin extends Plugin {
             ItemComposition comp = itemManager.getItemComposition(item.getId());
             return lootHelper.getLootNames().contains(comp.getName());
         }).forEach(it -> {
-            log.info("Adding to lootQueue: " + it.getId());
+//            log.info("Adding to lootQueue: " + it.getId());
             lootQueue.add(it);
         });
     }
@@ -258,6 +258,7 @@ public class AutoCombatPlugin extends Plugin {
     public void onStatChanged(StatChanged event) {
         if (!started) return;
         if (client.getBoostedSkillLevel(Skill.HITPOINTS) <= config.eatAt()) {
+//            log.info("should eat");
             handleEating();
         }
         if (config.usePrayerPotion()) {
@@ -286,6 +287,7 @@ public class AutoCombatPlugin extends Plugin {
         if (pid == VarPlayer.SLAYER_TASK_SIZE) {
             if (event.getValue() <= 0 && config.shutdownOnTaskDone()) {
                 InventoryInteraction.useItem(supplies.findTeleport(), "Break");
+                EthanApiPlugin.sendClientMessage("Task done, shutting down");
                 EthanApiPlugin.stopPlugin(this);
             }
         } else if (pid == VarPlayer.CANNON_AMMO) {
@@ -315,7 +317,7 @@ public class AutoCombatPlugin extends Plugin {
     }
 
     private void checkRunEnergy() {
-        if (runIsOff() && client.getEnergy() >= 30 * 100) {
+        if (runIsOff() && playerUtil.runEnergy() >= 30) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1);
         }

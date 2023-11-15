@@ -34,6 +34,8 @@ public class SpeedDartMakerPlugin extends Plugin {
 
     private boolean started = false;
 
+    private String tipSearch = "dart tip";
+
     @Provides
     private SpeedDartMakerConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(SpeedDartMakerConfig.class);
@@ -51,10 +53,11 @@ public class SpeedDartMakerPlugin extends Plugin {
 
     @Subscribe
     private void onGameTick(GameTick event) {
+        tipSearch = config.broadBolts() ? "bolts (unf)" : "dart tip";
         if (client.getGameState() != GameState.LOGGED_IN
-            || !started
-            || !hasDarts()
-            || !hasFeather()) {
+                || !started
+                || !hasDarts()
+                || !hasFeather()) {
             return;
         }
         fletchDarts();
@@ -63,7 +66,7 @@ public class SpeedDartMakerPlugin extends Plugin {
     private void fletchDarts() {
         Widget feather = Inventory.search().nameContains("Feather").first().get();
 
-        Inventory.search().nameContains("dart tip").first().ifPresent(item -> {
+        Inventory.search().nameContains(tipSearch).first().ifPresent(item -> {
             for (int i = 0; i < config.perTick(); i++) {
                 MousePackets.queueClickPacket();
                 MousePackets.queueClickPacket();
@@ -75,7 +78,7 @@ public class SpeedDartMakerPlugin extends Plugin {
     }
 
     private boolean hasDarts() {
-        return Inventory.search().nameContains("dart tip").first().isPresent();
+        return Inventory.search().nameContains(tipSearch).first().isPresent();
     }
 
     private boolean hasFeather() {

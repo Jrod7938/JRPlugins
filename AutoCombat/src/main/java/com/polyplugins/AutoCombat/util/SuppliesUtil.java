@@ -23,7 +23,7 @@ public class SuppliesUtil {
 
     @Getter
     @Setter
-    private List<String> foodNames = List.of("Cake", "cake", "Trout", "Lobster", "Swordfish",
+    private List<String> foodNames = List.of("Cake", "cake","Herring", "Trout", "Lobster", "Swordfish",
             "Monkfish", "Shark", "Manta ray", "Dark crab", "Anglerfish", "Tuna potato", "Karambwan");
 
     /**

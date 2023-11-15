@@ -31,4 +31,14 @@ public interface SpeedDartMakerConfig extends Config {
     default int perTick() {
         return 10;
     }
+
+    @ConfigItem(
+            keyName = "broadBolts",
+            name = "Bolts?",
+            description = "",
+            position = 2
+    )
+    default boolean broadBolts() {
+        return false;
+    }
 }

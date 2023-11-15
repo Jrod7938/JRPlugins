@@ -167,7 +167,7 @@ public class PowerSkillerPlugin extends Plugin {
 
     private void findObject() {
         String objectName = config.objectToInteract();
-        if (config.useForestryTreeNotClosest()) {
+        if (config.useForestryTreeNotClosest() && config.expectedAction().equalsIgnoreCase("chop")) {
             TileObjects.search().withName(objectName).nearestToPoint(getObjectWMostPlayers()).ifPresent(tileObject -> {
                 ObjectComposition comp = TileObjectQuery.getObjectComposition(tileObject);
                 TileObjectInteraction.interact(tileObject, comp.getActions()[0]);

@@ -1,19 +1,22 @@
 package com.polyplugins.AutoCombat;
 
 
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.google.common.base.Strings;
 import net.runelite.api.*;
+import net.runelite.api.Point;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.*;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.lang.model.type.ArrayType;
 import javax.sound.sampled.Line;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -63,7 +66,6 @@ public class AutoCombatOverlay extends Overlay {
             LineComponent itemName = buildLine("Item Name: ", String.valueOf(plugin.slayerInfo.getItemName()));
             panelComponent.getChildren().addAll(Arrays.asList(undisturbedName, disturbAction, useHp, itemName));
         }
-
 
         return panelComponent.render(graphics);
     }
