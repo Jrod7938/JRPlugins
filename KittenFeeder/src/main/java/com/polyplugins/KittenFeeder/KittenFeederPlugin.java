@@ -26,6 +26,7 @@ import net.runelite.client.ui.overlay.infobox.Timer;
 import net.runelite.client.util.HotkeyListener;
 import net.runelite.client.task.Scheduler;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -126,7 +127,8 @@ public class KittenFeederPlugin extends Plugin {
     }
 
     private Optional<NPC> kitten() {
-        return NPCs.search().withName("Kitten").interactingWithLocal().first();
+      return  NPCs.search().interactingWithLocal().filter(k ->Objects.requireNonNull(k.getName()).contains("itten")).first();
+
     }
 
     private boolean hasFollower() {

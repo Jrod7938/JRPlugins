@@ -43,4 +43,5 @@ include 'DialogueContinuer'
 include 'KittenFeeder'
 include 'AutoChompy'
 include 'AutoTrapper'
+include 'AutoWintertodt'
 

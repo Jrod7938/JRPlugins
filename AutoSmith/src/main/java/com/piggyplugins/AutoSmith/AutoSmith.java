@@ -13,6 +13,7 @@ import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
@@ -25,6 +26,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,9 +42,15 @@ import java.util.Optional;
 public class AutoSmith extends Plugin {
     public int timeout = 0;
     public int idleTicks = 0;
+    @Inject
+    PlayerUtil playerUtil;
     public boolean started = false;
     @Inject
     Client client;
+    @Inject
+    OverlayManager overlayManager;
+    @Inject
+    AutoSmithOverlay overlay;
     @Inject
     AutoSmithConfig config;
     @Inject
@@ -53,6 +61,7 @@ public class AutoSmith extends Plugin {
     @Override
     @SneakyThrows
     public void startUp() {
+        overlayManager.add(overlay);
         timeout = 0;
         isSmithing = false;
         keyManager.registerKeyListener(toggle);
@@ -63,8 +72,12 @@ public class AutoSmith extends Plugin {
     public void shutDown() {
         isSmithing = false;
         timeout = 0;
+        idleTicks = 0;
+
         started = false;
         keyManager.unregisterKeyListener(toggle);
+        overlayManager.remove(overlay);
+
     }
 
     @Provides
@@ -74,17 +87,19 @@ public class AutoSmith extends Plugin {
 
     @Subscribe
     public void onGameTick(GameTick event) {
-        if (!started) return;
-
-        idleTicks += client.getLocalPlayer().getAnimation() == -1 ? 1 : 0;
-        
-        if (idleTicks > 10 || !hasEnoughBars()) {
-            timeout = 0;
-            idleTicks = 0;
+        if (client.getGameState() != GameState.LOGGED_IN || EthanApiPlugin.isMoving() || !started) {
+            return;
         }
+
+        if (playerUtil.isInteracting() || client.getLocalPlayer().getAnimation() == -1) idleTicks++;
+        else idleTicks = 0;
 
         if (timeout > 0) {
             timeout--;
+            if (idleTicks > 10 || !hasEnoughBars()) {
+                timeout = 0;
+                isSmithing = false;
+            }
             return;
         }
 
@@ -100,23 +115,29 @@ public class AutoSmith extends Plugin {
         Optional<TileObject> anvil = TileObjects.search().withName("Anvil").nearestToPlayer();
         if (hasEnoughBars() && InventoryUtil.hasItem("Hammer")) {
             if (client.getWidget(WidgetInfo.SMITHING_INVENTORY_ITEMS_CONTAINER) != null) {
+                log.info("smithing");
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetAction(client.getWidget(config.item().getWidgetInfo().getPackedId()), "Smith", "Smith set");
                 isSmithing = true;
                 timeout = 5 * (27 / config.item().getBarsRequired());
             } else if (anvil.isPresent()) {
+                log.info("interacting with anvil");
                 boolean action = TileObjectInteraction.interact(anvil.get(), "Smith");
                 if (!action)
                     log.info("failed anvil interaction");
-                timeout = 3;
+                timeout = 2;
             }
         }
 
-        if (!hasEnoughBars() || Inventory.getItemAmount("Hammer") == 0) {
+        if (!hasEnoughBars() || hasBarsButNotEnough() || !InventoryUtil.hasItem("Hammer")) {
             findBank();
             bankHandler();
         }
 
+    }
+
+    private boolean hasBarsButNotEnough() {
+        return InventoryUtil.hasItem(config.bar().getName()) && !hasEnoughBars();
     }
 
     private boolean hasEnoughBars() {
@@ -133,10 +154,10 @@ public class AutoSmith extends Plugin {
         if (!Bank.isOpen()) {
             if (banker.isPresent()) {
                 NPCInteraction.interact(banker.get(), "Bank");
-                timeout = 3;
+                timeout = 1;
             } else if (bank.isPresent()) {
                 TileObjectInteraction.interact(bank.get(), "Bank");
-                timeout = 3;
+                timeout = 1;
             } else {
                 client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Couldn't find bank or banker", null);
                 EthanApiPlugin.stopPlugin(this);

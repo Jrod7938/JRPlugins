@@ -59,7 +59,7 @@ public class DialogueContinuerPlugin extends Plugin {
             log.info("Dialogue option: " + option);
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(widget.getId(), Integer.parseInt(option));
-            timeout = 1;
+            timeout = 0;
         });
         Widgets.search().withTextContains("Click here to continue").first().ifPresent(widget -> {
 

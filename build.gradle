@@ -64,6 +64,9 @@ dependencies {
 
     compileOnly project(path: ':ButterflyCatcher')
     testImplementation project(path: ':ButterflyCatcher')
+
+    compileOnly project(path: ':AutoWintertodt')
+    testImplementation project(path: ':AutoWintertodt')
 //    Uncomment for fat jar
     implementation project(path: ':AutoAerial')
     implementation project(path: ':AutoBoner')

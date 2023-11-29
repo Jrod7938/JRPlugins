@@ -149,7 +149,7 @@ public class VardorvisHelperPlugin extends Plugin {
                 handleRangeFirstGameTick();
             }
         }
-        doBloodCaptcha();
+//        doBloodCaptcha();
 
     }
 

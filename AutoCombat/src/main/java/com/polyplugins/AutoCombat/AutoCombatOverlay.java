@@ -48,7 +48,6 @@ public class AutoCombatOverlay extends Overlay {
         LineComponent lootQ = buildLine("Loot Q: ", String.valueOf(plugin.lootQueue.size()));
 
 
-        LineComponent isSlayerNpc = buildLine("isSlayerNpc: ", String.valueOf(plugin.isSlayerNpc));
 
         panelComponent.getChildren().addAll(Arrays.asList(started, timeout, idleTicks, lootQ));
         if (client.getLocalPlayer().getInteracting() != null) {
@@ -57,6 +56,7 @@ public class AutoCombatOverlay extends Overlay {
                     intr.getHealthRatio() + "/" + intr.getHealthScale());
             panelComponent.getChildren().add(healthRatio);
         }
+        LineComponent isSlayerNpc = buildLine("isSlayerNpc: ", String.valueOf(plugin.isSlayerNpc));
         panelComponent.getChildren().add(isSlayerNpc);
 
         if (plugin.isSlayerNpc) {

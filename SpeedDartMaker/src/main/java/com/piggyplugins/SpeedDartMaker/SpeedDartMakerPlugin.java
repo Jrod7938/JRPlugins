@@ -53,7 +53,7 @@ public class SpeedDartMakerPlugin extends Plugin {
 
     @Subscribe
     private void onGameTick(GameTick event) {
-        tipSearch = config.broadBolts() ? "bolts (unf)" : "dart tip";
+        tipSearch = config.broadBolts() ? "Unfinished broad bolt" : "dart tip";
         if (client.getGameState() != GameState.LOGGED_IN
                 || !started
                 || !hasDarts()
