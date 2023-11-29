@@ -287,8 +287,8 @@ public class AutoCombatPlugin extends Plugin {
         if (pid == VarPlayer.SLAYER_TASK_SIZE) {
             if (event.getValue() <= 0 && config.shutdownOnTaskDone()) {
                 InventoryInteraction.useItem(supplies.findTeleport(), "Break");
-                EthanApiPlugin.sendClientMessage("Task done, shutting down");
-                EthanApiPlugin.stopPlugin(this);
+                EthanApiPlugin.sendClientMessage("Task done, stopping");
+                resetEverything();
             }
         } else if (pid == VarPlayer.CANNON_AMMO) {
             if (event.getValue() <= ThreadLocalRandom.current().nextInt(4, 12)) {
