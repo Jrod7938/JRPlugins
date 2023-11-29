@@ -111,7 +111,7 @@ public class AutoChompyPlugin extends Plugin {
         if (ammoId < 0) {
             Equipment.search().filter(item -> {
                 String name = item.getName();
-                return name.contains("gre arrow") || name.contains("brutal arrow");
+                return name.contains("gre arrow") || name.contains("brutal");
             }).first().ifPresentOrElse(item -> {
                 ammoId = item.getEquipmentItemId();
             }, () -> {
