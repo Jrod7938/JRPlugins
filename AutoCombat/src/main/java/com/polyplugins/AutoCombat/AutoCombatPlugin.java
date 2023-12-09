@@ -158,6 +158,11 @@ public class AutoCombatPlugin extends Plugin {
             WidgetPackets.queueWidgetAction(bone, "Bury");
             timeout = 1;
         });
+        Inventory.search().onlyUnnoted().withAction("Scatter").filter(b -> config.buryBones()).first().ifPresent(bone -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(bone, "Scatter");
+            timeout = 1;
+        });
 
         if (lootQueue.isEmpty()) looting = false;
         checkRunEnergy();

@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.16.1'
+    def runeLiteVersion = '1.10.17.1'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -64,9 +64,6 @@ dependencies {
 
     compileOnly project(path: ':ButterflyCatcher')
     testImplementation project(path: ':ButterflyCatcher')
-
-    compileOnly project(path: ':AutoWintertodt')
-    testImplementation project(path: ':AutoWintertodt')
 //    Uncomment for fat jar
     implementation project(path: ':AutoAerial')
     implementation project(path: ':AutoBoner')

@@ -2,10 +2,11 @@ package com.piggyplugins;
 
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
+import com.example.UpkeepPlugin.UpkeepPlugin;
 import com.piggyplugins.AutoAerial.AutoAerialPlugin;
-import com.piggyplugins.AutoSmith.AutoSmith;
 import com.piggyplugins.Firemaking.FiremakingPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
+import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
@@ -23,7 +24,7 @@ public class PluginTester {
                 AutoCombatPlugin.class, AutoAerialPlugin.class, AutoBonerPlugin.class,
                 ButterflyPlugin.class, FiremakingPlugin.class, DialogueContinuerPlugin.class,
                 KittenFeederPlugin.class, AutoChompyPlugin.class, PowerSkillerPlugin.class, AutoTrapperPlugin.class,
-                SpeedDartMakerPlugin.class);
+                SpeedDartMakerPlugin.class, RooftopAgilityPlugin.class, UpkeepPlugin.class);
         RuneLite.main(args);
     }
 }

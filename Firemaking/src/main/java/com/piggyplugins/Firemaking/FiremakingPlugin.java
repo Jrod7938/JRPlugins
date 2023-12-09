@@ -7,10 +7,13 @@ import com.example.InteractionApi.BankInteraction;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -67,6 +70,11 @@ public class FiremakingPlugin extends Plugin {
         overlayManager.add(overlay);
         timeout = 0;
         lastStartTile++;
+        clientThread.invokeLater(() -> {
+            location = config.getLocation();
+            startTiles = location.getStartTiles();
+            logName = config.getLogs();
+        });
     }
 
     @Override
@@ -112,6 +120,11 @@ public class FiremakingPlugin extends Plugin {
                     return;
                 }
             }
+            if (Inventory.getEmptySlots() < 27) {
+                depositInventory();
+                timeout = 2;
+                return;
+            }
             if (!hasTinderbox()) {
                 Bank.search().withName("Tinderbox").first().ifPresentOrElse(item -> {
                     MousePackets.queueClickPacket();
@@ -147,6 +160,14 @@ public class FiremakingPlugin extends Plugin {
         }
 
 
+    }
+
+    public void depositInventory() {
+        Widget depositInventory = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
+        if (depositInventory != null) {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetAction(depositInventory, "Deposit inventory");
+        }
     }
 
 

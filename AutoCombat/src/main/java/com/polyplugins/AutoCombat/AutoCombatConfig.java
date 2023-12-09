@@ -112,8 +112,8 @@ public interface AutoCombatConfig extends Config {
     }
 
     @ConfigItem(keyName = "buryBones",
-            name = "Bury bones?",
-            description = "Will bury ANY bone in your inventory",
+            name = "Bury bones/ashes",
+            description = "Will bury ANY bone/ash in your inventory",
             position = 9,
             section = autoCombatConfig)
     default boolean buryBones() {

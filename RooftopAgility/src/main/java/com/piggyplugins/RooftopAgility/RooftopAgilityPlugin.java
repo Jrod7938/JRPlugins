@@ -1,14 +1,10 @@
 package com.piggyplugins.RooftopAgility;
 
+import com.example.EthanApiPlugin.Collections.*;
 import com.example.PacketUtils.WidgetInfoExtended;
 import com.piggyplugins.PiggyUtils.API.BankUtil;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
-import com.example.EthanApiPlugin.Collections.Bank;
-import com.example.EthanApiPlugin.Collections.ETileItem;
-import com.example.EthanApiPlugin.Collections.Inventory;
-import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.example.EthanApiPlugin.Collections.Widgets;
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.BankInteraction;
@@ -124,7 +120,7 @@ public class RooftopAgilityPlugin extends Plugin {
             return State.HANDLE_BREAK;
         }
 
-        if (isBankPinOpen()){
+        if (isBankPinOpen()) {
             return State.BANK_PIN_WAIT;
         }
 
@@ -275,6 +271,16 @@ public class RooftopAgilityPlugin extends Plugin {
 
     private void restockItems() {
         if (Bank.isOpen()) {
+            Optional<Widget> emptyPieDish = BankInventory.search().withName("Pie dish").first();
+            if (emptyPieDish.isPresent()) {
+                BankInteraction.useItem(emptyPieDish.get(), "Deposit-All");
+                return;
+            }
+            Optional<Widget> emptyVial = BankInventory.search().withName("Vial").first();
+            if (emptyVial.isPresent()) {
+                BankInteraction.useItem(emptyVial.get(), "Deposit-All");
+                return;
+            }
             if (!config.foodName().isEmpty() && !InventoryUtil.hasItem(config.foodName())) {
                 Optional<Widget> bankFood = BankUtil.nameContainsNoCase(config.foodName()).first();
                 if (bankFood.isPresent()) {
@@ -314,7 +320,7 @@ public class RooftopAgilityPlugin extends Plugin {
 
     private boolean isBankPinOpen() {
         Widget bankPinWidget = client.getWidget(213, 0);
-        if (bankPinWidget == null){
+        if (bankPinWidget == null) {
             return false;
         }
         return !bankPinWidget.isHidden();
