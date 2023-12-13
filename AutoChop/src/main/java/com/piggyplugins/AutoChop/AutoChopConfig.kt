@@ -26,7 +26,7 @@ interface AutoChopConfig : Config {
     @ConfigItem(
         keyName = "treeAreaX&Y",
         name = "Tree AreaX&Y",
-        description = "Enter the Tree areaX",
+        description = "Enter the Tree areaX&Y",
         position = 2
     )
     fun treeAreaXY(): Dimension = Dimension(3151, 3450)
@@ -34,7 +34,7 @@ interface AutoChopConfig : Config {
     @ConfigItem(
         keyName = "treeAreaW&H",
         name = "Tree AreaW&H",
-        description = "Enter the Tree areaY",
+        description = "Enter the Tree areaW&H",
         position = 3
     )
     fun treeAreaWH(): Dimension = Dimension(20, 15)
@@ -58,7 +58,7 @@ interface AutoChopConfig : Config {
     @ConfigItem(
         keyName = "bankAreaX&Y",
         name = "Bank AreaX&Y",
-        description = "Enter the bank area x",
+        description = "Enter the bank area X&Y",
         position = 6
     )
     fun bankAreaXY(): Dimension = Dimension(3180, 3432)
@@ -66,7 +66,7 @@ interface AutoChopConfig : Config {
     @ConfigItem(
         keyName = "bankAreaW&H",
         name = "Bank AreaW&H",
-        description = "Enter the bank area y",
+        description = "Enter the bank area W&H",
         position = 7
     )
     fun bankAreaWH(): Dimension = Dimension(5, 12)
