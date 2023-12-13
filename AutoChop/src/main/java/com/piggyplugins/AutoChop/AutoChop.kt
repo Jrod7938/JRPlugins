@@ -153,7 +153,7 @@ class AutoChop : Plugin() {
     }
 
     private fun handleSearchingState() {
-        TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPlayer().ifPresent { tree ->
+        TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
             TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
             ticksToWaitBeforeNextAction = 1
             changeStateTo(State.ANIMATING)
@@ -184,6 +184,31 @@ class AutoChop : Plugin() {
                 changeStateTo(State.SEARCHING)
             }
         }
+    }
+
+    private fun getObjectWMostPlayers(): WorldPoint {
+        val objectName: String = autoChopConfig.treeName().toString()
+        val playerCounts: MutableMap<WorldPoint, Int> = HashMap()
+        var mostPlayersTile: WorldPoint? = null
+        var highestCount = 0
+        val objects = TileObjects.search().withName(objectName).result()
+
+        val players = Players.search().notLocalPlayer().result()
+
+        for (`object` in objects) {
+            for (player in players) {
+                if (player.worldLocation.distanceTo(`object`.worldLocation) <= 2) {
+                    val playerTile = player.worldLocation
+                    playerCounts[playerTile] = playerCounts.getOrDefault(playerTile, 0) + 1
+                    if (playerCounts[playerTile]!! > highestCount) {
+                        highestCount = playerCounts[playerTile]!!
+                        mostPlayersTile = playerTile
+                    }
+                }
+            }
+        }
+
+        return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
     private fun changeStateTo(stateName: State) {
