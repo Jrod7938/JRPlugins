@@ -114,6 +114,11 @@ dependencies {
     compileOnly project(path: ':PowerSkiller')
     testImplementation project(path: ':PowerSkiller')
 
+    compileOnly project(path: ':AutoChop')
+    testImplementation project(path: ':AutoChop')
+    compileOnly project(path: ':PathingTesting')
+    testImplementation project(path: ':PathingTesting')
+
 }
 
 sourceSets {

@@ -1,7 +1,9 @@
 package com.example.LavaRunecrafter;
 
+import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.Widgets;
 import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.InventoryInteraction;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.PacketUtils.WidgetInfoExtended;
 import com.example.Packets.MousePackets;
@@ -72,12 +74,14 @@ public class LavaRunecrafterPlugin extends Plugin {
         timeout = 0;
         pouches = new HashMap<>();
         breakHandler.registerPlugin(this);
+        breakHandler.startPlugin(this);
     }
 
     @Override
     public void shutDown() {
         timeout = 0;
         pouches = new HashMap<>();
+        breakHandler.stopPlugin(this);
         breakHandler.unregisterPlugin(this);
     }
 
@@ -128,7 +132,7 @@ public class LavaRunecrafterPlugin extends Plugin {
             timeout = 15;
             return;
         }
-        TileObject bankChest = EthanApiPlugin.findObject("bank");
+        TileObject bankChest = EthanApiPlugin.findObject("Bank chest");
         Item binding = null;
         if (bankChest != null) {
             if (client.getWidget(WidgetInfo.BANK_CONTAINER) == null) {
@@ -265,8 +269,7 @@ public class LavaRunecrafterPlugin extends Plugin {
                     //System.out.println("weird shit");
                 }
             }
-            MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(3, 25362456, -1, -1);
+            Inventory.search().nameContains("cape").first().ifPresent(cape -> InventoryInteraction.useItem(cape, "Teleport"));
             timeout = 3;
             //System.out.println("Teleporting to bank");
         }
