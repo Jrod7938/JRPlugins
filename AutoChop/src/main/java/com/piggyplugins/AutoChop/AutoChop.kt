@@ -37,8 +37,6 @@ class AutoChop : Plugin() {
 
     private lateinit var state: State
 
-    private var lastPlayerLocation: WorldPoint? = null
-
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
     private lateinit var bankDestination: WorldPoint
@@ -195,9 +193,9 @@ class AutoChop : Plugin() {
 
         val players = Players.search().notLocalPlayer().result()
 
-        for (`object` in objects) {
+        for (tree in objects) {
             for (player in players) {
-                if (player.worldLocation.distanceTo(`object`.worldLocation) <= 2) {
+                if (player.worldLocation.distanceTo(tree.worldLocation) <= 2) {
                     val playerTile = player.worldLocation
                     playerCounts[playerTile] = playerCounts.getOrDefault(playerTile, 0) + 1
                     if (playerCounts[playerTile]!! > highestCount) {
