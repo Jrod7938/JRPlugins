@@ -43,7 +43,7 @@ class AutoChop : Plugin() {
     private lateinit var overlayManager: OverlayManager
 
     lateinit var state: State
-    lateinit var keyboard: Robot
+    private lateinit var keyboard: Robot
 
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
@@ -74,24 +74,29 @@ class AutoChop : Plugin() {
 
     @Subscribe
     fun onGameTick(e: GameTick) {
-        if (autoChopConfig.displayOverlay()){
+
+        if (autoChopConfig.displayOverlay()){ // Toggle overlay
             overlayManager.add(autoChopOverlay)
         } else {
             overlayManager.remove(autoChopOverlay)
         }
-        if (breakHandler.shouldBreak(this)) {
+
+        if (breakHandler.shouldBreak(this)) { // Break handler
             breakHandler.startBreak(this)
         }
 
-        if (client.gameState != GameState.LOGGED_IN) {
+        if (client.gameState != GameState.LOGGED_IN) { // Check if logged in
             return
         }
 
+
+        // Set up areas and destinations
         bankingArea = WorldArea(autoChopConfig.bankAreaXY().width, autoChopConfig.bankAreaXY().height, autoChopConfig.bankAreaWH().width, autoChopConfig.bankAreaWH().height, autoChopConfig.bankAreaPlane()-1)
         treeArea = WorldArea(autoChopConfig.treeAreaXY().width, autoChopConfig.treeAreaXY().height, autoChopConfig.treeAreaWH().width, autoChopConfig.treeAreaWH().height, autoChopConfig.treeAreaPlane()-1)
         bankDestination = WorldPoint(autoChopConfig.bankLocation().width, autoChopConfig.bankLocation().height, 0)
         treeDestination = WorldPoint(autoChopConfig.treeLocation().width, autoChopConfig.treeLocation().height, 0)
 
+        // State machine
         when (state) {
             State.IDLE -> handleIdleState()
             State.SEARCHING -> handleSearchingState()
