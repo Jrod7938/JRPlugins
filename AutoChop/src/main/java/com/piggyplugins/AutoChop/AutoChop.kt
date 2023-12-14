@@ -262,7 +262,7 @@ class AutoChop : Plugin() {
 
     private fun changeStateTo(stateName: State) {
         state = stateName
-        println("State: $state")
+        //println("State: $state")
     }
 
     private fun runIsOff(): Boolean {
