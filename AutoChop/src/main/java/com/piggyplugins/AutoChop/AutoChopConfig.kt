@@ -8,26 +8,34 @@ import java.awt.Dimension
 @ConfigGroup("AutoChop")
 interface AutoChopConfig : Config {
     @ConfigItem(
+        keyName = "overlay",
+        name = "Overlay",
+        description = "Display Overlay?",
+        position = 0
+    )
+    fun displayOverlay(): Boolean = true
+
+    @ConfigItem(
         keyName = "treeName",
         name = "Tree Name",
         description = "Enter the name of the tree to cut",
-        position = 0
+        position = 1
     )
-    fun treeName(): String? = "Tree"
+    fun treeName(): String = "Tree"
 
     @ConfigItem(
         keyName = "treeAction",
         name = "Tree Action",
         description = "Enter the name of the tree action (cut, Chop down)",
-        position = 1
+        position = 2
     )
-    fun treeAction(): String? = "Chop down"
+    fun treeAction(): String = "Chop down"
 
     @ConfigItem(
         keyName = "treeAreaX&Y",
         name = "Tree AreaX&Y",
         description = "Enter the Tree areaX&Y",
-        position = 2
+        position = 3
     )
     fun treeAreaXY(): Dimension = Dimension(3151, 3450)
 
@@ -35,7 +43,7 @@ interface AutoChopConfig : Config {
         keyName = "treeAreaW&H",
         name = "Tree AreaW&H",
         description = "Enter the Tree areaW&H",
-        position = 3
+        position = 4
     )
     fun treeAreaWH(): Dimension = Dimension(20, 15)
 
@@ -43,7 +51,7 @@ interface AutoChopConfig : Config {
         keyName = "treeLocationXY",
         name = "Tree LocationXY",
         description = "Enter the tree X & Y",
-        position = 10,
+        position = 5,
     )
     fun treeLocation(): Dimension = Dimension(0,0)
 
@@ -51,7 +59,7 @@ interface AutoChopConfig : Config {
         keyName = "bankLocationXY",
         name = "Bank LocationXY",
         description = "Enter the bank location XY",
-        position = 5
+        position = 6
     )
     fun bankLocation(): Dimension = Dimension(3182, 3444)
 
@@ -59,7 +67,7 @@ interface AutoChopConfig : Config {
         keyName = "bankAreaX&Y",
         name = "Bank AreaX&Y",
         description = "Enter the bank area X&Y",
-        position = 6
+        position = 7
     )
     fun bankAreaXY(): Dimension = Dimension(3180, 3432)
 
@@ -67,7 +75,7 @@ interface AutoChopConfig : Config {
         keyName = "bankAreaW&H",
         name = "Bank AreaW&H",
         description = "Enter the bank area W&H",
-        position = 7
+        position = 8
     )
     fun bankAreaWH(): Dimension = Dimension(5, 12)
 
@@ -75,7 +83,7 @@ interface AutoChopConfig : Config {
         keyName = "bankAreaPlane",
         name = "Bank Plane",
         description = "Enter the bank plane",
-        position = 8
+        position = 9
     )
     fun bankAreaPlane(): Int = 0
 
@@ -83,7 +91,7 @@ interface AutoChopConfig : Config {
         keyName = "treeAreaPlane",
         name = "Tree Plane",
         description = "Enter the tree plane",
-        position = 9,
+        position = 10,
     )
     fun treeAreaPlane(): Int = 0
 

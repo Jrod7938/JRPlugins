@@ -20,6 +20,7 @@ import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
+import net.runelite.client.ui.overlay.OverlayManager
 
 @PluginDescriptor(
     name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Chop </html>",
@@ -34,8 +35,12 @@ class AutoChop : Plugin() {
     private lateinit var autoChopConfig: AutoChopConfig
     @Inject
     private lateinit var breakHandler: ReflectBreakHandler
+    @Inject
+    private lateinit var autoChopOverlay: AutoChopOverlay
+    @Inject
+    private lateinit var overlayManager: OverlayManager
 
-    private lateinit var state: State
+    lateinit var state: State
 
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
@@ -60,10 +65,16 @@ class AutoChop : Plugin() {
     override fun shutDown() {
         breakHandler.stopPlugin(this);
         breakHandler.unregisterPlugin(this);
+        overlayManager.remove(autoChopOverlay)
     }
 
     @Subscribe
     fun onGameTick(e: GameTick) {
+        if (autoChopConfig.displayOverlay()){
+            overlayManager.add(autoChopOverlay)
+        } else {
+            overlayManager.remove(autoChopOverlay)
+        }
         if (breakHandler.shouldBreak(this)) {
             breakHandler.startBreak(this)
         }
@@ -84,6 +95,33 @@ class AutoChop : Plugin() {
             State.WALKING_TO_BANK -> handleWalkingToBankState()
             State.BANKING -> handleBankingState()
             State.WALKING_TO_TREES -> handleWalkingToTreesState()
+            State.FOXTRAP -> handleFoxTrapState()
+            State.ANIMA -> handleAnimaState()
+            State.TREE_ROOTS -> handleTreeRootState()
+        }
+    }
+
+    private fun handleTreeRootState() {
+        TileObjects.search().nameContains("Tree root").withAction("Chop down").nearestToPlayer().ifPresent {  treeRoot ->
+            TileObjectInteraction.interact(treeRoot, "Chop down")
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.ANIMATING)
+        }
+    }
+
+    private fun handleAnimaState() {
+        TileObjects.search().nameContains("Anima").withAction("Chop down").nearestToPlayer().ifPresent { anima ->
+            TileObjectInteraction.interact(anima, "Chop down")
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.ANIMATING)
+        }
+    }
+
+    private fun handleFoxTrapState() {
+        TileObjects.search().nameContains("Fox trap").withAction("Disarm").nearestToPlayer().ifPresent {  foxTrap ->
+            TileObjectInteraction.interact(foxTrap, "Disarm")
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.ANIMATING)
         }
     }
 
@@ -179,10 +217,21 @@ class AutoChop : Plugin() {
             if (!treeArea.contains(client.localPlayer.worldLocation)) {
                 changeStateTo(State.WALKING_TO_TREES)
             } else {
+                if (foxTrapExists()){
+                    changeStateTo(State.FOXTRAP)
+                }
+                if (animaExists()){
+                    changeStateTo(State.ANIMA)
+                }
+                if (treeRootExists()){
+                    changeStateTo(State.TREE_ROOTS)
+                }
                 changeStateTo(State.SEARCHING)
             }
         }
     }
+
+    private fun treeRootExists(): Boolean = !TileObjects.search().nameContains("Tree root").withAction("Chop down").empty()
 
     private fun getObjectWMostPlayers(): WorldPoint {
         val objectName: String = autoChopConfig.treeName().toString()
@@ -209,9 +258,16 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
+    private fun animaExists(): Boolean {
+        return !TileObjects.search().nameContains("Anima").withAction("Chop down").empty()
+    }
+
+    private fun foxTrapExists(): Boolean {
+        return !TileObjects.search().nameContains("Fox trap").withAction("Disarm").empty()
+    }
+
     private fun changeStateTo(stateName: State) {
         state = stateName
-        println("State: ${state.name}")
     }
 
     private fun runIsOff(): Boolean {
