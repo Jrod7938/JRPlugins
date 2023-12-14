@@ -21,6 +21,8 @@ import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
+import java.awt.Robot
+import java.awt.event.KeyEvent
 
 @PluginDescriptor(
     name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Chop </html>",
@@ -41,6 +43,7 @@ class AutoChop : Plugin() {
     private lateinit var overlayManager: OverlayManager
 
     lateinit var state: State
+    lateinit var keyboard: Robot
 
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
@@ -56,6 +59,7 @@ class AutoChop : Plugin() {
 
     @Throws(Exception::class)
     override fun startUp() {
+        keyboard = Robot()
         breakHandler.registerPlugin(this);
         breakHandler.startPlugin(this);
         changeStateTo(State.IDLE)
@@ -95,33 +99,32 @@ class AutoChop : Plugin() {
             State.WALKING_TO_BANK -> handleWalkingToBankState()
             State.BANKING -> handleBankingState()
             State.WALKING_TO_TREES -> handleWalkingToTreesState()
-            State.FOXTRAP -> handleFoxTrapState()
-            State.ANIMA -> handleAnimaState()
-            State.TREE_ROOTS -> handleTreeRootState()
+            State.BURN_LOGS -> handleBurnLogsState()
         }
     }
 
-    private fun handleTreeRootState() {
-        TileObjects.search().nameContains("Tree root").withAction("Chop down").nearestToPlayer().ifPresent {  treeRoot ->
-            TileObjectInteraction.interact(treeRoot, "Chop down")
-            ticksToWaitBeforeNextAction = 1
-            changeStateTo(State.ANIMATING)
+    private fun handleBurnLogsState() {
+        if (ticksToWaitBeforeNextAction > 0) {
+            ticksToWaitBeforeNextAction--
+            return
         }
-    }
 
-    private fun handleAnimaState() {
-        TileObjects.search().nameContains("Anima").withAction("Chop down").nearestToPlayer().ifPresent { anima ->
-            TileObjectInteraction.interact(anima, "Chop down")
-            ticksToWaitBeforeNextAction = 1
-            changeStateTo(State.ANIMATING)
-        }
-    }
-
-    private fun handleFoxTrapState() {
-        TileObjects.search().nameContains("Fox trap").withAction("Disarm").nearestToPlayer().ifPresent {  foxTrap ->
-            TileObjectInteraction.interact(foxTrap, "Disarm")
-            ticksToWaitBeforeNextAction = 1
-            changeStateTo(State.ANIMATING)
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
+            if (Widgets.search().withTextContains("What would you like to burn").result().isNotEmpty()){
+                keyboard.keyPress(KeyEvent.VK_SPACE)
+                ticksToWaitBeforeNextAction = 1
+                return
+            }
+            if (Inventory.search().nameContains(autoChopConfig.logName()).result().isNotEmpty()){
+                TileObjects.search().nameContains("Campfire").withAction("Tend-to").nearestToPlayer().ifPresent { campire ->
+                    TileObjectInteraction.interact(campire, "Tend-to")
+                }
+                ticksToWaitBeforeNextAction = 1
+                return
+            }
+            if (Inventory.search().nameContains(autoChopConfig.logName()).result().isEmpty()){
+                changeStateTo(State.IDLE)
+            }
         }
     }
 
@@ -180,7 +183,7 @@ class AutoChop : Plugin() {
 
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                changeStateTo(State.WALKING_TO_BANK)
+                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS) else changeStateTo(State.WALKING_TO_BANK)
             } else {
                 ticksToWaitBeforeNextAction = 1
                 changeStateTo(State.IDLE)
@@ -208,30 +211,24 @@ class AutoChop : Plugin() {
         }
 
         if (Inventory.full()) {
-            if (bankingArea.contains(client.localPlayer.worldLocation)){
-                changeStateTo(State.BANKING)
+            if (autoChopConfig.burnLogs()) {
+                ticksToWaitBeforeNextAction = 1
+                changeStateTo(State.BURN_LOGS)
             } else {
-                changeStateTo(State.WALKING_TO_BANK)
+                if (bankingArea.contains(client.localPlayer.worldLocation)){
+                    changeStateTo(State.BANKING)
+                } else {
+                    changeStateTo(State.WALKING_TO_BANK)
+                }
             }
         } else {
             if (!treeArea.contains(client.localPlayer.worldLocation)) {
                 changeStateTo(State.WALKING_TO_TREES)
             } else {
-                if (foxTrapExists()){
-                    changeStateTo(State.FOXTRAP)
-                }
-                if (animaExists()){
-                    changeStateTo(State.ANIMA)
-                }
-                if (treeRootExists()){
-                    changeStateTo(State.TREE_ROOTS)
-                }
                 changeStateTo(State.SEARCHING)
             }
         }
     }
-
-    private fun treeRootExists(): Boolean = !TileObjects.search().nameContains("Tree root").withAction("Chop down").empty()
 
     private fun getObjectWMostPlayers(): WorldPoint {
         val objectName: String = autoChopConfig.treeName().toString()
@@ -258,16 +255,9 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
-    private fun animaExists(): Boolean {
-        return !TileObjects.search().nameContains("Anima").withAction("Chop down").empty()
-    }
-
-    private fun foxTrapExists(): Boolean {
-        return !TileObjects.search().nameContains("Fox trap").withAction("Disarm").empty()
-    }
-
     private fun changeStateTo(stateName: State) {
         state = stateName
+        println("State: $state")
     }
 
     private fun runIsOff(): Boolean {

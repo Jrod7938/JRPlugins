@@ -18,7 +18,7 @@ class AutoChopOverlay @Inject private constructor(private val client: Client, pl
     private val plugin: AutoChop = plugin
 
     init {
-        position = OverlayPosition.TOP_RIGHT
+        position = OverlayPosition.BOTTOM_LEFT
         layer = OverlayLayer.ABOVE_SCENE
         isDragTargetable = true
     }
