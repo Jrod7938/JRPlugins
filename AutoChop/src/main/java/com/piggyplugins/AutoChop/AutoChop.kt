@@ -104,7 +104,7 @@ class AutoChop : Plugin() {
         when (state) {
             State.IDLE -> handleIdleState()
             State.SEARCHING -> handleSearchingState()
-            State.ANIMATING -> handleAnimatingState()
+            State.CUTTING -> handleCuttingState()
             State.WALKING_TO_BANK -> handleWalkingToBankState()
             State.BANKING -> handleBankingState()
             State.WALKING_TO_TREES -> handleWalkingToTreesState()
@@ -117,13 +117,13 @@ class AutoChop : Plugin() {
     private fun handleFoxTrapState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
             if (foxTrapExists()){
-                TileObjects.search().nameContains("ox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
-                    TileObjectInteraction.interact(foxTrap, "Disarm")
+                NPCs.search().nameContains("ox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
+                    NPCInteraction.interact(foxTrap, "Disarm")
                 }
                 tickDelay = 1
                 return
             } else {
-                changeStateTo(State.IDLE, 1)
+                changeStateTo(State.IDLE, 3)
             }
         }
     }
@@ -201,7 +201,7 @@ class AutoChop : Plugin() {
         }
     }
 
-    private fun handleAnimatingState() {
+    private fun handleCuttingState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
                 if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.WALKING_TO_BANK, 1)
@@ -212,7 +212,7 @@ class AutoChop : Plugin() {
     }
 
     private fun foxTrapExists(): Boolean {
-        return TileObjects.search().nameContains("ox trap").result().isNotEmpty()
+        return NPCs.search().nameContains("ox trap").result().isNotEmpty()
     }
 
     private fun treeRootExists(): Boolean {
@@ -222,7 +222,7 @@ class AutoChop : Plugin() {
     private fun handleSearchingState() {
         TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
             TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
-            changeStateTo(State.ANIMATING, 1)
+            changeStateTo(State.CUTTING, 1)
         }
     }
 
