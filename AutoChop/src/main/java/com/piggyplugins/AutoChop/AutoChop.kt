@@ -50,7 +50,7 @@ class AutoChop : Plugin() {
     private lateinit var bankDestination: WorldPoint
     private lateinit var treeDestination: WorldPoint
 
-    private var tickDelay = 0
+    private var ticksToWaitBeforeNextAction = 0
 
     @Provides
     private fun getConfig(configManager: ConfigManager): AutoChopConfig {
@@ -74,10 +74,6 @@ class AutoChop : Plugin() {
 
     @Subscribe
     fun onGameTick(e: GameTick) {
-        if (tickDelay > 0) { // Tick delay
-            tickDelay--
-            return
-        }
 
         if (autoChopConfig.displayOverlay()){ // Toggle overlay
             overlayManager.add(autoChopOverlay)
@@ -109,62 +105,38 @@ class AutoChop : Plugin() {
             State.BANKING -> handleBankingState()
             State.WALKING_TO_TREES -> handleWalkingToTreesState()
             State.BURN_LOGS -> handleBurnLogsState()
-            State.TREE_ROOT -> handleTreeRootState()
-            State.FOX_TRAP -> handleFoxTrapState()
-        }
-    }
-
-    private fun handleFoxTrapState() {
-        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
-            if (foxTrapExists()){
-                TileObjects.search().nameContains("ox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
-                    TileObjectInteraction.interact(foxTrap, "Disarm")
-                }
-                tickDelay = 1
-                return
-            } else {
-                changeStateTo(State.IDLE, 1)
-            }
-        }
-    }
-
-    private fun handleTreeRootState() {
-        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
-            if (treeRootExists()){
-                TileObjects.search().nameContains("infused Tree root").withAction("Chop down").nearestToPlayer().ifPresent { treeRoot ->
-                    TileObjectInteraction.interact(treeRoot, "Chop down")
-                }
-                tickDelay = 1
-                return
-            } else {
-                changeStateTo(State.IDLE, 1)
-            }
         }
     }
 
     private fun handleBurnLogsState() {
+        if (ticksToWaitBeforeNextAction > 0) {
+            ticksToWaitBeforeNextAction--
+            return
+        }
+
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
             if (Widgets.search().withTextContains("What would you like to burn").result().isNotEmpty()){
                 keyboard.keyPress(KeyEvent.VK_SPACE)
-                tickDelay = 1
+                ticksToWaitBeforeNextAction = 1
                 return
             }
             if (Inventory.search().nameContains(autoChopConfig.logName()).result().isNotEmpty()){
                 TileObjects.search().nameContains("Campfire").withAction("Tend-to").nearestToPlayer().ifPresent { campire ->
                     TileObjectInteraction.interact(campire, "Tend-to")
                 }
-                tickDelay = 1
+                ticksToWaitBeforeNextAction = 1
                 return
             }
             if (Inventory.search().nameContains(autoChopConfig.logName()).result().isEmpty()){
-                changeStateTo(State.IDLE, 1)
+                changeStateTo(State.IDLE)
             }
         }
     }
 
     private fun handleWalkingToTreesState() {
         if (treeArea.contains(client.localPlayer.worldLocation)){
-            changeStateTo(State.IDLE, 1)
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.IDLE)
         } else {
             if (!EthanApiPlugin.isMoving() || !treeArea.contains(client.localPlayer.worldLocation)) {
                 PathingTesting.walkTo(treeDestination)
@@ -174,61 +146,70 @@ class AutoChop : Plugin() {
 
     private fun handleWalkingToBankState() {
         if (bankingArea.contains(client.localPlayer.worldLocation)){
-            changeStateTo(State.BANKING, 1)
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.BANKING)
         } else {
             if (!EthanApiPlugin.isMoving() || EthanApiPlugin.playerPosition().distanceTo(bankDestination) > 3 && !bankingArea.contains(client.localPlayer.worldLocation)) {
                 PathingTesting.walkTo(bankDestination)
             }
             if (bankingArea.contains(client.localPlayer.worldLocation) && !EthanApiPlugin.isMoving()){
-                changeStateTo(State.BANKING, 1)
+                ticksToWaitBeforeNextAction = 1
+                changeStateTo(State.BANKING)
             }
         }
     }
 
     private fun handleBankingState() {
+        if (ticksToWaitBeforeNextAction > 0) {
+            ticksToWaitBeforeNextAction--
+            return
+        }
+
         if (!Bank.isOpen() && !EthanApiPlugin.isMoving() && Inventory.full()){
             NPCs.search().nameContains("Banker").withAction("Bank").nearestToPlayer().ifPresent { banker ->
                 NPCInteraction.interact(banker, "Bank")
             }
-            tickDelay = 1
+            ticksToWaitBeforeNextAction = 1
             return
         }
         if (Bank.isOpen()){
             BankInventory.search().nameContains("ogs").withAction("Deposit-All").first().ifPresent { log ->
                 BankInventoryInteraction.useItem(log, "Deposit-All")
             }
-            changeStateTo(State.IDLE, 1)
+            changeStateTo(State.IDLE)
         }
     }
 
     private fun handleAnimatingState() {
-        if(treeRootExists()) changeStateTo(State.TREE_ROOT, 1)
-        if(foxTrapExists()) changeStateTo(State.FOX_TRAP, 1)
+        if (ticksToWaitBeforeNextAction > 0) {
+            ticksToWaitBeforeNextAction--
+            return
+        }
+
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.WALKING_TO_BANK, 1)
+                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS) else changeStateTo(State.WALKING_TO_BANK)
             } else {
-                changeStateTo(State.IDLE, 1)
+                ticksToWaitBeforeNextAction = 1
+                changeStateTo(State.IDLE)
             }
         }
-    }
-
-    private fun foxTrapExists(): Boolean {
-        return TileObjects.search().nameContains("ox trap").result().isNotEmpty()
-    }
-
-    private fun treeRootExists(): Boolean {
-        return TileObjects.search().nameContains("ree root").result().isNotEmpty()
     }
 
     private fun handleSearchingState() {
         TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
             TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
-            changeStateTo(State.ANIMATING, 1)
+            ticksToWaitBeforeNextAction = 1
+            changeStateTo(State.ANIMATING)
         }
     }
 
     private fun handleIdleState() {
+        if (ticksToWaitBeforeNextAction > 0) {
+            ticksToWaitBeforeNextAction--
+            return
+        }
+
         if(runIsOff() && client.energy >= 20 * 100){
             MousePackets.queueClickPacket()
             WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1)
@@ -236,17 +217,18 @@ class AutoChop : Plugin() {
 
         if (Inventory.full()) {
             if (autoChopConfig.burnLogs()) {
-                changeStateTo(State.BURN_LOGS, 1)
+                ticksToWaitBeforeNextAction = 1
+                changeStateTo(State.BURN_LOGS)
             } else {
                 if (bankingArea.contains(client.localPlayer.worldLocation)){
-                    changeStateTo(State.BANKING, 1)
+                    changeStateTo(State.BANKING)
                 } else {
-                    changeStateTo(State.WALKING_TO_BANK, 1)
+                    changeStateTo(State.WALKING_TO_BANK)
                 }
             }
         } else {
             if (!treeArea.contains(client.localPlayer.worldLocation)) {
-                changeStateTo(State.WALKING_TO_TREES, 1)
+                changeStateTo(State.WALKING_TO_TREES)
             } else {
                 changeStateTo(State.SEARCHING)
             }
@@ -254,7 +236,7 @@ class AutoChop : Plugin() {
     }
 
     private fun getObjectWMostPlayers(): WorldPoint {
-        val objectName: String = autoChopConfig.treeName()
+        val objectName: String = autoChopConfig.treeName().toString()
         val playerCounts: MutableMap<WorldPoint, Int> = HashMap()
         var mostPlayersTile: WorldPoint? = null
         var highestCount = 0
@@ -278,10 +260,9 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
-    private fun changeStateTo(stateName: State, ticksToDelay: Int = 0) {
+    private fun changeStateTo(stateName: State) {
         state = stateName
-        tickDelay = ticksToDelay
-        // println("State : $stateName")
+        //println("State: $state")
     }
 
     private fun runIsOff(): Boolean {
