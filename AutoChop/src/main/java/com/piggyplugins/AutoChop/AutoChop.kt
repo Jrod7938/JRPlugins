@@ -254,7 +254,7 @@ class AutoChop : Plugin() {
     }
 
     private fun getObjectWMostPlayers(): WorldPoint {
-        val objectName: String = autoChopConfig.treeName().toString()
+        val objectName: String = autoChopConfig.treeName()
         val playerCounts: MutableMap<WorldPoint, Int> = HashMap()
         var mostPlayersTile: WorldPoint? = null
         var highestCount = 0
