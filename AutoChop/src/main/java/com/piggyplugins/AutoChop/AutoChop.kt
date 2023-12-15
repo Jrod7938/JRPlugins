@@ -250,7 +250,8 @@ class AutoChop : Plugin() {
     }
 
     private fun handleSearchingState() {
-        TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
+        TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction())
+            .withinDistance(10).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
             TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
             changeStateTo(State.CUTTING, 1)
         }
@@ -264,7 +265,7 @@ class AutoChop : Plugin() {
 
         if (Inventory.full()) {
             if (autoChopConfig.burnLogs()) {
-                changeStateTo(State.BURN_LOGS, 1)
+                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.BANKING, 1)
             } else {
                 if (bankingArea.contains(client.localPlayer.worldLocation)){
                     changeStateTo(State.BANKING, 1)
@@ -312,6 +313,9 @@ class AutoChop : Plugin() {
     private fun beeHiveExists(): Boolean = TileObjects.search().nameContains("nfinished Bee hive").result().isNotEmpty()
     private fun rainbowLocation(): WorldPoint =
         TileObjects.search().nameContains("ainbow").result().first().worldLocation
+    private fun campFireExists(): Boolean =
+        TileObjects.search().nameContains("Campfire").withinDistance(10).result().isNotEmpty()
+
 
     private fun checkEvents(): Boolean {
         if (treeRootExists()) {

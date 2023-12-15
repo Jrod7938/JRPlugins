@@ -8,8 +8,10 @@ import com.piggyplugins.AutoAerial.AutoAerialPlugin;
 import com.piggyplugins.AutoChop.AutoChop;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.Firemaking.FiremakingPlugin;
+import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
+import com.piggyplugins.SixHourLog.SixHourLogPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
@@ -27,7 +29,8 @@ public class PluginTester {
                 AutoCombatPlugin.class, AutoAerialPlugin.class, AutoBonerPlugin.class,
                 ButterflyPlugin.class, FiremakingPlugin.class, DialogueContinuerPlugin.class,
                 KittenFeederPlugin.class, AutoChompyPlugin.class, PowerSkillerPlugin.class, AutoTrapperPlugin.class,
-                SpeedDartMakerPlugin.class, RooftopAgilityPlugin.class, UpkeepPlugin.class, AutoChop.class, ChinBreakHandlerPlugin.class, PathingTesting.class);
+                SpeedDartMakerPlugin.class, RooftopAgilityPlugin.class, UpkeepPlugin.class, AutoChop.class, ChinBreakHandlerPlugin.class,
+                PathingTesting.class, PiggyUtilsPlugin.class, SixHourLogPlugin.class);
         RuneLite.main(args);
     }
 }
