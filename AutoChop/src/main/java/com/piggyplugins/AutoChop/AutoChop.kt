@@ -153,7 +153,7 @@ class AutoChop : Plugin() {
     private fun handleFoxTrapState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
             if (foxTrapExists()){
-                NPCs.search().nameContains("ox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
+                NPCs.search().nameContains("Fox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
                     NPCInteraction.interact(foxTrap, "Disarm")
                 }
                 tickDelay = 1
@@ -314,7 +314,7 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
-    private fun foxTrapExists(): Boolean = NPCs.search().nameContains("ox trap").result().isNotEmpty()
+    private fun foxTrapExists(): Boolean = NPCs.search().nameContains("Fox trap").result().isNotEmpty()
     private fun treeRootExists(): Boolean = TileObjects.search().nameContains("infused Tree root").result().isNotEmpty()
     private fun rainbowExists(): Boolean = TileObjects.search().nameContains("ainbow").result().isNotEmpty()
     private fun beeHiveExists(): Boolean = TileObjects.search().nameContains("nfinished Bee hive").result().isNotEmpty()
