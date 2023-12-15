@@ -151,7 +151,7 @@ class AutoChop : Plugin() {
 
     private fun handleBeeHiveState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
-            if (beeHiveExists() && !Inventory.search().nameContains("ogs").empty()) {
+            if (beeHiveExists() && Inventory.search().nameContains("ogs").result().isNotEmpty()) {
                 if (Widgets.search().withTextContains("How many logs would you like to add").result().isNotEmpty()) {
                     keyboard.keyPress(KeyEvent.VK_SPACE)
                     tickDelay = 1
@@ -390,7 +390,7 @@ class AutoChop : Plugin() {
             changeStateTo(State.RAINBOW, 1)
             return true
         }
-        if (beeHiveExists() && !Inventory.search().nameContains("ogs").empty()) {
+        if (beeHiveExists() && Inventory.search().nameContains("ogs").result().count() >= 2) {
             breakPlayersAnimation()
             changeStateTo(State.BEE_HIVE, 1)
             return true
