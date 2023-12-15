@@ -100,8 +100,8 @@ class AutoChop : Plugin() {
         bankDestination = WorldPoint(autoChopConfig.bankLocation().width, autoChopConfig.bankLocation().height, 0)
         treeDestination = WorldPoint(autoChopConfig.treeLocation().width, autoChopConfig.treeLocation().height, 0)
 
-        // State machine
-        when (state) {
+
+        when (state) { // State machine
             State.IDLE -> handleIdleState()
             State.SEARCHING -> handleSearchingState()
             State.CUTTING -> handleCuttingState()
