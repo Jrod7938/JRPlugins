@@ -265,7 +265,7 @@ class AutoChop : Plugin() {
 
         if (Inventory.full()) {
             if (autoChopConfig.burnLogs()) {
-                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.BANKING, 1)
+                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.WALKING_TO_BANK, 1)
             } else {
                 if (bankingArea.contains(client.localPlayer.worldLocation)){
                     changeStateTo(State.BANKING, 1)
