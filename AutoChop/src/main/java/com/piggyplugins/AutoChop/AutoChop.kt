@@ -386,7 +386,7 @@ class AutoChop : Plugin() {
             changeStateTo(State.RAINBOW, 1)
             return true
         }
-        if (beeHiveExists()) {
+        if (beeHiveExists() && !Inventory.search().nameContains("ogs").empty()) {
             changeStateTo(State.BEE_HIVE, 1)
             return true
         }
