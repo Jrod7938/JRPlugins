@@ -167,7 +167,8 @@ class AutoChop : Plugin() {
     private fun handleTreeRootState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1){
             if (treeRootExists()){
-                TileObjects.search().nameContains("infused Tree root").withAction("Chop down").nearestToPlayer().ifPresent { treeRoot ->
+                TileObjects.search().nameContains("infused Tree root").withAction("Chop down").withinDistance(15)
+                    .nearestToPlayer().ifPresent { treeRoot ->
                     TileObjectInteraction.interact(treeRoot, "Chop down")
                 }
                 tickDelay = 1
@@ -239,14 +240,17 @@ class AutoChop : Plugin() {
     }
 
     private fun handleCuttingState() {
+        checkEvents() // Check for events
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.WALKING_TO_BANK, 1)
+                if (autoChopConfig.burnLogs()) changeStateTo(
+                    State.BURN_LOGS,
+                    1
+                ) else changeStateTo(State.WALKING_TO_BANK, 1) // Burn logs if campfire exists else walk to bank
             } else {
-                changeStateTo(State.IDLE, 1)
+                changeStateTo(State.IDLE, 1) // Change state to idle if inventory is not full
             }
         }
-        checkEvents() // Check for events
     }
 
     private fun handleSearchingState() {
@@ -265,19 +269,22 @@ class AutoChop : Plugin() {
 
         if (Inventory.full()) {
             if (autoChopConfig.burnLogs()) {
-                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(State.WALKING_TO_BANK, 1)
+                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(
+                    State.WALKING_TO_BANK,
+                    1
+                ) // Burn logs if campfire exists else walk to bank
             } else {
                 if (bankingArea.contains(client.localPlayer.worldLocation)){
-                    changeStateTo(State.BANKING, 1)
+                    changeStateTo(State.BANKING, 1) // Bank if inventory is full
                 } else {
-                    changeStateTo(State.WALKING_TO_BANK, 1)
+                    changeStateTo(State.WALKING_TO_BANK, 1) // Walk to bank if inventory is full
                 }
             }
         } else {
             if (!treeArea.contains(client.localPlayer.worldLocation)) {
-                changeStateTo(State.WALKING_TO_TREES, 1)
+                changeStateTo(State.WALKING_TO_TREES, 1) // Walk to trees if not in tree area
             } else {
-                if (!checkEvents()) changeStateTo(State.SEARCHING)
+                if (!checkEvents()) changeStateTo(State.SEARCHING) // Check for events and change state to searching if none
             }
         }
     }
@@ -308,7 +315,7 @@ class AutoChop : Plugin() {
     }
 
     private fun foxTrapExists(): Boolean = NPCs.search().nameContains("ox trap").result().isNotEmpty()
-    private fun treeRootExists(): Boolean = TileObjects.search().nameContains("ree root").result().isNotEmpty()
+    private fun treeRootExists(): Boolean = TileObjects.search().nameContains("infused Tree root").result().isNotEmpty()
     private fun rainbowExists(): Boolean = TileObjects.search().nameContains("ainbow").result().isNotEmpty()
     private fun beeHiveExists(): Boolean = TileObjects.search().nameContains("nfinished Bee hive").result().isNotEmpty()
     private fun rainbowLocation(): WorldPoint =
