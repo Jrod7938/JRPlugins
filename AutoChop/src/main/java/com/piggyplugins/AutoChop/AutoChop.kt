@@ -111,6 +111,37 @@ class AutoChop : Plugin() {
             State.BURN_LOGS -> handleBurnLogsState()
             State.TREE_ROOT -> handleTreeRootState()
             State.FOX_TRAP -> handleFoxTrapState()
+            State.RAINBOW -> handleRainbowState()
+            State.BEE_HIVE -> handleBeeHiveState()
+        }
+    }
+
+    private fun handleBeeHiveState() {
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (beeHiveExists() && !Inventory.search().nameContains("ogs").empty()) {
+                TileObjects.search().nameContains("nfinished Beehive").withAction("Finish").nearestToPlayer()
+                    .ifPresent { beeHive ->
+                        TileObjectInteraction.interact(beeHive, "Finish")
+                    }
+                tickDelay = 1
+                return
+            } else {
+                changeStateTo(State.IDLE, 1)
+            }
+        }
+    }
+
+    private fun handleRainbowState() {
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (rainbowExists()) {
+                if (client.localPlayer.worldLocation != rainbowLocation()) {
+                    PathingTesting.walkTo(rainbowLocation())
+                    tickDelay = 1
+                    return
+                }
+            } else {
+                changeStateTo(State.IDLE, 1)
+            }
         }
     }
 
@@ -211,14 +242,6 @@ class AutoChop : Plugin() {
         }
     }
 
-    private fun foxTrapExists(): Boolean {
-        return NPCs.search().nameContains("ox trap").result().isNotEmpty()
-    }
-
-    private fun treeRootExists(): Boolean {
-        return TileObjects.search().nameContains("ree root").result().isNotEmpty()
-    }
-
     private fun handleSearchingState() {
         TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction()).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
             TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
@@ -248,6 +271,8 @@ class AutoChop : Plugin() {
             } else {
                 if(treeRootExists()) changeStateTo(State.TREE_ROOT, 1)
                 else if(foxTrapExists()) changeStateTo(State.FOX_TRAP, 1)
+                else if (rainbowExists()) changeStateTo(State.RAINBOW, 1)
+                else if (beeHiveExists()) changeStateTo(State.BEE_HIVE, 1)
                 else changeStateTo(State.SEARCHING)
             }
         }
@@ -277,6 +302,15 @@ class AutoChop : Plugin() {
 
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
+
+    private fun foxTrapExists(): Boolean = NPCs.search().nameContains("ox trap").result().isNotEmpty()
+    private fun treeRootExists(): Boolean = TileObjects.search().nameContains("ree root").result().isNotEmpty()
+    private fun rainbowExists(): Boolean = TileObjects.search().nameContains("ainbow").result().isNotEmpty()
+    private fun beeHiveExists(): Boolean = TileObjects.search().nameContains("nfinished Beehive").result().isNotEmpty()
+
+    private fun rainbowLocation(): WorldPoint =
+        TileObjects.search().nameContains("ainbow").result().first().worldLocation
+
 
     private fun changeStateTo(stateName: State, ticksToDelay: Int = 0) {
         state = stateName
