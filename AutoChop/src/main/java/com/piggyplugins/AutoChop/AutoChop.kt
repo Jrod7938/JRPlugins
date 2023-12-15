@@ -3,6 +3,7 @@ package com.piggyplugins.AutoChop
 import com.example.EthanApiPlugin.Collections.*
 import com.example.EthanApiPlugin.EthanApiPlugin
 import com.example.InteractionApi.BankInventoryInteraction
+import com.example.InteractionApi.InventoryInteraction
 import com.example.InteractionApi.NPCInteraction
 import com.example.InteractionApi.TileObjectInteraction
 import com.example.Packets.MousePackets
@@ -375,23 +376,38 @@ class AutoChop : Plugin() {
 
     private fun checkEvents(): Boolean {
         if (treeRootExists()) {
+            breakPlayersAnimation()
             changeStateTo(State.TREE_ROOT, 1)
             return true
         }
         if (foxTrapExists()) {
+            breakPlayersAnimation()
             changeStateTo(State.FOX_TRAP, 1)
             return true
         }
         if (rainbowExists()) {
+            breakPlayersAnimation()
             changeStateTo(State.RAINBOW, 1)
             return true
         }
         if (beeHiveExists() && !Inventory.search().nameContains("ogs").empty()) {
+            breakPlayersAnimation()
             changeStateTo(State.BEE_HIVE, 1)
             return true
         }
         if (pheasantExists()) {
+            breakPlayersAnimation()
             changeStateTo(State.PHEASANT, 1)
+            return true
+        }
+        return false
+    }
+
+    private fun breakPlayersAnimation(): Boolean {
+        if (Inventory.search().nameContains("ogs").result().isNotEmpty()) {
+            Inventory.search().nameContains("ogs").first().ifPresent { log ->
+                InventoryInteraction.useItem(log, "Drop")
+            }
             return true
         }
         return false
