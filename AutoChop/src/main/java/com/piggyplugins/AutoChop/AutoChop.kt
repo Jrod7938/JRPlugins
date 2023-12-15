@@ -156,9 +156,9 @@ class AutoChop : Plugin() {
                     tickDelay = 1
                     return
                 }
-                TileObjects.search().nameContains("nfinished Bee hive").withAction("Build").nearestToPlayer()
+                NPCs.search().nameContains("nfinished Beehive").withAction("Build").nearestToPlayer()
                     .ifPresent { beeHive ->
-                        TileObjectInteraction.interact(beeHive, "Build")
+                        NPCInteraction.interact(beeHive, "Build")
                     }
                 tickDelay = 1
                 return
@@ -358,7 +358,7 @@ class AutoChop : Plugin() {
         TileObjects.search().nameContains("ainbow").withinDistance(15).result().isNotEmpty()
 
     private fun beeHiveExists(): Boolean =
-        TileObjects.search().nameContains("nfinished Bee hive").withinDistance(15).result().isNotEmpty()
+        NPCs.search().nameContains("nfinished Beehive").result().isNotEmpty()
 
     private fun rainbowLocation(): WorldPoint =
         TileObjects.search().nameContains("ainbow").withinDistance(15).nearestToPlayer().get().worldLocation
