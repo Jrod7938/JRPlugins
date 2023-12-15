@@ -29,7 +29,7 @@ interface AutoChopConfig : Config {
         description = "Enter the name of the tree to cut",
         position = 2
     )
-    fun treeName(): String = "Tree"
+    fun treeName(): String = "Maple Tree"
 
     @ConfigItem(
         keyName = "treeAction",
@@ -53,7 +53,7 @@ interface AutoChopConfig : Config {
         description = "Enter the Tree areaX&Y",
         position = 5
     )
-    fun treeAreaXY(): Dimension = Dimension(3151, 3450)
+    fun treeAreaXY(): Dimension = Dimension(2702, 3498)
 
     @ConfigItem(
         keyName = "treeAreaW&H",
@@ -61,7 +61,7 @@ interface AutoChopConfig : Config {
         description = "Enter the Tree areaW&H",
         position = 6
     )
-    fun treeAreaWH(): Dimension = Dimension(20, 15)
+    fun treeAreaWH(): Dimension = Dimension(31, 16)
 
     @ConfigItem(
         keyName = "treeLocationXY",
@@ -69,7 +69,7 @@ interface AutoChopConfig : Config {
         description = "Enter the tree X & Y",
         position = 7,
     )
-    fun treeLocation(): Dimension = Dimension(0,0)
+    fun treeLocation(): Dimension = Dimension(2731, 3500)
 
     @ConfigItem(
         keyName = "bankLocationXY",
@@ -77,7 +77,7 @@ interface AutoChopConfig : Config {
         description = "Enter the bank location XY",
         position = 8
     )
-    fun bankLocation(): Dimension = Dimension(3182, 3444)
+    fun bankLocation(): Dimension = Dimension(2727, 3493)
 
     @ConfigItem(
         keyName = "bankAreaX&Y",
@@ -85,7 +85,7 @@ interface AutoChopConfig : Config {
         description = "Enter the bank area X&Y",
         position = 9
     )
-    fun bankAreaXY(): Dimension = Dimension(3180, 3432)
+    fun bankAreaXY(): Dimension = Dimension(2721, 3490)
 
     @ConfigItem(
         keyName = "bankAreaW&H",
@@ -93,7 +93,7 @@ interface AutoChopConfig : Config {
         description = "Enter the bank area W&H",
         position = 10
     )
-    fun bankAreaWH(): Dimension = Dimension(5, 12)
+    fun bankAreaWH(): Dimension = Dimension(9, 4)
 
     @ConfigItem(
         keyName = "bankAreaPlane",
@@ -101,7 +101,7 @@ interface AutoChopConfig : Config {
         description = "Enter the bank plane",
         position = 11
     )
-    fun bankAreaPlane(): Int = 0
+    fun bankAreaPlane(): Int = 1
 
     @ConfigItem(
         keyName = "treeAreaPlane",
@@ -109,7 +109,7 @@ interface AutoChopConfig : Config {
         description = "Enter the tree plane",
         position = 12,
     )
-    fun treeAreaPlane(): Int = 0
+    fun treeAreaPlane(): Int = 1
 
 
 }
