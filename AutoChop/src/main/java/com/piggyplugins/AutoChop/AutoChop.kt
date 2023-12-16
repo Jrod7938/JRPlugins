@@ -14,6 +14,7 @@ import com.google.inject.Provides
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
 import net.runelite.api.Client
 import net.runelite.api.GameState
+import net.runelite.api.VarPlayer
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
 import net.runelite.api.events.GameTick
@@ -154,7 +155,7 @@ class AutoChop : Plugin() {
             if (beeHiveExists() && Inventory.search().nameContains("ogs").result().isNotEmpty()) {
                 if (Widgets.search().withTextContains("How many logs would you like to add").result().isNotEmpty()) {
                     keyboard.keyPress(KeyEvent.VK_SPACE)
-                    tickDelay = 1
+                    tickDelay = 3
                     return
                 }
                 NPCs.search().nameContains("nfinished Beehive").withAction("Build").nearestToPlayer()
@@ -293,6 +294,7 @@ class AutoChop : Plugin() {
     private fun handleSearchingState() {
         TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction())
             .withinDistance(10).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
+                useSpecial()
                 TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
                 changeStateTo(State.CUTTING, 1)
             }
@@ -411,6 +413,17 @@ class AutoChop : Plugin() {
             return true
         }
         return false
+    }
+
+    private fun useSpecial() {
+        if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
+            if (!Equipment.search().matchesWildCardNoCase("*Dragon axe*").empty()
+                || !Equipment.search().matchesWildCardNoCase("*infernal axe*").empty()
+            ) {
+                MousePackets.queueClickPacket()
+                WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1)
+            }
+        }
     }
 
     private fun changeStateTo(stateName: State, ticksToDelay: Int = 0) {
