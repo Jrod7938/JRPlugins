@@ -14,6 +14,7 @@ import com.google.inject.Provides
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
 import net.runelite.api.Client
 import net.runelite.api.GameState
+import net.runelite.api.NPC
 import net.runelite.api.VarPlayer
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
@@ -25,6 +26,7 @@ import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
 import java.awt.Robot
 import java.awt.event.KeyEvent
+import java.util.*
 
 @PluginDescriptor(
     name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Chop </html>",
@@ -132,12 +134,30 @@ class AutoChop : Plugin() {
             State.RAINBOW -> handleRainbowState()
             State.BEE_HIVE -> handleBeeHiveState()
             State.PHEASANT -> handlePheasantState()
+            State.RITUAL_CIRCLES -> handleRitualCirclesState()
+        }
+    }
+
+    private fun handleRitualCirclesState() {
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (ritualCircleExists()) {
+                if (client.localPlayer.worldLocation != findUniqueRitualCircle()!!.worldLocation) {
+                    PathingTesting.walkTo(findUniqueRitualCircle()!!.worldLocation)
+                    tickDelay = 1
+                    return
+                }
+            } else {
+                changeStateTo(State.IDLE, 1)
+            }
         }
     }
 
     private fun handlePheasantState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.search().nameContains("Pheasant egg").result().isNotEmpty()) {
+                if (NPCs.search().nameContains("Freaky Forester").result().isEmpty()) {
+                    changeStateTo(State.IDLE, 1)
+                }
                 NPCs.search().nameContains("Freaky Forester").nearestToPlayer().ifPresent { forester ->
                     NPCInteraction.interact(forester, "Talk-to")
                 }
@@ -210,6 +230,7 @@ class AutoChop : Plugin() {
     private fun handleTreeRootState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (treeRootExists()) {
+                useSpecial()
                 TileObjects.search().nameContains("infused Tree root").withAction("Chop down").withinDistance(15)
                     .nearestToPlayer().ifPresent { treeRoot ->
                         TileObjectInteraction.interact(treeRoot, "Chop down")
@@ -362,6 +383,28 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
+    private fun findUniqueRitualCircle(): NPC? {
+        val ritualCircles = NPCs.search().nameContains("Ritual Circle").result()
+            .filter { it.name != null }
+
+        // Count occurrences of each distinct Ritual Circle name
+        val nameCountMap = mutableMapOf<String, Int>()
+        ritualCircles.forEach { circle ->
+            val name = circle.name!!
+            nameCountMap[name] = nameCountMap.getOrDefault(name, 0) + 1
+        }
+
+        // Find the name with a count of 1 (the unique one)
+        val uniqueName = nameCountMap.entries.find { it.value == 1 }?.key
+
+        // Return the NPC corresponding to the unique name
+        return ritualCircles.find { it.name == uniqueName }
+    }
+
+
+
+
+
     private fun foxTrapExists(): Boolean = NPCs.search().nameContains("Fox trap").result().isNotEmpty()
     private fun treeRootExists(): Boolean =
         TileObjects.search().nameContains("infused Tree root").withinDistance(15).result().isNotEmpty()
@@ -411,8 +454,15 @@ class AutoChop : Plugin() {
             changeStateTo(State.PHEASANT, 1)
             return true
         }
+        if (ritualCircleExists()) {
+            breakPlayersAnimation()
+            changeStateTo(State.RITUAL_CIRCLES, 1)
+            return true
+        }
         return false
     }
+
+    private fun ritualCircleExists(): Boolean = NPCs.search().nameContains("Ritual circle").result().isNotEmpty()
 
     private fun breakPlayersAnimation(): Boolean {
         if (EthanApiPlugin.isMoving() || client.localPlayer.animation != -1) {
