@@ -145,7 +145,9 @@ class AutoChop : Plugin() {
                 return
             }
             if (pheasantExists()) {
+                val pheasantNPCLocations = NPCs.search().withName("Pheasant").result().map { it.worldLocation }
                 TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15)
+                    .filter { nest -> !pheasantNPCLocations.contains(nest.worldLocation) }
                     .nearestToPlayer().ifPresent { pheasant ->
                         TileObjectInteraction.interact(pheasant, "Retrieve-egg")
                     }
