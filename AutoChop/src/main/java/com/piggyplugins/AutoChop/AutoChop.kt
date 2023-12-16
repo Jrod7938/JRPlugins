@@ -137,6 +137,13 @@ class AutoChop : Plugin() {
 
     private fun handlePheasantState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (Inventory.search().nameContains("Pheasant egg").result().isNotEmpty()) {
+                NPCs.search().nameContains("Freaky Forester").nearestToPlayer().ifPresent { forester ->
+                    NPCInteraction.interact(forester, "Talk-to")
+                }
+                tickDelay = 2
+                return
+            }
             if (pheasantExists()) {
                 TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15)
                     .nearestToPlayer().ifPresent { pheasant ->
@@ -406,11 +413,13 @@ class AutoChop : Plugin() {
     }
 
     private fun breakPlayersAnimation(): Boolean {
-        if (Inventory.search().nameContains("ogs").result().isNotEmpty()) {
-            Inventory.search().nameContains("ogs").first().ifPresent { log ->
-                InventoryInteraction.useItem(log, "Drop")
+        if (EthanApiPlugin.isMoving() || client.localPlayer.animation != -1) {
+            if (Inventory.search().nameContains("ogs").result().isNotEmpty()) {
+                Inventory.search().nameContains("ogs").first().ifPresent { log ->
+                    InventoryInteraction.useItem(log, "Drop")
+                }
+                return true
             }
-            return true
         }
         return false
     }
