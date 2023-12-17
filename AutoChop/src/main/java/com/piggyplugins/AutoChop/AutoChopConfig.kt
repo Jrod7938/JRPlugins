@@ -93,7 +93,7 @@ interface AutoChopConfig : Config {
         description = "Enter the bank area W&H",
         position = 10
     )
-    fun bankAreaWH(): Dimension = Dimension(9, 4)
+    fun bankAreaWH(): Dimension = Dimension(9, 6)
 
     @ConfigItem(
         keyName = "bankAreaPlane",

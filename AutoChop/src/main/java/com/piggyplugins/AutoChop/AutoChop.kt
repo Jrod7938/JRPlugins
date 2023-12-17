@@ -24,7 +24,6 @@ import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
-import java.awt.Robot
 import java.awt.event.KeyEvent
 import java.util.*
 
@@ -51,7 +50,6 @@ class AutoChop : Plugin() {
     private lateinit var overlayManager: OverlayManager
 
     lateinit var state: State
-    private lateinit var keyboard: Robot
 
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
@@ -67,7 +65,6 @@ class AutoChop : Plugin() {
 
     @Throws(Exception::class)
     override fun startUp() {
-        keyboard = Robot()
         breakHandler.registerPlugin(this);
         breakHandler.startPlugin(this);
         changeStateTo(State.IDLE)
@@ -161,7 +158,7 @@ class AutoChop : Plugin() {
                 NPCs.search().nameContains("Freaky Forester").nearestToPlayer().ifPresent { forester ->
                     NPCInteraction.interact(forester, "Talk-to")
                 }
-                tickDelay = 2
+                tickDelay = 1
                 return
             }
             if (pheasantExists()) {
@@ -183,7 +180,7 @@ class AutoChop : Plugin() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (beeHiveExists() && Inventory.search().nameContains("ogs").result().isNotEmpty()) {
                 if (Widgets.search().withTextContains("How many logs would you like to add").result().isNotEmpty()) {
-                    keyboard.keyPress(KeyEvent.VK_SPACE)
+                    sendKey(KeyEvent.VK_SPACE)
                     tickDelay = 3
                     return
                 }
@@ -246,7 +243,7 @@ class AutoChop : Plugin() {
     private fun handleBurnLogsState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Widgets.search().withTextContains("What would you like to burn").result().isNotEmpty()) {
-                keyboard.keyPress(KeyEvent.VK_SPACE)
+                sendKey(KeyEvent.VK_SPACE)
                 tickDelay = 1
                 return
             }
@@ -491,6 +488,23 @@ class AutoChop : Plugin() {
         state = stateName
         tickDelay = ticksToDelay
         // println("State : $stateName")
+    }
+
+    private fun sendKey(key: Int) {
+        keyEvent(KeyEvent.KEY_PRESSED, key)
+        keyEvent(KeyEvent.KEY_RELEASED, key)
+    }
+
+    private fun keyEvent(id: Int, key: Int) {
+        val e = KeyEvent(
+            client.getCanvas(),
+            id,
+            System.currentTimeMillis(),
+            0,
+            key,
+            KeyEvent.CHAR_UNDEFINED
+        )
+        client.getCanvas().dispatchEvent(e)
     }
 
 }
