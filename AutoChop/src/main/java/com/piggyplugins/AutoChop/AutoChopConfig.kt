@@ -95,21 +95,4 @@ interface AutoChopConfig : Config {
     )
     fun bankAreaWH(): Dimension = Dimension(9, 6)
 
-    @ConfigItem(
-        keyName = "bankAreaPlane",
-        name = "Bank Plane",
-        description = "Enter the bank plane",
-        position = 11
-    )
-    fun bankAreaPlane(): Int = 1
-
-    @ConfigItem(
-        keyName = "treeAreaPlane",
-        name = "Tree Plane",
-        description = "Enter the tree plane",
-        position = 12,
-    )
-    fun treeAreaPlane(): Int = 1
-
-
 }

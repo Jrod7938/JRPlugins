@@ -105,14 +105,14 @@ class AutoChop : Plugin() {
             autoChopConfig.bankAreaXY().height,
             autoChopConfig.bankAreaWH().width,
             autoChopConfig.bankAreaWH().height,
-            autoChopConfig.bankAreaPlane() - 1
+            client.plane
         )
         treeArea = WorldArea(
             autoChopConfig.treeAreaXY().width,
             autoChopConfig.treeAreaXY().height,
             autoChopConfig.treeAreaWH().width,
             autoChopConfig.treeAreaWH().height,
-            autoChopConfig.treeAreaPlane() - 1
+            client.plane
         )
         bankDestination = WorldPoint(autoChopConfig.bankLocation().width, autoChopConfig.bankLocation().height, 0)
         treeDestination = WorldPoint(autoChopConfig.treeLocation().width, autoChopConfig.treeLocation().height, 0)
@@ -132,6 +132,19 @@ class AutoChop : Plugin() {
             State.BEE_HIVE -> handleBeeHiveState()
             State.PHEASANT -> handlePheasantState()
             State.RITUAL_CIRCLES -> handleRitualCirclesState()
+            State.ENTLING -> handleEntlingState()
+        }
+    }
+
+    private fun handleEntlingState() {
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (entlingExists()) {
+                val (entling, action) = findEntlingToPrune() ?: return
+                NPCInteraction.interact(entling, action)
+                return
+            } else {
+                changeStateTo(State.IDLE)
+            }
         }
     }
 
@@ -158,7 +171,6 @@ class AutoChop : Plugin() {
                 NPCs.search().nameContains("Freaky Forester").nearestToPlayer().ifPresent { forester ->
                     NPCInteraction.interact(forester, "Talk-to")
                 }
-                tickDelay = 1
                 return
             }
             if (pheasantExists()) {
@@ -168,7 +180,6 @@ class AutoChop : Plugin() {
                     .nearestToPlayer().ifPresent { pheasant ->
                         TileObjectInteraction.interact(pheasant, "Retrieve-egg")
                     }
-                tickDelay = 1
                 return
             } else {
                 changeStateTo(State.IDLE, 3)
@@ -188,7 +199,6 @@ class AutoChop : Plugin() {
                     .ifPresent { beeHive ->
                         NPCInteraction.interact(beeHive, "Build")
                     }
-                tickDelay = 1
                 return
             } else {
                 changeStateTo(State.IDLE)
@@ -216,7 +226,6 @@ class AutoChop : Plugin() {
                 NPCs.search().nameContains("Fox trap").withAction("Disarm").nearestToPlayer().ifPresent { foxTrap ->
                     NPCInteraction.interact(foxTrap, "Disarm")
                 }
-                tickDelay = 1
                 return
             } else {
                 changeStateTo(State.IDLE, 3)
@@ -232,7 +241,6 @@ class AutoChop : Plugin() {
                     .nearestToPlayer().ifPresent { treeRoot ->
                         TileObjectInteraction.interact(treeRoot, "Chop down")
                     }
-                tickDelay = 1
                 return
             } else {
                 changeStateTo(State.IDLE)
@@ -244,7 +252,6 @@ class AutoChop : Plugin() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Widgets.search().withTextContains("What would you like to burn").result().isNotEmpty()) {
                 sendKey(KeyEvent.VK_SPACE)
-                tickDelay = 1
                 return
             }
             if (Inventory.search().nameContains(autoChopConfig.logName()).result().isNotEmpty()) {
@@ -252,7 +259,6 @@ class AutoChop : Plugin() {
                     .ifPresent { campire ->
                         TileObjectInteraction.interact(campire, "Tend-to")
                     }
-                tickDelay = 1
                 return
             }
             if (Inventory.search().nameContains(autoChopConfig.logName()).result().isEmpty()) {
@@ -308,10 +314,8 @@ class AutoChop : Plugin() {
         checkEvents() // Check for events
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                if (autoChopConfig.burnLogs()) changeStateTo(
-                    State.BURN_LOGS,
-                    1
-                ) else changeStateTo(State.WALKING_TO_BANK) // Burn logs if campfire exists else walk to bank
+                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists else walk to bank
+                else changeStateTo(State.WALKING_TO_BANK)
             } else {
                 changeStateTo(State.IDLE) // Change state to idle if inventory is not full
             }
@@ -335,23 +339,15 @@ class AutoChop : Plugin() {
 
         if (Inventory.full()) {
             if (autoChopConfig.burnLogs()) {
-                if (campFireExists()) changeStateTo(State.BURN_LOGS, 1) else changeStateTo(
-                    State.WALKING_TO_BANK,
-                    1
-                ) // Burn logs if campfire exists else walk to bank
+                if (campFireExists()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists
+                else changeStateTo(State.WALKING_TO_BANK) // else walk to bank
             } else {
-                if (bankingArea.contains(client.localPlayer.worldLocation)) {
-                    changeStateTo(State.BANKING) // Bank if inventory is full
-                } else {
-                    changeStateTo(State.WALKING_TO_BANK) // Walk to bank if inventory is full
-                }
+                if (bankingArea.contains(client.localPlayer.worldLocation)) changeStateTo(State.BANKING) // Bank if inventory is full
+                else changeStateTo(State.WALKING_TO_BANK) // Walk to bank if inventory is full
             }
         } else {
-            if (!treeArea.contains(client.localPlayer.worldLocation)) {
-                changeStateTo(State.WALKING_TO_TREES) // Walk to trees if not in tree area
-            } else {
-                if (!checkEvents()) changeStateTo(State.SEARCHING) // Check for events and change state to searching if none
-            }
+            if (!treeArea.contains(client.localPlayer.worldLocation)) changeStateTo(State.WALKING_TO_TREES) // Walk to trees if not in tree area
+            else if (!checkEvents()) changeStateTo(State.SEARCHING) // Check for events and change state to searching if none
         }
     }
 
@@ -421,6 +417,8 @@ class AutoChop : Plugin() {
     private fun pheasantExists(): Boolean =
         TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15).result()
             .isNotEmpty()
+    private fun ritualCircleExists(): Boolean = NPCs.search().nameContains("Ritual circle").result().isNotEmpty()
+    private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
 
     private fun runIsOff(): Boolean = EthanApiPlugin.getClient().getVarpValue(173) == 0
 
@@ -456,10 +454,41 @@ class AutoChop : Plugin() {
             changeStateTo(State.RITUAL_CIRCLES)
             return true
         }
+        if (findEntlingToPrune() != null) {
+            breakPlayersAnimation()
+            changeStateTo(State.ENTLING)
+            return true
+        }
         return false
     }
 
-    private fun ritualCircleExists(): Boolean = NPCs.search().nameContains("Ritual circle").result().isNotEmpty()
+    data class PruningAction(val entling: NPC, val action: String)
+
+    private fun findEntlingToPrune(): PruningAction? {
+        val playerLocation = client.localPlayer.worldLocation
+
+        val entlings = NPCs.search().nameContains("Entling").result()
+            .filter { it.overheadText != null }
+            .sortedBy { it.worldLocation.distanceTo(playerLocation) }
+
+        for (entling in entlings) {
+            val request = entling.overheadText
+
+            val action = when (request) {
+                "Breezy at the back!" -> "Prune-back"
+                "A leafy mullet!" -> "Prune-top"
+                "Short back and sides!" -> "Prune-back"
+                "Short on top!" -> "Prune-top"
+                else -> continue
+            }
+
+            return PruningAction(entling, action)
+        }
+
+        return null // No entling found that needs pruning
+    }
+
+
 
     private fun breakPlayersAnimation(): Boolean {
         if (EthanApiPlugin.isMoving() || client.localPlayer.animation != -1) {

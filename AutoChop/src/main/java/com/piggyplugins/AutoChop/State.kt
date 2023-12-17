@@ -13,5 +13,6 @@ enum class State {
     RAINBOW,
     BEE_HIVE,
     PHEASANT,
-    RITUAL_CIRCLES
+    RITUAL_CIRCLES,
+    ENTLING
 }
