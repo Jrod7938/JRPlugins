@@ -296,8 +296,8 @@ class AutoChop : Plugin() {
 
     private fun handleBankingState() {
         if (!Bank.isOpen() && !EthanApiPlugin.isMoving() && Inventory.full()) {
-            NPCs.search().nameContains("Banker").withAction("Bank").nearestToPlayer().ifPresent { banker ->
-                NPCInteraction.interact(banker, "Bank")
+            TileObjects.search().nameContains("Bank").withAction("Bank").nearestToPlayer().ifPresent { bank ->
+                TileObjectInteraction.interact(bank, "Bank")
             }
             tickDelay = 1
             return
