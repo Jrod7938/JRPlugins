@@ -58,7 +58,7 @@ class AutoChop : Plugin() {
     private lateinit var bankDestination: WorldPoint
     private lateinit var treeDestination: WorldPoint
 
-    private var tickDelay = 0
+    var tickDelay = 0
 
     @Provides
     private fun getConfig(configManager: ConfigManager): AutoChopConfig {
@@ -384,7 +384,7 @@ class AutoChop : Plugin() {
     }
 
     private fun findUniqueRitualCircle(): NPC? {
-        val ritualCircles = NPCs.search().nameContains("Ritual Circle").result()
+        val ritualCircles = NPCs.search().nameContains("Ritual circle").result()
             .filter { it.name != null }
 
         // Count occurrences of each distinct Ritual Circle name

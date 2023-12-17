@@ -1,6 +1,5 @@
 package com.piggyplugins.AutoChop
 
-import net.runelite.api.Actor
 import net.runelite.api.Client
 import net.runelite.client.ui.overlay.Overlay
 import net.runelite.client.ui.overlay.OverlayLayer
@@ -28,8 +27,10 @@ class AutoChopOverlay @Inject private constructor(private val client: Client, pl
         slPanel.children.clear()
 
         val state = buildLine("State: ", plugin.state.toString())
+        val tickDelay = buildLine("Tick Delay: ", plugin.tickDelay.toString())
 
         panelComponent.children.addAll(listOf(state))
+        panelComponent.children.addAll(listOf(tickDelay))
 
         return panelComponent.render(graphics)
     }
