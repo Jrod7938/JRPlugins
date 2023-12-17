@@ -296,8 +296,13 @@ class AutoChop : Plugin() {
 
     private fun handleBankingState() {
         if (!Bank.isOpen() && !EthanApiPlugin.isMoving() && Inventory.full()) {
-            TileObjects.search().nameContains("Bank").withAction("Bank").nearestToPlayer().ifPresent { bank ->
-                TileObjectInteraction.interact(bank, "Bank")
+            var bank = TileObjects.search().nameContains("Bank").withAction("Bank").nearestToPlayer()
+            if (bank.isPresent) {
+                TileObjectInteraction.interact(bank.get(), "Bank")
+            } else {
+                TileObjects.search().nameContains("Bank").withAction("Use").nearestToPlayer().ifPresent { bank ->
+                    TileObjectInteraction.interact(bank, "Use")
+                }
             }
             tickDelay = 1
             return
