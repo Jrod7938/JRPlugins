@@ -25,7 +25,7 @@ interface AutoChopConfig : Config {
     @ConfigItem(
         keyName = "treeName",
         name = "Tree Name",
-        description = "Enter the name of the tree to cut",
+        description = "Tree to cut",
         position = 2
     )
     fun TREEANDLOCATION(): TreeAndLocation = TreeAndLocation.Maple
