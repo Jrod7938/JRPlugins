@@ -101,21 +101,29 @@ class AutoChop : Plugin() {
 
         // Set up areas and destinations
         bankingArea = WorldArea(
-            autoChopConfig.bankAreaXY().width,
-            autoChopConfig.bankAreaXY().height,
-            autoChopConfig.bankAreaWH().width,
-            autoChopConfig.bankAreaWH().height,
+            autoChopConfig.TREEANDLOCATION().bankAreaXY().width,
+            autoChopConfig.TREEANDLOCATION().bankAreaXY().height,
+            autoChopConfig.TREEANDLOCATION().bankAreaWH().width,
+            autoChopConfig.TREEANDLOCATION().bankAreaWH().height,
             client.plane
         )
         treeArea = WorldArea(
-            autoChopConfig.treeAreaXY().width,
-            autoChopConfig.treeAreaXY().height,
-            autoChopConfig.treeAreaWH().width,
-            autoChopConfig.treeAreaWH().height,
+            autoChopConfig.TREEANDLOCATION().treeAreaXY().width,
+            autoChopConfig.TREEANDLOCATION().treeAreaXY().height,
+            autoChopConfig.TREEANDLOCATION().treeAreaWH().width,
+            autoChopConfig.TREEANDLOCATION().treeAreaWH().height,
             client.plane
         )
-        bankDestination = WorldPoint(autoChopConfig.bankLocation().width, autoChopConfig.bankLocation().height, 0)
-        treeDestination = WorldPoint(autoChopConfig.treeLocation().width, autoChopConfig.treeLocation().height, 0)
+        bankDestination = WorldPoint(
+            autoChopConfig.TREEANDLOCATION().bankWalkLocation().width,
+            autoChopConfig.TREEANDLOCATION().bankWalkLocation().height,
+            0
+        )
+        treeDestination = WorldPoint(
+            autoChopConfig.TREEANDLOCATION().treeWalkLocation().width,
+            autoChopConfig.TREEANDLOCATION().treeWalkLocation().height,
+            0
+        )
 
 
         when (state) { // State machine
@@ -254,14 +262,17 @@ class AutoChop : Plugin() {
                 sendKey(KeyEvent.VK_SPACE)
                 return
             }
-            if (Inventory.search().nameContains(autoChopConfig.logName()).result().isNotEmpty()) {
-                TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(15).nearestToPlayer()
-                    .ifPresent { campire ->
-                        TileObjectInteraction.interact(campire, "Tend-to")
-                    }
-                return
+            if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isNotEmpty()) {
+                val campFire = TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(15)
+                    .nearestToPlayer()
+                if (campFire.isPresent) {
+                    TileObjectInteraction.interact(campFire.get(), "Tend-to")
+                    return
+                } else {
+                    changeStateTo(State.WALKING_TO_BANK)
+                }
             }
-            if (Inventory.search().nameContains(autoChopConfig.logName()).result().isEmpty()) {
+            if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isEmpty()) {
                 changeStateTo(State.IDLE)
             }
         }
@@ -328,10 +339,11 @@ class AutoChop : Plugin() {
     }
 
     private fun handleSearchingState() {
-        TileObjects.search().nameContains(autoChopConfig.treeName()).withAction(autoChopConfig.treeAction())
+        TileObjects.search().nameContains(autoChopConfig.TREEANDLOCATION().treeName())
+            .withAction(autoChopConfig.TREEANDLOCATION().treeAction())
             .withinDistance(10).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
                 useSpecial()
-                TileObjectInteraction.interact(tree, autoChopConfig.treeAction())
+                TileObjectInteraction.interact(tree, autoChopConfig.TREEANDLOCATION().treeAction())
                 changeStateTo(State.CUTTING)
             }
     }
@@ -357,7 +369,7 @@ class AutoChop : Plugin() {
     }
 
     private fun getObjectWMostPlayers(): WorldPoint {
-        val objectName: String = autoChopConfig.treeName()
+        val objectName: String = autoChopConfig.TREEANDLOCATION().treeName()
         val playerCounts: MutableMap<WorldPoint, Int> = HashMap()
         var mostPlayersTile: WorldPoint? = null
         var highestCount = 0
@@ -456,7 +468,7 @@ class AutoChop : Plugin() {
         }
         if (ritualCircleExists()) {
             breakPlayersAnimation()
-            changeStateTo(State.RITUAL_CIRCLES)
+            changeStateTo(State.RITUAL_CIRCLES, 1)
             return true
         }
         if (findEntlingToPrune() != null) {
