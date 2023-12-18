@@ -65,6 +65,10 @@ class AutoChop : Plugin() {
 
     @Throws(Exception::class)
     override fun startUp() {
+        if (Equipment.search().nameContains("axe").empty()) {
+            EthanApiPlugin.sendClientMessage("No axe equipped")
+            return
+        }
         breakHandler.registerPlugin(this);
         breakHandler.startPlugin(this);
         changeStateTo(State.IDLE)
