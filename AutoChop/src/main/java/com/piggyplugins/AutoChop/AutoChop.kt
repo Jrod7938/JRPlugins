@@ -65,10 +65,7 @@ class AutoChop : Plugin() {
 
     @Throws(Exception::class)
     override fun startUp() {
-        if (Equipment.search().nameContains("axe").empty()) {
-            EthanApiPlugin.sendClientMessage("No axe equipped")
-            return
-        }
+        if (client.gameState != GameState.LOGGED_IN) return
         breakHandler.registerPlugin(this);
         breakHandler.startPlugin(this);
         changeStateTo(State.IDLE)
@@ -83,6 +80,10 @@ class AutoChop : Plugin() {
 
     @Subscribe
     fun onGameTick(e: GameTick) {
+        if (!hasAxe()) {
+            EthanApiPlugin.sendClientMessage("No axe found, stopping plugin")
+            shutDown()
+        }
         if (tickDelay > 0) { // Tick delay
             tickDelay--
             return
@@ -440,6 +441,8 @@ class AutoChop : Plugin() {
             .isNotEmpty()
     private fun ritualCircleExists(): Boolean = NPCs.search().nameContains("Ritual circle").result().isNotEmpty()
     private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
+    private fun hasAxe(): Boolean =
+        !Equipment.search().nameContains("axe").empty() || !Equipment.search().nameContains("axe").empty()
 
     private fun runIsOff(): Boolean = EthanApiPlugin.getClient().getVarpValue(173) == 0
 
