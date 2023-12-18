@@ -34,7 +34,7 @@ enum class TreeAndLocation(
         logName = "Willow logs",
         treeAreaXY = Dimension(3081, 3223),
         treeAreaWH = Dimension(16, 16),
-        treeWalkLocation = Dimension(3085, 3237),
+        treeWalkLocation = Dimension(3087, 3236),
         bankWalkLocation = Dimension(3092, 3245),
         bankAreaXY = Dimension(3089, 3240),
         bankAreaWH = Dimension(6, 6),
