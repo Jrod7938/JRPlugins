@@ -49,3 +49,5 @@ include 'AutoChompy'
 include 'AutoTrapper'
 include 'AutoWintertodt'
 include 'AutoChop'
+include 'questhelper'
+
