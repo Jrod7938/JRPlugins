@@ -1,13 +1,22 @@
 package com.piggyplugins;
 
+import com.example.E3t4g.et34g;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.PathingTesting.PathingTesting;
+import com.example.PrayerFlicker.EthanPrayerFlickerPlugin;
+import com.example.RunEnabler.RunEnabler;
 import com.example.UpkeepPlugin.UpkeepPlugin;
+import com.example.harpoon2ticker.SwordFish2Tick;
 import com.piggyplugins.AutoAerial.AutoAerialPlugin;
 import com.piggyplugins.AutoChop.AutoChop;
+import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
+import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
+import com.piggyplugins.AutoSmith.AutoSmith;
 import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.Firemaking.FiremakingPlugin;
+import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
+import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
@@ -25,12 +34,37 @@ import net.runelite.client.externalplugins.ExternalPluginManager;
 
 public class PluginTester {
     public static void main(String[] args) throws Exception {
-        ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
-                AutoCombatPlugin.class, AutoAerialPlugin.class, AutoBonerPlugin.class,
-                ButterflyPlugin.class, FiremakingPlugin.class, DialogueContinuerPlugin.class,
-                KittenFeederPlugin.class, AutoChompyPlugin.class, PowerSkillerPlugin.class, AutoTrapperPlugin.class,
-                SpeedDartMakerPlugin.class, RooftopAgilityPlugin.class, UpkeepPlugin.class, AutoChop.class, ChinBreakHandlerPlugin.class,
-                PathingTesting.class, PiggyUtilsPlugin.class, SixHourLogPlugin.class);
+        ExternalPluginManager.loadBuiltin(
+                EthanApiPlugin.class,
+                PacketUtilsPlugin.class,
+                AutoCombatPlugin.class,
+                AutoAerialPlugin.class,
+                AutoBonerPlugin.class,
+                ButterflyPlugin.class,
+                FiremakingPlugin.class,
+                DialogueContinuerPlugin.class,
+                KittenFeederPlugin.class,
+                AutoChompyPlugin.class,
+                PowerSkillerPlugin.class,
+                AutoTrapperPlugin.class,
+                SpeedDartMakerPlugin.class,
+                RooftopAgilityPlugin.class,
+                UpkeepPlugin.class,
+                AutoChop.class,
+                ChinBreakHandlerPlugin.class,
+                PathingTesting.class,
+                PiggyUtilsPlugin.class,
+                SixHourLogPlugin.class,
+                AutoSmith.class,
+                AutoRiftsPlugin.class,
+                AutoJugHumidifierPlugin.class,
+                et34g.class,
+                SwordFish2Tick.class,
+                HerbCleanerPlugin.class,
+                ItemCombinerPlugin.class,
+                EthanPrayerFlickerPlugin.class,
+                RunEnabler.class
+        );
         RuneLite.main(args);
     }
 }
