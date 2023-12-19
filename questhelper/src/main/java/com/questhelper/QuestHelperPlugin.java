@@ -148,6 +148,8 @@ public class QuestHelperPlugin extends Plugin {
 
     private NavigationButton navButton;
 
+    private static QuestHelperPlugin instance;
+
     public Map<String, QuestHelper> backgroundHelpers = new HashMap<>();
     public SortedMap<QuestHelperQuest, List<ItemRequirement>> itemRequirements = new TreeMap<>();
     public SortedMap<QuestHelperQuest, List<ItemRequirement>> itemRecommended = new TreeMap<>();
@@ -170,6 +172,7 @@ public class QuestHelperPlugin extends Plugin {
 
     @Override
     protected void startUp() throws IOException {
+        instance = this;
         questBankManager.startUp(injector, eventBus);
 
         injector.injectMembers(gameStateManager);
@@ -358,9 +361,11 @@ public class QuestHelperPlugin extends Plugin {
         }
     }
 
-    public QuestHelper getSelectedQuest() {
-        return questManager.getSelectedQuest();
+    public static QuestHelper getSelectedQuest() {
+        // implementation
+        return instance.questManager.getSelectedQuest();
     }
+
 
     public List<Integer> itemsToTag() {
         return questBankManager.getBankTagService().itemsToTag();

@@ -28,7 +28,7 @@ import java.awt.event.KeyEvent
 import java.util.*
 
 @PluginDescriptor(
-    name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Chop </html>",
+    name = "<html><font color=\"#9ddbff\">[JC]</font> Auto Chop </html>",
     description = "Choppy Choppy",
     tags = ["jc"],
     enabledByDefault = false

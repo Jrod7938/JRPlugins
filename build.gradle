@@ -120,6 +120,9 @@ dependencies {
     testImplementation project(path: ':PathingTesting')
     compileOnly project(path: ':questhelper')
     testImplementation project(path: ':questhelper')
+    compileOnly project(path: ':questWalker')
+    testImplementation project(path: ':questWalker')
+
 
 }
 

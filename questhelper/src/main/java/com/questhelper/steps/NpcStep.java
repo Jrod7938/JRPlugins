@@ -59,7 +59,7 @@ public class NpcStep extends DetailedQuestStep {
     @Inject
     protected Client client;
 
-    private final int npcID;
+    public final int npcID;
     private final List<Integer> alternateNpcIDs = new ArrayList<>();
 
     @Setter

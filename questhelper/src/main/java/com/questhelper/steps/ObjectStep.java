@@ -51,7 +51,7 @@ import static com.questhelper.QuestHelperConfig.ObjectHighlightStyle.OUTLINE;
 
 public class ObjectStep extends DetailedQuestStep {
     protected final ArrayList<Integer> alternateObjectIDs = new ArrayList<>();
-    private final int objectID;
+    public final int objectID;
     private final List<TileObject> objects = new ArrayList<>();
     private boolean showAllInArea;
     @Setter
