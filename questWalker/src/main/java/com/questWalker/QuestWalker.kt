@@ -1,6 +1,7 @@
 package com.questWalker
 
 import com.example.EthanApiPlugin.Collections.NPCs
+import com.example.EthanApiPlugin.Collections.Widgets
 import com.example.EthanApiPlugin.EthanApiPlugin
 import com.example.InteractionApi.NPCInteraction
 import com.example.InteractionApi.TileObjectInteraction
@@ -48,6 +49,7 @@ class QuestWalker : Plugin() {
             EthanApiPlugin.stopPlugin(this)
             return
         }
+        if (!Widgets.search().withTextContains("here to continue").empty()) return
 
         if (QuestHelperPlugin.getSelectedQuest() != null && !QuestHelperPlugin.getSelectedQuest().isCompleted) {
             if (!applyStep(null)) return // if we are not done with the step, return
@@ -85,7 +87,7 @@ class QuestWalker : Plugin() {
             val npc: NPC = npcOptional.get()
             NPCInteraction.interact(questStep.npcID, "Talk-to")
         } else {
-            if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 1) {
+            if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 2) {
                 PathingTesting.walkTo(questStep.worldPoint)
                 return false
             }
@@ -101,7 +103,7 @@ class QuestWalker : Plugin() {
 
         val success: Boolean = TileObjectInteraction.interact(questStep!!.objectID)
         if (!success) {
-            if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 1) {
+            if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 2) {
                 PathingTesting.walkTo(questStep.worldPoint)
                 return false
             }
