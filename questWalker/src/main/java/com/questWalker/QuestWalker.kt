@@ -39,7 +39,7 @@ class QuestWalker : Plugin() {
 
     @Throws(Exception::class)
     override fun shutDown() {
-        EthanApiPlugin.stopPlugin(this)
+
     }
 
     @Subscribe
