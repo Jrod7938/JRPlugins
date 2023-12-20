@@ -1,14 +1,9 @@
-Fork of EthanVann's EthanApiPlugin
-
-Automation plugins for runelite
-
-# Discord
-https://discord.gg/kwYBYEg4uu
-
 # Release 1.0
-*Updated 8/18/2023 7:32 AM EST*
+*Updated 12/19/2023 18:07 AM EST*
 
 **Plugins**:
+- QuestWalker
+- AutoChop (Supports Some Forestry Events)
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
 - RooftopAgility *(iRooftops by illumine partially ported & modified by piggyplugins)*
@@ -24,12 +19,9 @@ https://discord.gg/kwYBYEg4uu
 - PowerSkiller *Intended to serve as a tutorial plugin for the discord server*
 - Vardorvis Helper
 
+
 # Instructions
-Simply drag and drop `piggy-loader` into your `sideloaded-plugins` folder.
+Run PluginTester.java
 
-If you already have EthanApiPlugin on your runelite already, open loader config & disable the option to download EthanApi.
-
-If you don't have a `sideloaded-plugins` folder, you'll want to grab `ethan-api-standalone` from the releases and follow the more detailed instructions in our discord.
-
-
-[![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
+Fork of EthanVann's EthanApiPlugin
+Fork of 0Hutch PiggyPlugins

@@ -21,7 +21,7 @@ import net.runelite.client.plugins.PluginDescriptor
 
 @PluginDescriptor(
     name = "<html><font color=\"#9ddbff\">[JC]</font> Quest Walker </html>",
-    description = "Quest Walker",
+    description = "Walks to quest locations and interacts",
     tags = ["jc"],
     enabledByDefault = false
 )
@@ -32,7 +32,6 @@ class QuestWalker : Plugin() {
     @Throws(Exception::class)
     override fun startUp() {
         if (client.gameState != GameState.LOGGED_IN) return
-
 
     }
 
