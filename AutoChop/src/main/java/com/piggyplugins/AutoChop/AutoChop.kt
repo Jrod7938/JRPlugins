@@ -241,7 +241,7 @@ class AutoChop : Plugin() {
                 }
                 return
             } else {
-                changeStateTo(State.IDLE, 3)
+                changeStateTo(State.IDLE, 4)
             }
         }
     }

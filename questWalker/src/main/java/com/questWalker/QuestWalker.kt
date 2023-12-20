@@ -1,10 +1,9 @@
 package com.questWalker
 
 import com.example.EthanApiPlugin.Collections.NPCs
+import com.example.EthanApiPlugin.Collections.TileObjects
 import com.example.EthanApiPlugin.Collections.Widgets
 import com.example.EthanApiPlugin.EthanApiPlugin
-import com.example.InteractionApi.NPCInteraction
-import com.example.InteractionApi.TileObjectInteraction
 import com.example.PathingTesting.PathingTesting
 import com.google.inject.Inject
 import com.questhelper.QuestHelperPlugin
@@ -14,7 +13,6 @@ import com.questhelper.steps.ObjectStep
 import com.questhelper.steps.QuestStep
 import net.runelite.api.Client
 import net.runelite.api.GameState
-import net.runelite.api.NPC
 import net.runelite.api.events.GameTick
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.plugins.Plugin
@@ -83,9 +81,9 @@ class QuestWalker : Plugin() {
         else QuestHelperPlugin.getSelectedQuest().currentStep as NpcStep
 
         val npcOptional = NPCs.search().withId(questStep!!.npcID).first()
-        if (npcOptional.isPresent) {
-            val npc: NPC = npcOptional.get()
-            NPCInteraction.interact(questStep.npcID, "Talk-to")
+        if (npcOptional.isPresent && client.localPlayer.worldLocation.distanceTo(npcOptional.get().worldLocation) <= 1) {
+            //val npc: NPC = npcOptional.get()
+            //NPCInteraction.interact(questStep.npcID, "Talk-to")
         } else {
             if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 2) {
                 PathingTesting.walkTo(questStep.worldPoint)
@@ -101,8 +99,8 @@ class QuestWalker : Plugin() {
         questStep = if (step != null) step as ObjectStep?
         else QuestHelperPlugin.getSelectedQuest().currentStep as ObjectStep
 
-        val success: Boolean = TileObjectInteraction.interact(questStep!!.objectID)
-        if (!success) {
+        val success: Boolean = !TileObjects.search().withId(questStep!!.objectID).empty()
+        if (!success && client.localPlayer.worldLocation.distanceTo(questStep.worldPoint) > 2) {
             if (questStep.worldPoint.distanceTo(client.localPlayer.worldLocation) > 2) {
                 PathingTesting.walkTo(questStep.worldPoint)
                 return false
