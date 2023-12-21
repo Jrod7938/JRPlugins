@@ -12,11 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import lombok.Getter;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.ItemID;
-import net.runelite.api.VarPlayer;
+import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
@@ -61,6 +57,7 @@ public class et34g extends Plugin {
     @Override
     protected void startUp() throws Exception {
         breakHandler.registerPlugin(this);
+        breakHandler.startPlugin(this);
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
     }
@@ -87,7 +84,10 @@ public class et34g extends Plugin {
         timeout = timeout == 0 ? 2 : timeout - 1;
         if (timeout != 2) return;
         if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
-            if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty()||!Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
+            if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty()
+                    || !Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()
+                    || !Equipment.search().matchesWildCardNoCase("*crystal pickaxe*").empty()
+            ) {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1);
             }
