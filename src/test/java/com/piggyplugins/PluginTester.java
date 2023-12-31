@@ -31,7 +31,6 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import com.questWalker.QuestWalker;
 import com.questhelper.QuestHelperPlugin;
-import com.vorkathoverlay.VorkathPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
@@ -68,8 +67,7 @@ public class PluginTester {
                 EthanPrayerFlickerPlugin.class,
                 RunEnabler.class,
                 QuestHelperPlugin.class,
-                QuestWalker.class,
-                VorkathPlugin.class
+                QuestWalker.class
         );
         RuneLite.main(args);
     }
