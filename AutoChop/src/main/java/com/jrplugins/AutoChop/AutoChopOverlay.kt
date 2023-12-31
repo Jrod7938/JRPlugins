@@ -1,4 +1,4 @@
-package com.piggyplugins.AutoChop
+package com.jrplugins.AutoChop
 
 import net.runelite.api.Client
 import net.runelite.client.ui.overlay.Overlay

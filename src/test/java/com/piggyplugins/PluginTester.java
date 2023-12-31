@@ -8,8 +8,8 @@ import com.example.PrayerFlicker.EthanPrayerFlickerPlugin;
 import com.example.RunEnabler.RunEnabler;
 import com.example.UpkeepPlugin.UpkeepPlugin;
 import com.example.harpoon2ticker.SwordFish2Tick;
+import com.jrplugins.AutoChop.AutoChop;
 import com.piggyplugins.AutoAerial.AutoAerialPlugin;
-import com.piggyplugins.AutoChop.AutoChop;
 import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
 import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
 import com.piggyplugins.AutoSmith.AutoSmith;
@@ -31,6 +31,7 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import com.questWalker.QuestWalker;
 import com.questhelper.QuestHelperPlugin;
+import com.vorkathoverlay.VorkathPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
@@ -67,7 +68,8 @@ public class PluginTester {
                 EthanPrayerFlickerPlugin.class,
                 RunEnabler.class,
                 QuestHelperPlugin.class,
-                QuestWalker.class
+                QuestWalker.class,
+                VorkathPlugin.class
         );
         RuneLite.main(args);
     }

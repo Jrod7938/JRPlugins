@@ -1,4 +1,4 @@
-package com.piggyplugins.AutoChop
+package com.jrplugins.AutoChop
 
 import lombok.Getter
 import lombok.RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.piggyplugins.AutoChop
+package com.jrplugins.AutoChop
 
 import com.example.EthanApiPlugin.Collections.*
 import com.example.EthanApiPlugin.EthanApiPlugin

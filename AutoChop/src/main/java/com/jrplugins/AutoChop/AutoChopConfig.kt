@@ -1,4 +1,4 @@
-package com.piggyplugins.AutoChop
+package com.jrplugins.AutoChop
 
 import net.runelite.client.config.Config
 import net.runelite.client.config.ConfigGroup

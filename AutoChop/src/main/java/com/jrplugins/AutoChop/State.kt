@@ -1,4 +1,4 @@
-package com.piggyplugins.AutoChop
+package com.jrplugins.AutoChop
 
 enum class State {
     IDLE,

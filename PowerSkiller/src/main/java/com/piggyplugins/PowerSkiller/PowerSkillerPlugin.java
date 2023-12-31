@@ -7,6 +7,7 @@ import com.example.InteractionApi.BankInventoryInteraction;
 import com.example.InteractionApi.InventoryInteraction;
 import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
@@ -19,8 +20,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
-
-import com.google.inject.Inject;
 import net.runelite.client.util.Text;
 import org.apache.commons.lang3.RandomUtils;
 
@@ -216,11 +215,7 @@ public class PowerSkillerPlugin extends Plugin {
         String npcName = config.objectToInteract();
         NPCs.search().withName(npcName).nearestToPlayer().ifPresent(npc -> {
             NPCComposition comp = client.getNpcDefinition(npc.getId());
-            if (Arrays.stream(comp.getActions()).anyMatch(action -> action.equalsIgnoreCase(config.expectedAction()))) {
-                NPCInteraction.interact(npc, config.expectedAction()); // For fishing spots ?
-            } else {
-                NPCInteraction.interact(npc, comp.getActions()[0]);
-            }
+            NPCInteraction.interact(npc, config.expectedAction()); // For fishing spots ?
 
         });
     }

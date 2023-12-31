@@ -64,6 +64,7 @@ public class et34g extends Plugin {
 
     @Override
     protected void shutDown() throws Exception {
+        breakHandler.stopPlugin(this);
         breakHandler.unregisterPlugin(this);
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
