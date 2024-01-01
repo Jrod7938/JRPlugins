@@ -127,7 +127,11 @@ public class et34g extends Plugin {
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetOnWidget(guam.get(), tar.get());
         rock = rock == 3 ? 0 : rock + 1;
-        Inventory.search().nameContains("Granite").first().ifPresent(item -> InventoryInteraction.useItem(item, "Drop"));
+        for (int i = 0; i < Math.min(3, Inventory.search().nameContains("Granite").result().size()); i++) {
+            Inventory.search().nameContains("Granite").first().ifPresent(item -> {
+                InventoryInteraction.useItem(item, "Drop");
+            });
+        }
         MousePackets.queueClickPacket();
         ObjectPackets.queueObjectAction(1, 11387, rockPos[rock][0], rockPos[rock][1], false);
     }
