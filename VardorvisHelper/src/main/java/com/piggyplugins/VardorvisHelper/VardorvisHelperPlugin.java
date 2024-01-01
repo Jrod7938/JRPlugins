@@ -2,6 +2,7 @@ package com.piggyplugins.VardorvisHelper;
 
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.Widgets;
+import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
@@ -187,7 +188,12 @@ public class VardorvisHelperPlugin extends Plugin {
     private void doBloodCaptcha() {
         List<Widget> captchaBlood = Widgets.search().hiddenState(false).withAction("Destroy").result();
         if (!captchaBlood.isEmpty()) {
-            captchaBlood.forEach(x -> WidgetPackets.queueWidgetAction(x, "Destroy"));
+            captchaBlood.forEach(x -> {
+                if (x.getParentId() != 10551374) {
+                    MousePackets.queueClickPacket();
+                    WidgetPackets.queueWidgetAction(x, "Destroy");
+                }
+            });
         }
     }
 
