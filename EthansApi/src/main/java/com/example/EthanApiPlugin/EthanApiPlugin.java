@@ -214,19 +214,19 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static HeadIcon getHeadIcon(NPC npc) {
-        Method getHeadIconArrayMethod = null;
+        Method getHeadIconMethod = null;
         for (Method declaredMethod : npc.getComposition().getClass().getDeclaredMethods()) {
-            if (declaredMethod.getReturnType() == short[].class && declaredMethod.getParameterTypes().length == 0) {
-                getHeadIconArrayMethod = declaredMethod;
-                if (getHeadIconArrayMethod == null) {
+            if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short.class && declaredMethod.getParameterCount() == 1) {
+                getHeadIconMethod = declaredMethod;
+                getHeadIconMethod.setAccessible(true);
+                short headIcon = (short) getHeadIconMethod.invoke(npc.getComposition(), 0);
+                getHeadIconMethod.setAccessible(false);
+
+                if (headIcon == -1) {
                     continue;
                 }
-                getHeadIconArrayMethod.setAccessible(true);
-                short[] headIconArray = (short[]) getHeadIconArrayMethod.invoke(npc.getComposition());
-                if (headIconArray == null || headIconArray.length == 0) {
-                    continue;
-                }
-                return HeadIcon.values()[headIconArray[0]];
+
+                return HeadIcon.values()[headIcon];
             }
         }
         return null;
