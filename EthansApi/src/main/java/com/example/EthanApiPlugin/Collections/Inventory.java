@@ -38,21 +38,10 @@ public class Inventory {
         return getEmptySlots() == 0;
     }
 
-    /**
-     * Returns the number of stacks of this item, will return 1 on a stackable item
-     *
-     * @param itemId
-     * @return
-     */
     public static int getItemAmount(int itemId) {
         return search().withId(itemId).result().size();
     }
-    /**
-     * Returns the number of stacks of this item, will return 1 on a stackable item
-     *
-     * @param itemName
-     * @return
-     */
+
     public static int getItemAmount(String itemName) {
         return search().withName(itemName).result().size();
     }

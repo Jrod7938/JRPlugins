@@ -142,7 +142,6 @@ public class EthanApiPlugin extends Plugin {
         }
     }
 
-
     public static boolean isQuickPrayerActive(QuickPrayer prayer) {
         return (client.getVarbitValue(4102) & (int) Math.pow(2, prayer.getIndex())) == Math.pow(2, prayer.getIndex());
     }
@@ -196,7 +195,7 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static int pathLength(NPC npc) {
-        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("bs");
+        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("dq");
         pathLength.setAccessible(true);
         int path = pathLength.getInt(npc) * -1742381503;
         pathLength.setAccessible(false);
@@ -205,7 +204,7 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static int pathLength(Player player) {
-        Field pathLength = player.getClass().getSuperclass().getDeclaredField("bs");
+        Field pathLength = player.getClass().getSuperclass().getDeclaredField("dq");
         pathLength.setAccessible(true);
         int path = pathLength.getInt(player) * -1742381503;
         pathLength.setAccessible(false);
@@ -425,6 +424,7 @@ public class EthanApiPlugin extends Plugin {
                         continue;
                     }
                     doAction = declaredMethod;
+                    System.out.println(doAction);
                     break;
                 }
             }
@@ -656,7 +656,6 @@ public class EthanApiPlugin extends Plugin {
     }
 
     public static ArrayList<WorldPoint> pathToGoal(WorldPoint goal, HashSet<WorldPoint> dangerous) {
-
         ArrayList<List<WorldPoint>> paths = new ArrayList<>();
         paths.add(List.of(client.getLocalPlayer().getWorldLocation()));
         HashSet<WorldPoint> walkableTiles = new HashSet<>(reachableTiles());
@@ -668,7 +667,6 @@ public class EthanApiPlugin extends Plugin {
     }
 
     public static ArrayList<WorldPoint> pathToGoal(HashSet<WorldPoint> goalSet, HashSet<WorldPoint> dangerous) {
-
         ArrayList<List<WorldPoint>> paths = new ArrayList<>();
         paths.add(List.of(client.getLocalPlayer().getWorldLocation()));
         HashSet<WorldPoint> walkableTiles = new HashSet<>(reachableTiles());
@@ -701,6 +699,9 @@ public class EthanApiPlugin extends Plugin {
                                                    HashSet<WorldPoint> impassible, HashSet<WorldPoint> dangerous,
                                                    HashSet<WorldPoint> walkable, HashSet<WorldPoint> walked) {
         Queue<List<WorldPoint>> queue = new LinkedList<>(paths);
+        if(queue.isEmpty()){
+            queue.add(List.of(client.getLocalPlayer().getWorldLocation()));
+        }
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         if (Collections.disjoint(walkable, goal)) {
             return null;

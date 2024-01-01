@@ -15,12 +15,14 @@ public class BankItemWidget implements Widget {
     String name;
     int itemid;
     int quantity;
-    BankItemWidget(String name,int itemid,int quantity,int index){
+
+    BankItemWidget(String name, int itemid, int quantity, int index) {
         this.name = name;
         this.itemid = itemid;
         this.quantity = quantity;
         this.index = index;
     }
+
     @Override
     public int getId() {
         return WidgetInfo.BANK_ITEM_CONTAINER.getPackedId();
@@ -198,7 +200,7 @@ public class BankItemWidget implements Widget {
     }
 
     @Override
-    public Widget setRotationX( int modelX) {
+    public Widget setRotationX(int modelX) {
         return null;
     }
 
@@ -208,7 +210,7 @@ public class BankItemWidget implements Widget {
     }
 
     @Override
-    public Widget setRotationY( int modelY) {
+    public Widget setRotationY(int modelY) {
         return null;
     }
 
@@ -476,6 +478,11 @@ public class BankItemWidget implements Widget {
         //9
         actions[9] = "Examine";
         return actions;
+    }
+
+    @Override
+    public Widget createStaticChild(int type) {
+        return null;
     }
 
     @Override
@@ -790,6 +797,11 @@ public class BankItemWidget implements Widget {
 
     @Override
     public void setOnDragListener(Object... args) {
+
+    }
+
+    @Override
+    public void setOnScrollWheelListener(Object... args) {
 
     }
 

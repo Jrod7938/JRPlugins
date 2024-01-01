@@ -1,22 +1,13 @@
 package com.example.EthanApiPlugin.Collections.query;
 
+import com.example.EthanApiPlugin.Collections.Players;
 import com.example.EthanApiPlugin.EthanApiPlugin;
-import net.runelite.api.Actor;
-import net.runelite.api.Client;
-import net.runelite.api.NPC;
-import net.runelite.api.NPCComposition;
+import net.runelite.api.*;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.RuneLite;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -59,11 +50,6 @@ public class NPCQuery {
         return this;
     }
 
-    public NPCQuery withNameIgnoreCase(String name) {
-        npcs = npcs.stream().filter(npcs -> npcs.getName() != null && npcs.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
-        return this;
-    }
-
     public NPCQuery nameContains(String name) {
         npcs = npcs.stream().filter(npcs -> npcs.getName() != null && npcs.getName().contains(name)).collect(Collectors.toList());
         return this;
@@ -103,6 +89,25 @@ public class NPCQuery {
         return this;
     }
 
+    public NPCQuery withinBounds(WorldPoint min, WorldPoint max){
+        int x1 = min.getX();
+        int x2 = max.getX();
+        int y1 = min.getY();
+        int y2 = max.getY();
+
+        npcs = npcs.stream().filter(npc -> {
+            int x3 = npc.getWorldLocation().getX();
+            int y3 = npc.getWorldLocation().getY();
+
+            if (x3 > Math.max(x1, x2) || x3 < Math.min(x1, x2)) {
+                return false;
+            }
+
+            return y3 <= Math.max(y1, y2) && y3 >= Math.min(y1, y2);
+        }).collect(Collectors.toList());
+        return this;
+    }
+
     public NPCQuery indexIs(int index) {
         npcs = npcs.stream().filter(npcs -> npcs.getIndex() == index).collect(Collectors.toList());
         return this;
@@ -134,6 +139,10 @@ public class NPCQuery {
 
     public NPCQuery notInteracting() {
         npcs = npcs.stream().filter(npc -> !npc.isInteracting()).collect(Collectors.toList());
+        return this;
+    }
+    public NPCQuery noOneInteractingWith(){
+        npcs = npcs.stream().filter(npc -> Players.search().interactingWith(npc).isEmpty()).collect(Collectors.toList());
         return this;
     }
 

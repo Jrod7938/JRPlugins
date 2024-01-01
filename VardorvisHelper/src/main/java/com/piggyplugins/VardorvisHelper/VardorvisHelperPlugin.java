@@ -15,6 +15,7 @@ import net.runelite.api.SpriteID;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
@@ -150,7 +151,7 @@ public class VardorvisHelperPlugin extends Plugin {
                 handleRangeFirstGameTick();
             }
         }
-//        doBloodCaptcha();
+        doBloodCaptcha();
 
     }
 
@@ -186,13 +187,11 @@ public class VardorvisHelperPlugin extends Plugin {
      * 1 tick blood captcha. Thanks @Lunatik
      */
     private void doBloodCaptcha() {
-        List<Widget> captchaBlood = Widgets.search().hiddenState(false).withAction("Destroy").result();
+        List<Widget> captchaBlood = Widgets.search().filter(widget -> widget.getParentId() != 10551374).hiddenState(false).withAction("Destroy").result();
         if (!captchaBlood.isEmpty()) {
             captchaBlood.forEach(x -> {
-                if (x.getParentId() != 10551374) {
-                    MousePackets.queueClickPacket();
-                    WidgetPackets.queueWidgetAction(x, "Destroy");
-                }
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetAction(x, "Destroy");
             });
         }
     }

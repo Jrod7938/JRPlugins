@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.17.1'
+    def runeLiteVersion = '1.10.17.2'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -43,8 +43,6 @@ dependencies {
     testImplementation project(path: ':AutoChompy')
     compileOnly project(path: ':AutoTrapper')
     testImplementation project(path: ':AutoTrapper')
-    compileOnly project(path: ':AutoTitheFarm')
-    testImplementation project(path: ':AutoTitheFarm')
 
 //    compileOnly project(path: ':AutoMLM')
 //    testImplementation project(path: ':AutoMLM')

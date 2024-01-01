@@ -100,11 +100,11 @@ public class PlayerUtil {
     }
 
     public boolean isBeingInteracted(String name) {
-        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal().first().isPresent();
+        return NPCs.search().filter(npc -> npc.getName() != null && npc.getName().equalsIgnoreCase(name)).interactingWithLocal().first().isPresent();
     }
 
     public NPCQuery getBeingInteracted(String name) {
-        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal();
+        return NPCs.search().filter(npc -> npc.getName() != null && npc.getName().equalsIgnoreCase(name)).interactingWithLocal();
     }
 
     /**

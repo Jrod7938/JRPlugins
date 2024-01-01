@@ -1,11 +1,7 @@
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.Tile;
-import net.runelite.api.TileItem;
-import net.runelite.api.TileObject;
+import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
@@ -16,7 +12,6 @@ import java.util.List;
 public class TileObjects {
     static Client client = RuneLite.getInjector().getInstance(Client.class);
     static List<TileObject> tileObjects = new ArrayList<>();
-
 
     public static TileObjectQuery search() {
         return new TileObjectQuery(tileObjects);
