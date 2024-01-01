@@ -34,7 +34,7 @@ public interface SpeedDartMakerConfig extends Config {
 
     @ConfigItem(
             keyName = "broadBolts",
-            name = "Bolts?",
+            name = "Broad Bolts?",
             description = "",
             position = 2
     )

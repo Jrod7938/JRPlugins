@@ -6,19 +6,16 @@ import java.awt.*;
 
 @ConfigGroup("CannonReloader")
 public interface CannonReloaderConfig extends Config {
-    @ConfigItem(
-            keyName = "cannonInstructions",
-            name = "",
-            description = "Cannon Instructions.",
-            position = 40,
-            section = "cannonConfig"
-    )
-
-
-    default String cannonConfigInstructions() {
-        return "Set up coordinates where you want cannon to be placed.\n\n" +
-                "Make sure you set up the Safespot XY coords before starting plugin if you use this setting.";
-    }
+//    @ConfigItem(
+//            keyName = "cannonInstructions",
+//            name = "",
+//            description = "Cannon Instructions.",
+//            position = 40,
+//            section = "cannonConfig"
+//    )
+//    default String cannonConfigInstructions() {
+//        return "Right click the cannon and the safe spot to set your desired locations.";
+//    }
 
     @ConfigItem(
             keyName = "UseSafespot",
@@ -27,31 +24,31 @@ public interface CannonReloaderConfig extends Config {
             position = 43,
             section = "enemyNPCConfig"
     )
-    default boolean UseSafespot() {
+    default boolean useSafespot() {
         return false;
     }
 
-    @ConfigItem(
-            keyName = "SafespotCoords",
-            name = "Safespot X,Y Coords",
-            description = "Set your safespot coords X,Y. Example: 3024,1028",
-            position = 46,
-            section = "cannonConfig"
-    )
-    default String SafespotCoords() {
-        return "1234,1234";
-    }
-
-    @ConfigItem(
-            keyName = "CannonCoords",
-            name = "Cannon X,Y Coords",
-            description = "Set your cannon coords X,Y. Example: 3024,1028",
-            position = 100,
-            section = "cannonConfig"
-    )
-    default String CannonCoords() {
-        return "1234,1234";
-    }
+//    @ConfigItem(
+//            keyName = "SafespotCoords",
+//            name = "Safespot X,Y Coords",
+//            description = "Set your safespot coords X,Y. Example: 3024,1028",
+//            position = 46,
+//            section = "cannonConfig"
+//    )
+//    default String SafespotCoords() {
+//        return "1234,1234";
+//    }
+//
+//    @ConfigItem(
+//            keyName = "CannonCoords",
+//            name = "Cannon X,Y Coords",
+//            description = "Set your cannon coords X,Y. Example: 3024,1028",
+//            position = 100,
+//            section = "cannonConfig"
+//    )
+//    default String CannonCoords() {
+//        return "1234,1234";
+//    }
 
     @Range(
             min = 1,
@@ -64,7 +61,7 @@ public interface CannonReloaderConfig extends Config {
             section = "cannonConfig",
             description = "Will reload cannon at set amount."
     )
-    default int CannonLowAmount()
+    default int cannonLowAmount()
     {
         return 5;
     }

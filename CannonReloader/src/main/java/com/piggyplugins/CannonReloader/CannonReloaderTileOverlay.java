@@ -38,7 +38,7 @@ public class CannonReloaderTileOverlay extends OverlayPanel {
             renderArea(graphics, LocalPoint.fromWorld(client, plugin.cannonSpot), plugin.config.cannonSpotTile(), 2, plugin.config.cannonSpotTileFill(), 1, "Cannon");
         }
 
-        if (plugin.safespotTile != null && config.UseSafespot()) {
+        if (plugin.safespotTile != null && config.useSafespot()) {
             renderArea(graphics, LocalPoint.fromWorld(client, plugin.safespotTile), plugin.config.safespotTile(), 2, plugin.config.safespotTileFill(), 1, "Safespot");
         }
 

@@ -43,4 +43,5 @@ include 'KittenFeeder'
 include 'AutoChompy'
 include 'AutoTrapper'
 include 'AutoWintertodt'
+include 'AutoRuneDragons'
 

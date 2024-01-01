@@ -1,6 +1,7 @@
 package com.polyplugins.AutoCombat;
 
 
+import com.example.EthanApiPlugin.Collections.ETileItem;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileItems;
@@ -20,6 +21,7 @@ import com.polyplugins.AutoCombat.util.SuppliesUtil;
 import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -36,10 +38,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import net.runelite.client.plugins.opponentinfo.OpponentInfoPlugin;
@@ -59,6 +58,8 @@ public class AutoCombatPlugin extends Plugin {
     @Inject
     private AutoCombatOverlay overlay;
     @Inject
+    private AutoCombatTileOverlay tileOverlay;
+    @Inject
     private KeyManager keyManager;
     @Inject
     private OverlayManager overlayManager;
@@ -68,6 +69,8 @@ public class AutoCombatPlugin extends Plugin {
     private ClientThread clientThread;
     public boolean started = false;
     public int timeout = 0;
+
+    WorldPoint lootTile = null;
 
     @Provides
     private AutoCombatConfig getConfig(ConfigManager configManager) {
@@ -101,6 +104,7 @@ public class AutoCombatPlugin extends Plugin {
     protected void startUp() throws Exception {
         keyManager.registerKeyListener(toggle);
         overlayManager.add(overlay);
+        overlayManager.add(tileOverlay);
         timeout = 0;
     }
 
@@ -108,6 +112,7 @@ public class AutoCombatPlugin extends Plugin {
     protected void shutDown() throws Exception {
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
+        overlayManager.remove(tileOverlay);
         resetEverything();
     }
 
@@ -164,42 +169,88 @@ public class AutoCombatPlugin extends Plugin {
             timeout = 1;
         });
 
-        if (lootQueue.isEmpty()) looting = false;
+//        if (lootQueue.isEmpty()) looting = false;
+        if (lootTile == null) looting = false;
         checkRunEnergy();
         hasFood = supplies.findFood() != null;
         hasPrayerPot = supplies.findPrayerPotion() != null;
         hasCombatPot = supplies.findCombatPotion() != null;
         hasBones = supplies.findBone() != null;
 
-
-        if (!lootQueue.isEmpty()) {
+        if (lootTile != null) {
             looting = true;
-            ItemStack itemStack = lootQueue.peek();
-            TileItems.search().withId(itemStack.getId()).first().ifPresent(item -> {
-//                log.info("Looting: " + item.getTileItem().getId());
-                ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
-                if (comp.isStackable() || comp.getNote() != -1) {
-//                    log.info("stackable loot " + comp.getName());
-                    if (lootHelper.hasStackableLoot(comp)) {
-//                        log.info("Has stackable loot");
-                        item.interact(false);
-                    }
+            List<ETileItem> eItems = TileItems.search().filter(ti -> ti.getLocation().distanceTo(lootTile) == 0).result();
+            if (eItems == null) return;
+            for (ETileItem eit : eItems) {
+                ItemComposition comp = itemManager.getItemComposition(eit.getTileItem().getId());
+                if (!lootHelper.getLootNames().contains(comp.getName())) {
+                    log.info("removing " + comp.getName() + " size - " + eItems.size());
+                    eItems.remove(eit);
+                    break;
                 }
+            }
+            if (eItems.isEmpty()) {
+                log.info("empty loot, resetting");
+                lootTile = null;
+                looting = false;
+                return;
+            }
+//            while (!eItems.isEmpty()) {
+            ETileItem eItem = eItems.get(0);
+            ItemComposition comp = itemManager.getItemComposition(eItem.getTileItem().getId());
+//            log.info("r0");
+            if (!lootHelper.getLootNames().contains(comp.getName())) {
+                eItems.remove(eItem);
+//                continue;
+            }
+//            log.info("r1");
+//                if (EthanApiPlugin.isMoving()) return;
+            if (comp.isStackable() || comp.getNote() != -1) {
+                if (Inventory.full() && Inventory.getItemAmount(eItem.getTileItem().getId()) > 0) {
+                    eItem.interact(false);
+                } else if (!Inventory.full()) {
+                    EthanApiPlugin.sendClientMessage("Looting stackable: " + comp.getName() + " " + client.getTickCount());
+                    eItem.interact(false);
+                }
+            } else {
                 if (!Inventory.full()) {
-                    item.interact(false);
-                } else {
-                    EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update");
-                    EthanApiPlugin.stopPlugin(this);
+                    EthanApiPlugin.sendClientMessage("Looting: " + comp.getName() + " " + client.getTickCount());
+                    eItem.interact(false);
                 }
-            });
-            timeout = 3;
-            lootQueue.remove();
+            }
+            eItems.remove(eItem);
+//            }
             return;
         }
-        if (playerUtil.isInteracting() || looting) {
-            timeout = 6;
-            return;
-        }
+
+//        if (!lootQueue.isEmpty()) {
+//            looting = true;
+//            ItemStack itemStack = lootQueue.peek();
+//            TileItems.search().withId(itemStack.getId()).nearestToPoint(WorldPoint.fromLocal(client, itemStack.getLocation())).ifPresent(item -> {
+////                log.info("Looting: " + item.getTileItem().getId());
+//                ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
+//                if (comp.isStackable() || comp.getNote() != -1) {
+////                    log.info("stackable loot " + comp.getName());
+//                    if (lootHelper.hasStackableLoot(comp)) {
+////                        log.info("Has stackable loot");
+//                        item.interact(false);
+//                    }
+//                }
+//                if (!Inventory.full()) {
+//                    item.interact(false);
+//                } else {
+//                    EthanApiPlugin.sendClientMessage("Inventory full, stopping. May handle in future update");
+//                    EthanApiPlugin.stopPlugin(this);
+//                }
+//            });
+//            timeout = 3;
+//            lootQueue.remove();
+//            return;
+//        }
+//        if (playerUtil.isInteracting() || looting) {
+//            timeout = 6;
+//            return;
+//        }
         targetNpc = util.findNpc(config.targetName());
         if (targetNpc == null && isSlayerNpc && !slayerInfo.getDisturbAction().isEmpty()) {
             Optional<NPC> disturbNpc = NPCs.search().withName(slayerInfo.getUndisturbedName()).first();
@@ -250,6 +301,9 @@ public class AutoCombatPlugin extends Plugin {
     public void onNpcLootReceived(NpcLootReceived event) {
         if (!started || !config.lootEnabled()) return;
         Collection<ItemStack> items = event.getItems();
+        items.stream().findFirst().ifPresent(it -> {
+            lootTile = WorldPoint.fromLocal(client, it.getLocation());
+        });
         items.stream().filter(item -> {
             ItemComposition comp = itemManager.getItemComposition(item.getId());
             return lootHelper.getLootNames().contains(comp.getName());
@@ -291,16 +345,17 @@ public class AutoCombatPlugin extends Plugin {
         int pid = event.getVarpId();
         if (pid == VarPlayer.SLAYER_TASK_SIZE) {
             if (event.getValue() <= 0 && config.shutdownOnTaskDone()) {
-                InventoryInteraction.useItem(supplies.findTeleport(), "Break");
+//                InventoryInteraction.useItem(supplies.findTeleport(), "Break");
                 EthanApiPlugin.sendClientMessage("Task done, stopping");
                 resetEverything();
             }
-        } else if (pid == VarPlayer.CANNON_AMMO) {
-            if (event.getValue() <= ThreadLocalRandom.current().nextInt(4, 12)) {
-                reloadCannon();
-                timeout = 1;
-            }
         }
+//        } else if (pid == VarPlayer.CANNON_AMMO) {
+//            if (event.getValue() <= ThreadLocalRandom.current().nextInt(4, 12)) {
+//                reloadCannon();
+//                timeout = 1;
+//            }
+//        }
     }
 
     @Subscribe
