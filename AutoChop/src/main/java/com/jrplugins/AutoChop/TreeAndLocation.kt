@@ -49,6 +49,17 @@ enum class TreeAndLocation(
         bankWalkLocation = Dimension(2727, 3493),
         bankAreaXY = Dimension(2721, 3490),
         bankAreaWH = Dimension(9, 6),
+    ),
+    YEW(
+        treeName = "Yew tree",
+        treeAction = "Chop down",
+        logName = "Yew logs",
+        treeAreaXY = Dimension(2704, 3457),
+        treeAreaWH = Dimension(20, 10),
+        treeWalkLocation = Dimension(2718, 3462),
+        bankWalkLocation = Dimension(2727, 3493),
+        bankAreaXY = Dimension(2721, 3490),
+        bankAreaWH = Dimension(9, 6),
     );
 
     fun treeName(): String = treeName
