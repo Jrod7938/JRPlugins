@@ -23,6 +23,10 @@ public enum FiremakingLocation {
             new WorldPoint(3033, 3364, 0), new WorldPoint(3033, 3363, 0),
             new WorldPoint(3033, 3362, 0), new WorldPoint(3033, 3361, 0)))
     ),
+    DRAYNOR("Draynor Village", new ArrayList<WorldPoint>(Arrays.asList(
+            new WorldPoint(3105, 3250, 0), new WorldPoint(3097, 3249, 0),
+            new WorldPoint(3097, 3248, 0), new WorldPoint(3097, 3247, 0)
+    ))),
     SEERS("Seers' Village", new ArrayList<WorldPoint>(Arrays.asList(
             new WorldPoint(2733, 3485, 0), new WorldPoint(2733, 3484, 0)))
     );
