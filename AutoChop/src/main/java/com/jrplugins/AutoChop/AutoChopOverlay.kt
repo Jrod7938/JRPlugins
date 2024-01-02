@@ -27,9 +27,11 @@ class AutoChopOverlay @Inject private constructor(private val client: Client, pl
         slPanel.children.clear()
 
         val state = buildLine("State: ", plugin.state.toString())
+        val started = buildLine("Started: ", plugin.started.toString())
         val tickDelay = buildLine("Tick Delay: ", plugin.tickDelay.toString())
 
         panelComponent.children.addAll(listOf(state))
+        panelComponent.children.addAll(listOf(started))
         panelComponent.children.addAll(listOf(tickDelay))
 
         return panelComponent.render(graphics)

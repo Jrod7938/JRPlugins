@@ -3,14 +3,23 @@ package com.jrplugins.AutoChop
 import net.runelite.client.config.Config
 import net.runelite.client.config.ConfigGroup
 import net.runelite.client.config.ConfigItem
+import net.runelite.client.config.Keybind
 
 @ConfigGroup("AutoChop")
 interface AutoChopConfig : Config {
     @ConfigItem(
+        keyName = "Toggle",
+        name = "Toggle",
+        description = "",
+        position = 0
+    )
+    fun toggle(): Keybind = Keybind.NOT_SET
+
+    @ConfigItem(
         keyName = "overlay",
         name = "Overlay",
         description = "Display Overlay?",
-        position = 0
+        position = 1
     )
     fun displayOverlay(): Boolean = true
 
@@ -18,7 +27,7 @@ interface AutoChopConfig : Config {
         keyName = "burnLogs",
         name = "Burn Logs?",
         description = "Burn Logs?",
-        position = 1
+        position = 2
     )
     fun burnLogs(): Boolean = false
 
@@ -26,7 +35,7 @@ interface AutoChopConfig : Config {
         keyName = "treeName",
         name = "Tree Name",
         description = "Tree to cut",
-        position = 2
+        position = 3
     )
     fun TREEANDLOCATION(): TreeAndLocation = TreeAndLocation.Maple
 

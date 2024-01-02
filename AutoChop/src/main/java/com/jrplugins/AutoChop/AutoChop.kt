@@ -20,12 +20,16 @@ import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
 import net.runelite.api.events.GameTick
 import net.runelite.client.config.ConfigManager
+import net.runelite.client.config.Keybind
 import net.runelite.client.eventbus.Subscribe
+import net.runelite.client.input.KeyManager
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
+import net.runelite.client.util.HotkeyListener
 import java.awt.event.KeyEvent
 import java.util.*
+import java.util.function.Supplier
 
 @PluginDescriptor(
     name = "<html><font color=\"#9ddbff\">[JC]</font> Auto Chop </html>",
@@ -49,7 +53,11 @@ class AutoChop : Plugin() {
     @Inject
     private lateinit var overlayManager: OverlayManager
 
+    @Inject
+    private lateinit var keyManager: KeyManager
+
     lateinit var state: State
+    var started: Boolean = false
 
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
@@ -68,6 +76,7 @@ class AutoChop : Plugin() {
         if (client.gameState != GameState.LOGGED_IN) return
         breakHandler.registerPlugin(this);
         breakHandler.startPlugin(this);
+        keyManager.registerKeyListener(toggle)
         changeStateTo(State.IDLE)
     }
 
@@ -75,19 +84,12 @@ class AutoChop : Plugin() {
     override fun shutDown() {
         breakHandler.stopPlugin(this);
         breakHandler.unregisterPlugin(this);
+        keyManager.unregisterKeyListener(toggle)
         overlayManager.remove(autoChopOverlay)
     }
 
     @Subscribe
     fun onGameTick(e: GameTick) {
-        if (!hasAxe()) {
-            EthanApiPlugin.sendClientMessage("No axe found, stopping plugin")
-            EthanApiPlugin.stopPlugin(this)
-        }
-        if (tickDelay > 0) { // Tick delay
-            tickDelay--
-            return
-        }
 
         if (autoChopConfig.displayOverlay()) { // Toggle overlay
             overlayManager.add(autoChopOverlay)
@@ -99,10 +101,18 @@ class AutoChop : Plugin() {
             breakHandler.startBreak(this)
         }
 
-        if (client.gameState != GameState.LOGGED_IN) { // Check if logged in
+        if (client.gameState != GameState.LOGGED_IN || !started) { // Check if logged in and Started
             return
         }
 
+        if (!hasAxe()) {
+            EthanApiPlugin.sendClientMessage("No axe found, stopping plugin")
+            EthanApiPlugin.stopPlugin(this)
+        }
+        if (tickDelay > 0) { // Tick delay
+            tickDelay--
+            return
+        }
 
         // Set up areas and destinations
         bankingArea = WorldArea(
@@ -213,6 +223,11 @@ class AutoChop : Plugin() {
                         NPCInteraction.interact(beeHive, "Build")
                     }
                 return
+            } else if (sturdyBeeHiveExists()) {
+                TileObjects.search().nameContains("Sturdy beehive").withAction("Take").nearestToPlayer()
+                    .ifPresent { sturdyBeeHive ->
+                        TileObjectInteraction.interact(sturdyBeeHive, "Take")
+                    }
             } else {
                 changeStateTo(State.IDLE)
             }
@@ -430,6 +445,9 @@ class AutoChop : Plugin() {
     private fun beeHiveExists(): Boolean =
         NPCs.search().nameContains("nfinished Beehive").result().isNotEmpty()
 
+    private fun sturdyBeeHiveExists(): Boolean =
+        TileObjects.search().nameContains("Sturdy beehive").result().isNotEmpty()
+
     private fun rainbowLocation(): WorldPoint =
         TileObjects.search().nameContains("ainbow").withinDistance(15).nearestToPlayer().get().worldLocation
 
@@ -542,6 +560,19 @@ class AutoChop : Plugin() {
         state = stateName
         tickDelay = ticksToDelay
         // println("State : $stateName")
+    }
+
+    private val toggle: HotkeyListener = object : HotkeyListener(Supplier<Keybind> { autoChopConfig.toggle() }) {
+        override fun hotkeyPressed() {
+            toggle()
+        }
+    }
+
+    fun toggle() {
+        if (client.gameState != GameState.LOGGED_IN) {
+            return
+        }
+        started = !started
     }
 
     private fun sendKey(key: Int) {
