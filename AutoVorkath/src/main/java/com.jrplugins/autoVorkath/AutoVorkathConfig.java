@@ -66,4 +66,24 @@ public interface AutoVorkathConfig extends Config {
     default RANGE_POTION RANGEPOTION() {
         return RANGE_POTION.DIVINE_RANGING_POTION;
     }
+
+    @ConfigItem(
+            keyName = "prayerPotion",
+            name = "Prayer Potion",
+            description = "What Prayer potion to use?",
+            position = 6
+    )
+    default PRAYER_POTION PRAYERPOTION() {
+        return PRAYER_POTION.PRAYER;
+    }
+
+    @ConfigItem(
+            keyName = "food",
+            name = "Food",
+            description = "What food to use?",
+            position = 7
+    )
+    default String FOOD() {
+        return "Manta ray";
+    }
 }

@@ -487,8 +487,8 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun drinkPrayer() {
         if (needsToDrinkPrayer()) {
-            if (Inventory.search().nameContains("Prayer potion").result().isNotEmpty()) {
-                Inventory.search().nameContains("Prayer potion").first().ifPresent { prayerPotion ->
+            if (Inventory.search().nameContains(config.PRAYERPOTION().toString()).result().isNotEmpty()) {
+                Inventory.search().nameContains(config.PRAYERPOTION().toString()).first().ifPresent { prayerPotion ->
                     InventoryInteraction.useItem(prayerPotion, "Drink")
                 }
                 tickDelay = 2
@@ -519,9 +519,9 @@ class AutoVorkathPlugin : Plugin() {
         if (!hasItem(config.SLAYERSTAFF().toString())) {
             withdraw(config.SLAYERSTAFF().toString(), 1)
         }
-        if (BankInventory.search().nameContains("Prayer potion").result().size <= 1) {
-            withdraw("Prayer potion", 1)
-            withdraw("Prayer potion", 1)
+        if (BankInventory.search().nameContains(config.PRAYERPOTION().toString()).result().size <= 1) {
+            withdraw(config.PRAYERPOTION().toString(), 1)
+            withdraw(config.PRAYERPOTION().toString(), 1)
         }
         if (!hasItem("Rune pouch")) {
             withdraw("Rune pouch", 1)
@@ -532,7 +532,7 @@ class AutoVorkathPlugin : Plugin() {
         }
         if (!Inventory.full()) {
             for (i in 1..Inventory.getEmptySlots()) {
-                withdraw("Manta ray", 1)
+                withdraw(config.FOOD(), 1)
             }
         }
         changeStateTo(State.THINKING)
@@ -547,13 +547,13 @@ class AutoVorkathPlugin : Plugin() {
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
 
-    private fun readyToFight(): Boolean = Inventory.search().nameContains("Manta ray").result().isNotEmpty()
+    private fun readyToFight(): Boolean = Inventory.search().nameContains(config.FOOD()).result().isNotEmpty()
             && Inventory.search().nameContains("super antifire").result().isNotEmpty()
             && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.TELEPORT().toString()).result().isNotEmpty()
             && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
-            && Inventory.search().nameContains("Prayer potion").result().isNotEmpty()
+            && Inventory.search().nameContains(config.PRAYERPOTION().toString()).result().isNotEmpty()
             && !inventoryHasLoot()
             && Inventory.full()
 
