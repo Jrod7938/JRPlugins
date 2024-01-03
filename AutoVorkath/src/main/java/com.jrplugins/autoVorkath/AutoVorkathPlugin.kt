@@ -160,11 +160,7 @@ class AutoVorkathPlugin : Plugin() {
     @Subscribe
     fun onNpcDespawned(e: NpcDespawned) {
         if (e.npc.name == "Zombified Spawn") {
-            if (needsToEat()) {
-                Inventory.search().withAction("Eat").first().ifPresent { food ->
-                    InventoryInteraction.useItem(food, "Eat")
-                }
-            }
+            eat()
             changeStateTo(State.FIGHTING)
         }
     }
@@ -176,41 +172,26 @@ class AutoVorkathPlugin : Plugin() {
         if (e.projectile.id == acidProjectileId || e.projectile.id == acidRedProjectileId) {
             changeStateTo(State.ACID)
         } else if (e.projectile.id == rangeProjectileId) {
-            if (needsToEat()) {
-                Inventory.search().withAction("Eat").first().ifPresent { food ->
-                    InventoryInteraction.useItem(food, "Eat")
-                }
-            }
+            eat()
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, true)
         } else if (e.projectile.id == magicProjectileId) {
-            if (needsToEat()) {
-                Inventory.search().withAction("Eat").first().ifPresent { food ->
-                    InventoryInteraction.useItem(food, "Eat")
-                }
-            }
+            eat()
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
         } else if (e.projectile.id == purpleProjectileId) {
-            if (needsToEat()) {
-                Inventory.search().withAction("Eat").first().ifPresent { food ->
-                    InventoryInteraction.useItem(food, "Eat")
-                }
-            }
+            eat()
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
         } else if (e.projectile.id == blueProjectileId) {
-            if (needsToEat()) {
-                Inventory.search().withAction("Eat").first().ifPresent { food ->
-                    InventoryInteraction.useItem(food, "Eat")
-                }
-            }
+            eat()
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
         } else if (e.projectile.id == redProjectileId) {
             changeStateTo(State.RED_BALL)
         }
     }
+
 
     @Subscribe
     fun onGameTick(e: GameTick) {
@@ -544,6 +525,16 @@ class AutoVorkathPlugin : Plugin() {
             && Inventory.search().nameContains("Prayer potion").result().isNotEmpty()
             && !inventoryHasLoot()
 
+    private fun eat() {
+        if (needsToEat()) {
+            Inventory.search().withAction("Eat").first().ifPresent { food ->
+                InventoryInteraction.useItem(food, "Eat")
+            }
+            NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
+                NPCInteraction.interact(vorkath, "Attack")
+            }
+        }
+    }
 
     private fun inventoryHasLoot(): Boolean {
         getLootNames()?.forEach { lootName ->
