@@ -247,8 +247,8 @@ class AutoVorkathPlugin : Plugin() {
     private fun acidState() {
         val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
         val middle = WorldPoint(vorkath.x + 3, vorkath.y - 8, 0)
-        val right = WorldPoint(middle.x + 3, middle.y, 0)
-        val left = WorldPoint(middle.x - 3, middle.y, 0)
+        val right = WorldPoint(middle.x + 2, middle.y, 0)
+        val left = WorldPoint(middle.x - 2, middle.y, 0)
         PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
@@ -256,7 +256,7 @@ class AutoVorkathPlugin : Plugin() {
             MovementPackets.queueMovement(middle)
         } else {
             if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
-                if (client.localPlayer.worldLocation.distanceTo(left) >= 3) {
+                if (client.localPlayer.worldLocation.distanceTo(left) >= 2) {
                     drinkPrayer()
                     MovementPackets.queueMovement(left)
                 } else {
