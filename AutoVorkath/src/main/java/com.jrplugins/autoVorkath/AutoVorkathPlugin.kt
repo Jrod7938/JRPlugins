@@ -84,8 +84,6 @@ class AutoVorkathPlugin : Plugin() {
     private val bankArea: WorldArea = WorldArea(2096, 3911, 20, 11, 0)
     private val fremennikArea: WorldArea = WorldArea(2627, 3672, 24, 30, 0)
 
-    private var needsToBank: Boolean = true
-
     enum class State {
         WALKING_TO_BANK,
         BANKING,
@@ -117,7 +115,6 @@ class AutoVorkathPlugin : Plugin() {
         previousBotState = null
         drankAntiFire = false
         drankRangePotion = false
-        needsToBank = true
         lootQueue.clear()
         breakHandler.stopPlugin(this)
         breakHandler.unregisterPlugin(this)
@@ -525,7 +522,6 @@ class AutoVorkathPlugin : Plugin() {
                 withdraw("Manta ray", 1)
             }
         }
-        needsToBank = false
         changeStateTo(State.THINKING)
     }
 
