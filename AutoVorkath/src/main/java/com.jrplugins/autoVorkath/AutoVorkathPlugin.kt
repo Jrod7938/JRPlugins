@@ -222,8 +222,8 @@ class AutoVorkathPlugin : Plugin() {
                         EthanApiPlugin.stopPlugin(this)
                     }
                 }
-                tickDelay = 4
                 lootQueue.removeAt(0)
+                tickDelay = 4
                 return
             }
 
@@ -513,7 +513,8 @@ class AutoVorkathPlugin : Plugin() {
         if (!hasItem(config.TELEPORT().toString())) {
             withdraw(config.TELEPORT().toString(), 1)
         }
-        if (!hasItem(config.RANGEPOTION().toString())) {
+        if (BankInventory.search().nameContains(config.RANGEPOTION().toString()).result().size <= 1) {
+            withdraw(config.RANGEPOTION().toString(), 1)
             withdraw(config.RANGEPOTION().toString(), 1)
         }
         if (!hasItem(config.SLAYERSTAFF().toString())) {
@@ -526,7 +527,8 @@ class AutoVorkathPlugin : Plugin() {
         if (!hasItem("Rune pouch")) {
             withdraw("Rune pouch", 1)
         }
-        if (!hasItem("super antifire")) {
+        if (BankInventory.search().nameContains("super antifire").result().size <= 1) {
+            withdraw("super antifire", 1)
             withdraw("super antifire", 1)
         }
         if (!Inventory.full()) {
