@@ -508,7 +508,7 @@ class AutoVorkathPlugin : Plugin() {
         if (!hasItem(config.SLAYERSTAFF().toString())) {
             withdraw(config.SLAYERSTAFF().toString(), 1)
         }
-        if (Inventory.search().nameContains("Prayer potion").result().size >= 2) {
+        if (BankInventory.search().nameContains("Prayer potion").result().size <= 1) {
             withdraw("Prayer potion", 1)
             withdraw("Prayer potion", 1)
         }
