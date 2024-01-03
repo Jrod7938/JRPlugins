@@ -13,7 +13,6 @@ import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
 import net.runelite.api.events.*
-import net.runelite.client.callback.ClientThread
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.NpcLootReceived
@@ -37,9 +36,6 @@ import javax.inject.Inject
 class AutoVorkathPlugin : Plugin() {
     @Inject
     private lateinit var client: Client
-
-    @Inject
-    private lateinit var clientThread: ClientThread
 
     @Inject
     private lateinit var breakHandler: ReflectBreakHandler
@@ -106,8 +102,8 @@ class AutoVorkathPlugin : Plugin() {
         botState = State.THINKING
         previousBotState = State.NONE
         running = client.gameState == GameState.LOGGED_IN
-        breakHandler.registerPlugin(this);
-        breakHandler.startPlugin(this);
+        breakHandler.registerPlugin(this)
+        breakHandler.startPlugin(this)
         overlayManager.add(autoVorkathOverlay)
     }
 
@@ -120,8 +116,8 @@ class AutoVorkathPlugin : Plugin() {
         drankRangePotion = false
         needsToBank = true
         lootQueue.clear()
-        breakHandler.stopPlugin(this);
-        breakHandler.unregisterPlugin(this);
+        breakHandler.stopPlugin(this)
+        breakHandler.unregisterPlugin(this)
         overlayManager.remove(autoVorkathOverlay)
     }
 
@@ -259,7 +255,7 @@ class AutoVorkathPlugin : Plugin() {
                 State.SPAWN -> spawnState()
                 State.RED_BALL -> redBallState()
                 State.THINKING -> thinkingState()
-                State.NONE -> TODO()
+                State.NONE -> println("None State")
                 null -> println("Null State")
             }
         }
@@ -310,6 +306,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun spawnState() {
+        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()) {
