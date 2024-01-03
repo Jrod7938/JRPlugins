@@ -308,11 +308,9 @@ class AutoVorkathPlugin : Plugin() {
             changeStateTo(State.WALKING_TO_BANK)
             return
         }
+        eat()
         if (client.localPlayer.worldLocation != middle) {
-            if (!isMoving()) {
-                eat()
-                MovementPackets.queueMovement(middle)
-            }
+            if (!isMoving()) MovementPackets.queueMovement(middle)
         }
         if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
             InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
