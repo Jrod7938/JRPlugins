@@ -432,6 +432,9 @@ class AutoVorkathPlugin : Plugin() {
                 return
             }
         } else { // If player doesn't have all potions and food
+            drankRangePotion = false
+            drankAntiFire = false
+            isPrepared = false
             if (bankArea.contains(client.localPlayer.worldLocation)) { // Player is in bank area
                 changeStateTo(State.BANKING)
                 return
