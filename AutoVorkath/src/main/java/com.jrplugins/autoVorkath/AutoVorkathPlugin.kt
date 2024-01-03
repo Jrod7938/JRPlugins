@@ -289,6 +289,9 @@ class AutoVorkathPlugin : Plugin() {
                 NPCInteraction.interact(spawn, "Attack")
             }
         }
+        if (NPCs.search().nameContains("Zombified Spawn").result().isEmpty()) {
+            changeStateTo(State.FIGHTING)
+        }
     }
 
     private fun fightingState() {
