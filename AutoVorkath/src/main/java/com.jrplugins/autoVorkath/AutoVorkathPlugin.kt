@@ -132,6 +132,7 @@ class AutoVorkathPlugin : Plugin() {
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
             drankAntiFire = false
             drankRangePotion = false
+            isPrepared = false
         }
     }
 
@@ -239,7 +240,7 @@ class AutoVorkathPlugin : Plugin() {
                         EthanApiPlugin.stopPlugin(this)
                     }
                 }
-                tickDelay = 3
+                tickDelay = 4
                 lootQueue.removeAt(0)
                 return
             }
