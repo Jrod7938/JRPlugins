@@ -11,6 +11,10 @@ repositories {
 }
 
 dependencies {
+    implementation project(path: ':PiggyUtils')
+    implementation project(path: ':EthansApi')
+    implementation project(path: ':PathingTesting')
+    implementation project(path: ':AutoCombat')
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"

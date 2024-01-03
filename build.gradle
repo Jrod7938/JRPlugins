@@ -118,10 +118,8 @@ dependencies {
     testImplementation project(path: ':AutoChop')
     compileOnly project(path: ':PathingTesting')
     testImplementation project(path: ':PathingTesting')
-    compileOnly project(path: ':questhelper')
-    testImplementation project(path: ':questhelper')
-    compileOnly project(path: ':questWalker')
-    testImplementation project(path: ':questWalker')
+    compileOnly project(path: ':AutoVorkath')
+    testImplementation project(path: ':AutoVorkath')
 
 
 }

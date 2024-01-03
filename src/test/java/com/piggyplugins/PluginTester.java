@@ -9,6 +9,7 @@ import com.example.RunEnabler.RunEnabler;
 import com.example.UpkeepPlugin.UpkeepPlugin;
 import com.example.harpoon2ticker.SwordFish2Tick;
 import com.jrplugins.AutoChop.AutoChop;
+import com.jrplugins.autoVorkath.AutoVorkathPlugin;
 import com.piggyplugins.AutoAerial.AutoAerialPlugin;
 import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
 import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
@@ -63,7 +64,8 @@ public class PluginTester {
                 HerbCleanerPlugin.class,
                 ItemCombinerPlugin.class,
                 EthanPrayerFlickerPlugin.class,
-                RunEnabler.class
+                RunEnabler.class,
+                AutoVorkathPlugin.class
         );
         RuneLite.main(args);
     }

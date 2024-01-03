@@ -51,4 +51,5 @@ include 'AutoWintertodt'
 include 'AutoChop'
 include 'questhelper'
 include 'questWalker'
+include 'AutoVorkath'
 

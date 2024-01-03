@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor
 
 @Getter
 @RequiredArgsConstructor
-enum class STAFF(private val staffName: String) {
-    SLAYER_STAFF("Slayer's staff"),
-    SLAYER_STAFF_E("Slayer's staff (e)");
+enum class RANGE_POTION(private val potionName: String) {
+    DIVINE_RANGING_POTION("anging potion"),
+    DIVINE_BASTION_POTION("astion potion");
 
     override fun toString(): String {
-        return staffName
+        return potionName
     }
 }
