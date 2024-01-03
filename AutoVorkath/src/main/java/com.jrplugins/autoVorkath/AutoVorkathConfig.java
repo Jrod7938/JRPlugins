@@ -8,20 +8,10 @@ import net.runelite.client.config.ConfigItem;
 public interface AutoVorkathConfig extends Config {
 
     @ConfigItem(
-            keyName = "Loot",
-            name = "Loot Names",
-            description = "Enter the name of the loot you want to pick up",
-            position = 0
-    )
-    default String LOOTNAMES() {
-        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Manta ray,Rune longsword,Dragon bolts(unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay";
-    }
-
-    @ConfigItem(
             keyName = "crossbow",
             name = "Crossbow",
             description = "Choose your crossbow",
-            position = 1
+            position = 0
     )
     default CROSSBOW CROSSBOW() {
         return CROSSBOW.ARMADYL_CROSSBOW;
@@ -31,7 +21,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "slayersStaff",
             name = "Slayers Staff",
             description = "Choose your slayers staff",
-            position = 2
+            position = 1
     )
     default STAFF SLAYERSTAFF() {
         return STAFF.SLAYER_STAFF;
@@ -41,7 +31,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "teleport",
             name = "Teleport",
             description = "Choose your teleport",
-            position = 3
+            position = 2
     )
     default TELEPORT TELEPORT() {
         return TELEPORT.CONSTRUCT_CAPE_T;
@@ -51,7 +41,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "rigour",
             name = "Rigour",
             description = "Activate Rigour?",
-            position = 4
+            position = 3
     )
     default boolean ACTIVATERIGOUR() {
         return true;
@@ -61,7 +51,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "rangePotion",
             name = "Ranging Potion",
             description = "What Ranging potion to use?",
-            position = 5
+            position = 4
     )
     default RANGE_POTION RANGEPOTION() {
         return RANGE_POTION.DIVINE_RANGING_POTION;
@@ -71,7 +61,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "prayerPotion",
             name = "Prayer Potion",
             description = "What Prayer potion to use?",
-            position = 6
+            position = 5
     )
     default PRAYER_POTION PRAYERPOTION() {
         return PRAYER_POTION.PRAYER;
@@ -81,9 +71,19 @@ public interface AutoVorkathConfig extends Config {
             keyName = "food",
             name = "Food",
             description = "What food to use?",
-            position = 7
+            position = 6
     )
     default String FOOD() {
         return "Manta ray";
+    }
+
+    @ConfigItem(
+            keyName = "Loot",
+            name = "Loot Names",
+            description = "Enter the name of the loot you want to pick up",
+            position = 7
+    )
+    default String LOOTNAMES() {
+        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Manta ray,Rune longsword,Dragon bolts(unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay";
     }
 }
