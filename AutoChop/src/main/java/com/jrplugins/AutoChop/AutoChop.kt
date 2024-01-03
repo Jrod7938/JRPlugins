@@ -31,7 +31,7 @@ import java.util.*
 import java.util.function.Supplier
 
 @PluginDescriptor(
-    name = "<html><font color=\"#9ddbff\">[JC]</font> Auto Chop </html>",
+    name = "<html><font color=\"#9ddbff\">[JR]</font> Auto Chop </html>",
     description = "Choppy Choppy",
     tags = ["jc"],
     enabledByDefault = false
@@ -604,14 +604,14 @@ class AutoChop : Plugin() {
 
     private fun keyEvent(id: Int, key: Int) {
         val e = KeyEvent(
-            client.getCanvas(),
+            client.canvas,
             id,
             System.currentTimeMillis(),
             0,
             key,
             KeyEvent.CHAR_UNDEFINED
         )
-        client.getCanvas().dispatchEvent(e)
+        client.canvas.dispatchEvent(e)
     }
 
 }
