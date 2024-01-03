@@ -171,8 +171,6 @@ class AutoVorkathPlugin : Plugin() {
         }
     }
 
-    private fun needsToEat(): Boolean = client.getBoostedSkillLevel(Skill.HITPOINTS) <= 65
-
     @Subscribe
     fun onProjectileMoved(e: ProjectileMoved) {
         if (e.projectile.id == acidProjectileId || e.projectile.id == acidRedProjectileId) {
@@ -311,7 +309,10 @@ class AutoVorkathPlugin : Plugin() {
             return
         }
         if (client.localPlayer.worldLocation != middle) {
-            if (!isMoving()) MovementPackets.queueMovement(middle)
+            if (!isMoving()) {
+                eat()
+                MovementPackets.queueMovement(middle)
+            }
         }
         if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
             InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
@@ -526,6 +527,8 @@ class AutoVorkathPlugin : Plugin() {
             && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
             && Inventory.search().nameContains("Prayer potion").result().isNotEmpty()
             && !inventoryHasLoot()
+
+    private fun needsToEat(): Boolean = client.getBoostedSkillLevel(Skill.HITPOINTS) <= 77
 
     private fun eat() {
         if (needsToEat()) {
