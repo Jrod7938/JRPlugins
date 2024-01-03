@@ -12,7 +12,10 @@ import lombok.Setter
 import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
-import net.runelite.api.events.*
+import net.runelite.api.events.ChatMessage
+import net.runelite.api.events.GameTick
+import net.runelite.api.events.NpcSpawned
+import net.runelite.api.events.ProjectileMoved
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.NpcLootReceived
@@ -140,6 +143,15 @@ class AutoVorkathPlugin : Plugin() {
             drankRangePotion = false
             isPrepared = false
         }
+        if (e.message.contains("You have been frozen!")) {
+            PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
+            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
+            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        }
+        if (e.message.contains("You become unfrozen as you kill the spawn")) {
+            eat()
+            changeStateTo(State.FIGHTING)
+        }
     }
 
     @Subscribe
@@ -164,20 +176,12 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     @Subscribe
-    fun onNpcDespawned(e: NpcDespawned) {
-        if (e.npc.name == "Zombified Spawn") {
-            eat()
-            changeStateTo(State.FIGHTING)
-        }
-    }
-
-    @Subscribe
     fun onProjectileMoved(e: ProjectileMoved) {
         if (e.projectile.id == acidProjectileId || e.projectile.id == acidRedProjectileId) {
             changeStateTo(State.ACID)
         } else if (e.projectile.id == rangeProjectileId) {
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, true)
+            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
         } else if (e.projectile.id == magicProjectileId) {
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
@@ -256,18 +260,10 @@ class AutoVorkathPlugin : Plugin() {
         } else {
             if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
                 if (client.localPlayer.worldLocation.distanceTo(left) >= 3) {
-                    if (needsToDrinkPrayer()) {
-                        Inventory.search().nameContains("Prayer potion").first().ifPresent { prayerPotion ->
-                            InventoryInteraction.useItem(prayerPotion, "Drink")
-                        }
-                    }
+                    drinkPrayer()
                     MovementPackets.queueMovement(left)
                 } else {
-                    if (needsToEat()) {
-                        Inventory.search().withAction("Eat").first().ifPresent { food ->
-                            InventoryInteraction.useItem(food, "Eat")
-                        }
-                    }
+                    eat()
                     MovementPackets.queueMovement(right)
                 }
             } else {
@@ -288,9 +284,6 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun spawnState() {
-        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()) {
             InventoryInteraction.useItem(config.SLAYERSTAFF().toString(), "Wield")
         }
@@ -304,6 +297,9 @@ class AutoVorkathPlugin : Plugin() {
     private fun fightingState() {
         val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
         val middle = WorldPoint(vorkath.x + 3, vorkath.y - 5, 0)
+        if (!client.isInInstancedRegion) {
+            changeStateTo(State.WALKING_TO_BANK)
+        }
         if (isVorkathAsleep()) {
             changeStateTo(State.WALKING_TO_BANK)
             return
@@ -333,6 +329,9 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun walkingToVorkathState() {
         if (runIsOff()) enableRun()
+        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (!isMoving()) {
             if (bankArea.contains(client.localPlayer.worldLocation)) {
                 if (Widgets.search().withTextContains("Click here to continue").result().isNotEmpty()) {
@@ -365,6 +364,9 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun bankingState() {
+        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (bankArea.contains(client.localPlayer.worldLocation)) {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
@@ -384,6 +386,9 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun walkingToBankState() {
         if (runIsOff()) enableRun()
+        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (!isMoving()) {
             if (bankArea.contains(client.localPlayer.worldLocation)) {
                 changeStateTo(State.THINKING)
@@ -452,13 +457,8 @@ class AutoVorkathPlugin : Plugin() {
             tickDelay = 2
             return
         }
-        if (needsToDrinkPrayer()) {
-            Inventory.search().nameContains("Prayer potion").first().ifPresent { prayerPotion ->
-                InventoryInteraction.useItem(prayerPotion, "Drink")
-            }
-            tickDelay = 2
-            return
-        }
+
+        drinkPrayer()
 
         if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
             Inventory.search().nameContains("Anti-venom").first().ifPresent {
@@ -472,6 +472,24 @@ class AutoVorkathPlugin : Plugin() {
         } else {
             changeStateTo(State.WALKING_TO_BANK)
             return
+        }
+    }
+
+    private fun drinkPrayer() {
+        if (needsToDrinkPrayer()) {
+            if (Inventory.search().nameContains("Prayer potion").result().isNotEmpty()) {
+                Inventory.search().nameContains("Prayer potion").first().ifPresent { prayerPotion ->
+                    InventoryInteraction.useItem(prayerPotion, "Drink")
+                }
+                tickDelay = 2
+                return
+            } else {
+                isPrepared = false
+                drankRangePotion = false
+                drankAntiFire = false
+                changeStateTo(State.WALKING_TO_BANK, 5)
+                return
+            }
         }
     }
 
@@ -491,6 +509,7 @@ class AutoVorkathPlugin : Plugin() {
             withdraw(config.SLAYERSTAFF().toString(), 1)
         }
         if (!hasItem("Prayer potion")) {
+            withdraw("Prayer potion", 1)
             withdraw("Prayer potion", 1)
         }
         if (!hasItem("Rune pouch")) {
@@ -525,13 +544,22 @@ class AutoVorkathPlugin : Plugin() {
             && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
             && Inventory.search().nameContains("Prayer potion").result().isNotEmpty()
             && !inventoryHasLoot()
+            && Inventory.full()
 
     private fun needsToEat(): Boolean = client.getBoostedSkillLevel(Skill.HITPOINTS) <= 77
 
     private fun eat() {
         if (needsToEat()) {
-            Inventory.search().withAction("Eat").first().ifPresent { food ->
-                InventoryInteraction.useItem(food, "Eat")
+            if (Inventory.search().withAction("Eat").result().isNotEmpty()) {
+                Inventory.search().withAction("Eat").first().ifPresent { food ->
+                    InventoryInteraction.useItem(food, "Eat")
+                }
+            } else {
+                isPrepared = false
+                drankRangePotion = false
+                drankAntiFire = false
+                changeStateTo(State.WALKING_TO_BANK, 5)
+                return
             }
         }
     }
