@@ -197,10 +197,6 @@ class AutoVorkathPlugin : Plugin() {
     @Subscribe
     fun onGameTick(e: GameTick) {
         if (running) {
-            if (breakHandler.shouldBreak(this)) { // Break handler
-                breakHandler.startBreak(this)
-            }
-
             if (tickDelay > 0) { // Tick delay
                 tickDelay--
                 return
@@ -256,7 +252,7 @@ class AutoVorkathPlugin : Plugin() {
             MovementPackets.queueMovement(middle)
         } else {
             if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
-                if (client.localPlayer.worldLocation.distanceTo(left) >= 2) {
+                if (client.localPlayer.worldLocation.distanceTo(left) >= 3) {
                     drinkPrayer()
                     MovementPackets.queueMovement(left)
                 } else {
@@ -397,6 +393,9 @@ class AutoVorkathPlugin : Plugin() {
         PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
         PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        if (breakHandler.shouldBreak(this)) { // Break handler
+            breakHandler.startBreak(this)
+        }
         if (!isMoving()) {
             if (bankArea.contains(client.localPlayer.worldLocation)) {
                 changeStateTo(State.THINKING)
