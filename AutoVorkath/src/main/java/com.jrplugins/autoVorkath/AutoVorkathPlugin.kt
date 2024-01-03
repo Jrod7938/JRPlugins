@@ -295,21 +295,23 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun fightingState() {
-        val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
-        val middle = WorldPoint(vorkath.x + 3, vorkath.y - 5, 0)
-        if (!client.isInInstancedRegion) {
-            changeStateTo(State.WALKING_TO_BANK)
-        }
-        if (isVorkathAsleep()) {
-            changeStateTo(State.WALKING_TO_BANK)
+        if (!client.isInInstancedRegion || NPCs.search().nameContains("Vorkath").result().isEmpty()) {
+            changeStateTo(State.THINKING)
             return
-        }
-        eat()
-        if (client.localPlayer.worldLocation != middle) {
-            if (!isMoving()) MovementPackets.queueMovement(middle)
-        }
-        if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
-            InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
+        } else {
+            val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
+            val middle = WorldPoint(vorkath.x + 3, vorkath.y - 5, 0)
+            if (isVorkathAsleep()) {
+                changeStateTo(State.WALKING_TO_BANK)
+                return
+            }
+            eat()
+            if (client.localPlayer.worldLocation != middle) {
+                if (!isMoving()) MovementPackets.queueMovement(middle)
+            }
+            if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
+                InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
+            }
         }
     }
 
@@ -487,7 +489,7 @@ class AutoVorkathPlugin : Plugin() {
                 isPrepared = false
                 drankRangePotion = false
                 drankAntiFire = false
-                changeStateTo(State.WALKING_TO_BANK, 5)
+                changeStateTo(State.WALKING_TO_BANK)
                 return
             }
         }
@@ -558,7 +560,7 @@ class AutoVorkathPlugin : Plugin() {
                 isPrepared = false
                 drankRangePotion = false
                 drankAntiFire = false
-                changeStateTo(State.WALKING_TO_BANK, 5)
+                changeStateTo(State.WALKING_TO_BANK)
                 return
             }
         }
