@@ -12,13 +12,12 @@ import com.example.PathingTesting.PathingTesting
 import com.google.inject.Inject
 import com.google.inject.Provides
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
-import net.runelite.api.Client
-import net.runelite.api.GameState
-import net.runelite.api.NPC
-import net.runelite.api.VarPlayer
+import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
 import net.runelite.api.events.GameTick
+import net.runelite.api.events.NpcDespawned
+import net.runelite.api.events.NpcSpawned
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.config.Keybind
 import net.runelite.client.eventbus.Subscribe
@@ -59,6 +58,8 @@ class AutoChop : Plugin() {
     lateinit var state: State
     var started: Boolean = false
 
+    private val circles: MutableList<NPC> = ArrayList(5)
+
     private lateinit var bankingArea: WorldArea
     private lateinit var treeArea: WorldArea
     private lateinit var bankDestination: WorldPoint
@@ -86,6 +87,24 @@ class AutoChop : Plugin() {
         breakHandler.unregisterPlugin(this);
         keyManager.unregisterKeyListener(toggle)
         overlayManager.remove(autoChopOverlay)
+    }
+
+    @Subscribe
+    fun onNpcSpawned(event: NpcSpawned) {
+        var npc = event.npc
+        var id = npc.id
+        if (id >= NpcID.RITUAL_CIRCLE_GREEN && id <= NpcID.RITUAL_CIRCLE_RED_12535) {
+            circles.add(npc)
+        }
+    }
+
+    @Subscribe
+    fun onNpcDespawned(event: NpcDespawned) {
+        var npc = event.npc
+        var id = npc.id
+        if (id >= NpcID.RITUAL_CIRCLE_GREEN && id <= NpcID.RITUAL_CIRCLE_RED_12535) {
+            circles.remove(npc)
+        }
     }
 
     @Subscribe
@@ -174,8 +193,8 @@ class AutoChop : Plugin() {
     private fun handleRitualCirclesState() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (ritualCircleExists()) {
-                if (client.localPlayer.worldLocation != findUniqueRitualCircle()!!.worldLocation) {
-                    PathingTesting.walkTo(findUniqueRitualCircle()!!.worldLocation)
+                if (client.localPlayer.worldLocation != solveCircles()!!.worldLocation) {
+                    PathingTesting.walkTo(solveCircles()!!.worldLocation)
                     tickDelay = 1
                     return
                 }
@@ -413,27 +432,30 @@ class AutoChop : Plugin() {
         return mostPlayersTile ?: client.localPlayer.worldLocation
     }
 
-    private fun findUniqueRitualCircle(): NPC? {
-        val ritualCircles = NPCs.search().nameContains("Ritual circle").result()
-            .filter { it.name != null }
-
-        // Count occurrences of each distinct Ritual Circle name
-        val nameCountMap = mutableMapOf<String, Int>()
-        ritualCircles.forEach { circle ->
-            val name = circle.name!!
-            nameCountMap[name] = nameCountMap.getOrDefault(name, 0) + 1
+    fun solveCircles(): NPC? {
+        if (circles.size != 5) {
+            return null
         }
 
-        // Find the name with a count of 1 (the unique one)
-        val uniqueName = nameCountMap.entries.find { it.value == 1 }?.key
-
-        // Return the NPC corresponding to the unique name
-        return ritualCircles.find { it.name == uniqueName }
+        var s = 0
+        for (npc in circles) {
+            val off = npc.id - NpcID.RITUAL_CIRCLE_GREEN
+            val shape = off / 4
+            val color = off % 4
+            val id = (16 shl shape) or (1 shl color)
+            s = s xor id
+        }
+        for (npc in circles) {
+            val off = npc.id - NpcID.RITUAL_CIRCLE_GREEN
+            val shape = off / 4
+            val color = off % 4
+            val id = (16 shl shape) or (1 shl color)
+            if ((id and s) == id) {
+                return npc
+            }
+        }
+        return null
     }
-
-
-
-
 
     private fun foxTrapExists(): Boolean = NPCs.search().nameContains("Fox trap").result().isNotEmpty()
     private fun treeRootExists(): Boolean =
@@ -457,7 +479,7 @@ class AutoChop : Plugin() {
     private fun pheasantExists(): Boolean =
         TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15).result()
             .isNotEmpty()
-    private fun ritualCircleExists(): Boolean = NPCs.search().nameContains("Ritual circle").result().isNotEmpty()
+    private fun ritualCircleExists(): Boolean = circles.isNotEmpty()
     private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
     private fun hasAxe(): Boolean = !Equipment.search().nameContains("axe").empty()
             || !Inventory.search().nameContains("axe").empty()
