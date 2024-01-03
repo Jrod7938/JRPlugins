@@ -312,6 +312,12 @@ class AutoVorkathPlugin : Plugin() {
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
             }
+            if (client.localPlayer.interacting == null) {
+                NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
+                    NPCInteraction.interact(vorkath, "Attack")
+                }
+                return
+            }
         }
     }
 
