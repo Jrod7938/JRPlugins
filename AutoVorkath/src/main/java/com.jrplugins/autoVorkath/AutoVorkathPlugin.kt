@@ -277,7 +277,7 @@ class AutoVorkathPlugin : Plugin() {
                 0
             )
         )
-        changeStateTo(State.FIGHTING, 1)
+        changeStateTo(State.FIGHTING, 2)
     }
 
     private fun spawnState() {
