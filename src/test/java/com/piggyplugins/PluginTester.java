@@ -29,8 +29,6 @@ import com.polyplugins.Chompy.AutoChompyPlugin;
 import com.polyplugins.Dialogue.DialogueContinuerPlugin;
 import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
-import com.questWalker.QuestWalker;
-import com.questhelper.QuestHelperPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
@@ -65,9 +63,7 @@ public class PluginTester {
                 HerbCleanerPlugin.class,
                 ItemCombinerPlugin.class,
                 EthanPrayerFlickerPlugin.class,
-                RunEnabler.class,
-                QuestHelperPlugin.class,
-                QuestWalker.class
+                RunEnabler.class
         );
         RuneLite.main(args);
     }

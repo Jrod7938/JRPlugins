@@ -2,7 +2,6 @@
 *Updated 12/19/2023 18:07 AM EST*
 
 **Plugins**:
-- QuestWalker
 - AutoChop (Supports Some Forestry Events)
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
