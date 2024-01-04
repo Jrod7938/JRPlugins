@@ -16,5 +16,6 @@ https://discord.gg/PwRB5yt8KH
 **Things to know**
 
 - Needs POH
+- Needs Extended anti-fire
 - Needs Ornate rejuvenation pool
 - Needs Lunar Isles Portal in POH
