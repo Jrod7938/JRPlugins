@@ -158,6 +158,7 @@ class AutoVorkathPlugin : Plugin() {
                 lootQueue.add(it)
             }
         }
+        changeStateTo(State.LOOTING)
     }
 
     @Subscribe
@@ -183,10 +184,6 @@ class AutoVorkathPlugin : Plugin() {
             if (tickDelay > 0) { // Tick delay
                 tickDelay--
                 return
-            }
-
-            if (lootQueue.isNotEmpty()) {
-                changeStateTo(State.LOOTING)
             }
 
             when (botState) {
@@ -227,11 +224,7 @@ class AutoVorkathPlugin : Plugin() {
                 EthanApiPlugin.stopPlugin(this)
             }
         }
-        try {
-            lootQueue.removeAt(0)
-        } catch (e: Exception) {
-            changeStateTo(State.WALKING_TO_BANK)
-        }
+        lootQueue.removeAt(0)
         if (isMoving()) tickDelay = 4
         else tickDelay = 2
         return
