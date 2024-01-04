@@ -209,6 +209,11 @@ class AutoVorkathPlugin : Plugin() {
             changeStateTo(State.WALKING_TO_BANK, 1)
             return
         }
+        if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
+            Inventory.search().nameContains(config.CROSSBOW().toString()).first().ifPresent { crossbow ->
+                InventoryInteraction.useItem(crossbow, "Wield")
+            }
+        }
         val itemStack: ItemStack = lootQueue[0]
         TileItems.search().withId(itemStack.id).first().ifPresent { item: ETileItem ->
             val comp = itemManager.getItemComposition(item.getTileItem().id)
