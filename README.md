@@ -1,6 +1,10 @@
 # Release 1.0
 
-*Updated 01/03/2024 21:43 EST*
+*Updated 01/04/2024 13:40 EST*
+
+## Discord
+
+- https://discord.gg/PwRB5yt8KH
 
 ## Plugins:
 
@@ -24,10 +28,6 @@
 
 ## Instructions
 Run PluginTester.java
-
-## Discord
-
-- https://discord.gg/PwRB5yt8KH
 
 ### Thanks To
 
