@@ -52,4 +52,5 @@ include 'AutoChop'
 include 'questhelper'
 include 'questWalker'
 include 'AutoVorkath'
+include 'RSNHider'
 

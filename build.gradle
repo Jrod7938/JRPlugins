@@ -120,6 +120,8 @@ dependencies {
     testImplementation project(path: ':PathingTesting')
     compileOnly project(path: ':AutoVorkath')
     testImplementation project(path: ':AutoVorkath')
+    compileOnly project(path: ':RSNHider')
+    testImplementation project(path: ':RSNHider')
 
 
 }

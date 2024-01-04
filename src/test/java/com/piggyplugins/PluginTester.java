@@ -32,6 +32,7 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
+import rsnhider.RsnHiderPlugin;
 
 public class PluginTester {
     public static void main(String[] args) throws Exception {
@@ -65,7 +66,8 @@ public class PluginTester {
                 ItemCombinerPlugin.class,
                 EthanPrayerFlickerPlugin.class,
                 RunEnabler.class,
-                AutoVorkathPlugin.class
+                AutoVorkathPlugin.class,
+                RsnHiderPlugin.class
         );
         RuneLite.main(args);
     }
