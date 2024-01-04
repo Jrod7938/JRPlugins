@@ -238,9 +238,7 @@ class AutoVorkathPlugin : Plugin() {
         val middle = WorldPoint(vorkath.x + 3, vorkath.y - 8, 0)
         val right = WorldPoint(middle.x + 3, middle.y, 0)
         val left = WorldPoint(middle.x - 3, middle.y, 0)
-        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        activatePrayers(false)
         if (client.localPlayer.worldLocation.y != middle.y) {
             MovementPackets.queueMovement(middle)
         } else {
@@ -326,9 +324,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun walkingToVorkathState() {
         if (runIsOff()) enableRun()
-        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        activatePrayers(false)
         if (!isMoving()) {
             if (bankArea.contains(client.localPlayer.worldLocation)) {
                 if (Widgets.search().withTextContains("Click here to continue").result().isNotEmpty()) {
@@ -361,9 +357,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun bankingState() {
-        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        activatePrayers(false)
         if (bankArea.contains(client.localPlayer.worldLocation)) {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
@@ -383,9 +377,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun walkingToBankState() {
         if (runIsOff()) enableRun()
-        PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+        activatePrayers(false)
         if (breakHandler.shouldBreak(this)) { // Break handler
             breakHandler.startBreak(this)
         }
@@ -558,6 +550,9 @@ class AutoVorkathPlugin : Plugin() {
                 isPrepared = false
                 drankRangePotion = false
                 drankAntiFire = false
+                Inventory.search().nameContains(config.TELEPORT().toString()).first().ifPresent { teleport ->
+                    InventoryInteraction.useItem(teleport, config.TELEPORT().action())
+                }
                 changeStateTo(State.WALKING_TO_BANK)
                 return
             }
