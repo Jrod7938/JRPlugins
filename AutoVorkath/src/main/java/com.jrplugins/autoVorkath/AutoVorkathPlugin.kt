@@ -514,20 +514,17 @@ class AutoVorkathPlugin : Plugin() {
         }
         if (BankInventory.search().nameContains(config.RANGEPOTION().toString()).result().size <= 1) {
             withdraw(config.RANGEPOTION().toString(), 1)
-            withdraw(config.RANGEPOTION().toString(), 1)
         }
         if (!hasItem(config.SLAYERSTAFF().toString())) {
             withdraw(config.SLAYERSTAFF().toString(), 1)
         }
         if (BankInventory.search().nameContains(config.PRAYERPOTION().toString()).result().size <= 1) {
             withdraw(config.PRAYERPOTION().toString(), 1)
-            withdraw(config.PRAYERPOTION().toString(), 1)
         }
         if (!hasItem("Rune pouch")) {
             withdraw("Rune pouch", 1)
         }
         if (BankInventory.search().nameContains("super antifire").result().size <= 1) {
-            withdraw("super antifire", 1)
             withdraw("super antifire", 1)
         }
         if (!Inventory.full()) {
