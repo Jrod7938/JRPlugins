@@ -479,6 +479,9 @@ class AutoVorkathPlugin : Plugin() {
                 isPrepared = false
                 drankRangePotion = false
                 drankAntiFire = false
+                Inventory.search().nameContains(config.TELEPORT().toString()).first().ifPresent { teleport ->
+                    InventoryInteraction.useItem(teleport, config.TELEPORT().action())
+                }
                 changeStateTo(State.WALKING_TO_BANK)
                 return
             }
