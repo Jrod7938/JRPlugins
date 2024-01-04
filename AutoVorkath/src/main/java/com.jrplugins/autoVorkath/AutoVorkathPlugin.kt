@@ -537,7 +537,7 @@ class AutoVorkathPlugin : Plugin() {
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
 
-    private fun readyToFight(): Boolean = Inventory.search().nameContains(config.FOOD()).result().size >= 15
+    private fun readyToFight(): Boolean = Inventory.search().nameContains(config.FOOD()).result().size >= 17
             && Inventory.search().nameContains("super antifire").result().isNotEmpty()
             && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
