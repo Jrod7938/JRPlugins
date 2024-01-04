@@ -84,6 +84,6 @@ public interface AutoVorkathConfig extends Config {
             position = 7
     )
     default String LOOTNAMES() {
-        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Manta ray,Rune longsword,Dragon bolts(unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune bolt tip,Dragon dart tip";
+        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Manta ray,Rune longsword,Dragon bolts(unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip";
     }
 }
