@@ -246,9 +246,8 @@ class AutoVorkathPlugin : Plugin() {
             }
         }
         lootQueue.removeAt(0)
-        if (isMoving()) {
-            tickDelay = 4
-        }
+        if (isMoving()) tickDelay = 4
+        else tickDelay = 2
         return
     }
 
