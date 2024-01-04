@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor
 @Getter
 @RequiredArgsConstructor
 enum class RANGE_POTION(private val potionName: String) {
-    DIVINE_RANGING_POTION("anging potion"),
-    DIVINE_BASTION_POTION("astion potion");
+    DIVINE_RANGING_POTION("Divine ranging potion"),
+    DIVINE_BASTION_POTION("Divine bastion potion"),
+    RANGING_POTION("Ranging potion");
 
     override fun toString(): String {
         return potionName

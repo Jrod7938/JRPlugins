@@ -128,23 +128,17 @@ class AutoVorkathPlugin : Plugin() {
             drankAntiFire = false
             drankRangePotion = false
             isPrepared = false
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+            activatePrayers(false)
             EthanApiPlugin.stopPlugin(this)
         }
         if (e.message.contains("Your Vorkath kill count is:")) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+            activatePrayers(false)
             drankAntiFire = false
             drankRangePotion = false
             isPrepared = false
         }
         if (e.message.contains("You have been frozen!")) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MISSILES, false)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+            activatePrayers(false)
         }
         if (e.message.contains("You become unfrozen as you kill the spawn")) {
             eat()
@@ -175,22 +169,10 @@ class AutoVorkathPlugin : Plugin() {
 
     @Subscribe
     fun onProjectileMoved(e: ProjectileMoved) {
-        if (e.projectile.id == acidProjectileId || e.projectile.id == acidRedProjectileId) {
-            changeStateTo(State.ACID)
-        } else if (e.projectile.id == rangeProjectileId) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
-        } else if (e.projectile.id == magicProjectileId) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
-        } else if (e.projectile.id == purpleProjectileId) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
-        } else if (e.projectile.id == blueProjectileId) {
-            PrayerInteraction.setPrayerState(Prayer.RIGOUR, true)
-            PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, true)
-        } else if (e.projectile.id == redProjectileId) {
-            changeStateTo(State.RED_BALL)
+        when (e.projectile.id) {
+            acidProjectileId, acidRedProjectileId -> changeStateTo(State.ACID)
+            rangeProjectileId, magicProjectileId, purpleProjectileId, blueProjectileId -> activatePrayers(true)
+            redProjectileId -> changeStateTo(State.RED_BALL)
         }
     }
 
@@ -414,7 +396,7 @@ class AutoVorkathPlugin : Plugin() {
             }
             if (!inHouse()) {
                 Inventory.search().nameContains(config.TELEPORT().toString()).first().ifPresent { teleport ->
-                    InventoryInteraction.useItem(teleport, "Tele to POH")
+                    InventoryInteraction.useItem(teleport, config.TELEPORT().action())
                 }
                 return
             }
@@ -647,6 +629,13 @@ class AutoVorkathPlugin : Plugin() {
             return false
         }
         return itemQry.onlyNoted().first().isPresent || itemQry.quantityGreaterThan(1).first().isPresent
+    }
+
+    private fun activatePrayers(on: Boolean) {
+        if (config.ACTIVATERIGOUR()) {
+            PrayerInteraction.setPrayerState(Prayer.RIGOUR, on)
+        }
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, on)
     }
 
     private fun useSpecial() {
