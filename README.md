@@ -1,7 +1,11 @@
 # Release 1.0
-*Updated 12/19/2023 18:07 AM EST*
+
+*Updated 01/03/2023 21:38 EST*
 
 **Plugins**:
+
+- RSNHider
+- AutoVorkath (Chicken Walk)
 - AutoChop (Supports Some Forestry Events)
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
