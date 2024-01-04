@@ -34,3 +34,14 @@ compileTestKotlin {
         jvmTarget = "11"
     }
 }
+
+task PiggyJar(type: Jar) {
+    manifest {
+    }
+    baseName = 'auto-chop'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+tasks.register("prepareKotlinBuildScriptModel") {}
