@@ -1,12 +1,12 @@
 # Release 1.0
 
-*Updated 01/03/2024 21:40 EST*
+*Updated 01/03/2024 21:43 EST*
 
-**Plugins**:
+## Plugins:
 
-- RSNHider
 - AutoVorkath (Chicken Walk)
 - AutoChop (Supports Some Forestry Events)
+- RSNHider
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
 - RooftopAgility *(iRooftops by illumine partially ported & modified by piggyplugins)*
@@ -22,9 +22,14 @@
 - PowerSkiller *Intended to serve as a tutorial plugin for the discord server*
 - Vardorvis Helper
 
-
-# Instructions
+## Instructions
 Run PluginTester.java
 
-Fork of EthanVann's EthanApiPlugin
-Fork of 0Hutch PiggyPlugins
+## Discord
+
+- https://discord.gg/PwRB5yt8KH
+
+### Thanks To
+
+- Fork of EthanVann's EthanApiPlugin
+- Fork of 0Hutch PiggyPlugins
