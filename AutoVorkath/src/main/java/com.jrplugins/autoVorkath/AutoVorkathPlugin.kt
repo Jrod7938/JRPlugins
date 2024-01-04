@@ -227,7 +227,12 @@ class AutoVorkathPlugin : Plugin() {
                 EthanApiPlugin.stopPlugin(this)
             }
         }
-        lootQueue.removeAt(0)
+        try {
+            lootQueue.removeAt(0)
+        } catch (e: Exception) {
+            println("Tried to loot but failed: Plugin Continue")
+            return
+        }
         if (isMoving()) tickDelay = 4
         else tickDelay = 2
         return
