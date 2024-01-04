@@ -230,8 +230,7 @@ class AutoVorkathPlugin : Plugin() {
         try {
             lootQueue.removeAt(0)
         } catch (e: Exception) {
-            println("Tried to loot but failed: Plugin Continue")
-            return
+            changeStateTo(State.WALKING_TO_BANK)
         }
         if (isMoving()) tickDelay = 4
         else tickDelay = 2
