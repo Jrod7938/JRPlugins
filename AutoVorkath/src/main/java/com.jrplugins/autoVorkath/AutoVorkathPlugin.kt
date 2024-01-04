@@ -320,7 +320,6 @@ class AutoVorkathPlugin : Plugin() {
     private fun pokeState() {
         if (isVorkathAsleep()) {
             if (!isMoving()) {
-                if (!runIsOff()) enableRun()
                 NPCs.search().withAction("Poke").first().ifPresent { sleepingVorkath ->
                     NPCInteraction.interact(sleepingVorkath, "Poke")
                 }
