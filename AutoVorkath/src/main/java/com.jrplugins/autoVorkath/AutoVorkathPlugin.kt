@@ -225,7 +225,7 @@ class AutoVorkathPlugin : Plugin() {
             if (!Inventory.full()) {
                 item.interact(false)
             } else {
-                EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update")
+                EthanApiPlugin.sendClientMessage("Inventory full, going to bank.")
                 changeStateTo(State.WALKING_TO_BANK)
             }
         }
