@@ -226,7 +226,7 @@ class AutoVorkathPlugin : Plugin() {
                 item.interact(false)
             } else {
                 EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update")
-                EthanApiPlugin.stopPlugin(this)
+                changeStateTo(State.WALKING_TO_BANK)
             }
         }
         lootQueue.removeAt(0)
