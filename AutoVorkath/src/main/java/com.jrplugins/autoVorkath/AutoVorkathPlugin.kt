@@ -94,6 +94,7 @@ class AutoVorkathPlugin : Plugin() {
         ACID,
         SPAWN,
         RED_BALL,
+        LOOTING,
         THINKING,
         NONE
     }
@@ -203,24 +204,7 @@ class AutoVorkathPlugin : Plugin() {
             }
 
             if (lootQueue.isNotEmpty()) {
-                val itemStack: ItemStack = lootQueue[0]
-                TileItems.search().withId(itemStack.id).first().ifPresent { item: ETileItem ->
-                    val comp = itemManager.getItemComposition(item.getTileItem().id)
-                    if (comp.isStackable || comp.note != -1) {
-                        if (hasStackableLoot(comp)) {
-                            item.interact(false)
-                        }
-                    }
-                    if (!Inventory.full()) {
-                        item.interact(false)
-                    } else {
-                        EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update")
-                        EthanApiPlugin.stopPlugin(this)
-                    }
-                }
-                lootQueue.removeAt(0)
-                tickDelay = 4
-                return
+                changeStateTo(State.LOOTING)
             }
 
             when (botState) {
@@ -233,11 +217,39 @@ class AutoVorkathPlugin : Plugin() {
                 State.ACID -> acidState()
                 State.SPAWN -> spawnState()
                 State.RED_BALL -> redBallState()
+                State.LOOTING -> lootingState()
                 State.THINKING -> thinkingState()
                 State.NONE -> println("None State")
                 null -> println("Null State")
             }
         }
+    }
+
+    private fun lootingState() {
+        if (lootQueue.isEmpty()) {
+            changeStateTo(State.WALKING_TO_BANK, 1)
+            return
+        }
+        val itemStack: ItemStack = lootQueue[0]
+        TileItems.search().withId(itemStack.id).first().ifPresent { item: ETileItem ->
+            val comp = itemManager.getItemComposition(item.getTileItem().id)
+            if (comp.isStackable || comp.note != -1) {
+                if (hasStackableLoot(comp)) {
+                    item.interact(false)
+                }
+            }
+            if (!Inventory.full()) {
+                item.interact(false)
+            } else {
+                EthanApiPlugin.sendClientMessage("Inventory full, stopping. Will handle in future update")
+                EthanApiPlugin.stopPlugin(this)
+            }
+        }
+        lootQueue.removeAt(0)
+        if (isMoving()) {
+            tickDelay = 4
+        }
+        return
     }
 
     private fun acidState() {
@@ -252,7 +264,7 @@ class AutoVorkathPlugin : Plugin() {
             MovementPackets.queueMovement(middle)
         } else {
             if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
-                if (client.localPlayer.worldLocation.distanceTo(left) >= 3) {
+                if (client.localPlayer.worldLocation.distanceTo(left) >= 2) {
                     drinkPrayer()
                     MovementPackets.queueMovement(left)
                 } else {
@@ -309,6 +321,7 @@ class AutoVorkathPlugin : Plugin() {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
             }
             if (client.localPlayer.interacting == null) {
+                if (!NPCs.search().nameContains("Vorkath").first().isEmpty) useSpecial()
                 NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
                     NPCInteraction.interact(vorkath, "Attack")
                 }
@@ -635,6 +648,19 @@ class AutoVorkathPlugin : Plugin() {
             return false
         }
         return itemQry.onlyNoted().first().isPresent || itemQry.quantityGreaterThan(1).first().isPresent
+    }
+
+    private fun useSpecial() {
+        if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) >= 500) {
+            if (!Equipment.search().matchesWildCardNoCase("*Toxic blowpipe*").empty()
+                || !Equipment.search().matchesWildCardNoCase("*Armadyl crossbow*").empty()
+                || !Equipment.search().matchesWildCardNoCase("*Dragon hunter crossbow*").empty()
+                || !Equipment.search().matchesWildCardNoCase("*Dragon crossbow*").empty()
+            ) {
+                MousePackets.queueClickPacket()
+                WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1)
+            }
+        }
     }
 
     private fun changeStateTo(stateName: State, ticksToDelay: Int = 0) {
