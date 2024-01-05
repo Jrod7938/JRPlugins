@@ -254,6 +254,7 @@ class AutoVorkathPlugin : Plugin() {
         val left = WorldPoint(middle.x - 3, middle.y, 0)
         activatePrayers(false)
         if (client.localPlayer.worldLocation.y != middle.y) {
+            eat()
             MovementPackets.queueMovement(middle)
         } else {
             if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
@@ -261,7 +262,9 @@ class AutoVorkathPlugin : Plugin() {
                     drinkPrayer()
                     MovementPackets.queueMovement(left)
                 } else {
-                    eat()
+                    NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
+                        NPCInteraction.interact(vorkath, "Attack")
+                    }
                     MovementPackets.queueMovement(right)
                 }
             } else {
