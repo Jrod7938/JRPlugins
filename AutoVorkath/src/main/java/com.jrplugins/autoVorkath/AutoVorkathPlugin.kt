@@ -642,8 +642,6 @@ class AutoVorkathPlugin : Plugin() {
         if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) >= 500) {
             if (!Equipment.search().matchesWildCardNoCase("*Toxic blowpipe*").empty()
                 || !Equipment.search().matchesWildCardNoCase("*Armadyl crossbow*").empty()
-                || !Equipment.search().matchesWildCardNoCase("*Dragon hunter crossbow*").empty()
-                || !Equipment.search().matchesWildCardNoCase("*Dragon crossbow*").empty()
             ) {
                 MousePackets.queueClickPacket()
                 WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1)
