@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 01/04/2024 13:40 EST*
+*Updated 01/05/2024 4:55 EST*
 
 ## Discord
 
@@ -8,7 +8,7 @@
 
 ## Plugins:
 
-- AutoVorkath (Chicken Walk)
+- AutoVorkath WOOX WALK
 - AutoChop (Supports Some Forestry Events)
 - RSNHider
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
