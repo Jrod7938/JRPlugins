@@ -2,6 +2,10 @@ AutoVorkath
 
 Automation plugins for runelite
 
+# Video
+
+https://www.youtube.com/watch?v=2PuqXdLeY4c
+
 # Discord
 
 https://discord.gg/PwRB5yt8KH
