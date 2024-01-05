@@ -368,8 +368,8 @@ class AutoVorkathPlugin : Plugin() {
         if (bankArea.contains(client.localPlayer.worldLocation)) {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
-                    if (client.localPlayer.worldLocation != bankLocation) {
-                        MovementPackets.queueMovement(bankLocation)
+                    if (client.localPlayer.worldLocation != WorldPoint(2101, 3915, 0)) {
+                        MovementPackets.queueMovement(WorldPoint(2101, 3915, 0))
                     } else {
                         TileObjects.search().nameContains("Bank booth").nearestToPlayer().ifPresent { bank ->
                             TileObjectInteraction.interact(bank, "Bank")
