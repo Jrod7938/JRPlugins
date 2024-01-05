@@ -266,19 +266,23 @@ class AutoVorkathPlugin : Plugin() {
 
                 if (!initialAcidMove) {
                     initialAcidMove = true
+                    MousePackets.queueClickPacket();
                     MovementPackets.queueMovement(left)
                 } else {
                     if (client.localPlayer.worldLocation.distanceTo(left) >= 2) {
                         eat()
+                        MousePackets.queueClickPacket();
                         MovementPackets.queueMovement(left)
                     } else {
                         drinkPrayer()
+                        MousePackets.queueClickPacket();
                         MovementPackets.queueMovement(right)
                     }
                 }
             } else { // Start Woox Walk
                 if (client.localPlayer.worldLocation.distanceTo(safeTiles?.get(1)) >= 2) {
                     eat()
+                    MousePackets.queueClickPacket();
                     MovementPackets.queueMovement(safeTiles?.get(1))
                 } else {
                     NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
@@ -295,6 +299,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun redBallState() {
+        MousePackets.queueClickPacket();
         MovementPackets.queueMovement(
             WorldPoint(
                 client.localPlayer.worldLocation.x + 2,
@@ -333,7 +338,10 @@ class AutoVorkathPlugin : Plugin() {
             }
             eat()
             if (client.localPlayer.worldLocation != middle) {
-                if (!isMoving()) MovementPackets.queueMovement(middle)
+                if (!isMoving()) {
+                    MousePackets.queueClickPacket()
+                    MovementPackets.queueMovement(middle)
+                }
             }
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
@@ -370,6 +378,7 @@ class AutoVorkathPlugin : Plugin() {
                     return
                 }
                 if (client.localPlayer.worldLocation != bankLocation) {
+                    MousePackets.queueClickPacket();
                     MovementPackets.queueMovement(bankLocation)
                 } else {
                     NPCs.search().nameContains("Sirsal Banker").nearestToPlayer().ifPresent { banker ->
@@ -404,6 +413,7 @@ class AutoVorkathPlugin : Plugin() {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
                     if (client.localPlayer.worldLocation != bankLocation) {
+                        MousePackets.queueClickPacket();
                         MovementPackets.queueMovement(bankLocation)
                     } else {
                         NPCs.search().nameContains("Jack").nearestToPlayer().ifPresent { bank ->
