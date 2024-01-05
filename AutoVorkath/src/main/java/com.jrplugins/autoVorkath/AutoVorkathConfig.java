@@ -38,10 +38,20 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "portal",
+            name = "Portal",
+            description = "What Portal to use to teleport to Lunar Isle.",
+            position = 3
+    )
+    default PORTAL PORTAL() {
+        return PORTAL.PORTAL_NEXUS;
+    }
+
+    @ConfigItem(
             keyName = "rigour",
             name = "Rigour",
             description = "Activate Rigour?",
-            position = 3
+            position = 4
     )
     default boolean ACTIVATERIGOUR() {
         return true;
@@ -51,7 +61,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "rangePotion",
             name = "Ranging Potion",
             description = "What Ranging potion to use?",
-            position = 4
+            position = 5
     )
     default RANGE_POTION RANGEPOTION() {
         return RANGE_POTION.DIVINE_RANGING_POTION;
@@ -61,7 +71,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "prayerPotion",
             name = "Prayer Potion",
             description = "What Prayer potion to use?",
-            position = 5
+            position = 6
     )
     default PRAYER_POTION PRAYERPOTION() {
         return PRAYER_POTION.PRAYER;
@@ -71,7 +81,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "antiFirePotion",
             name = "Antifire Potion",
             description = "What Antifire potion to use?",
-            position = 6
+            position = 7
     )
     default ANTIFIRE ANTIFIRE() {
         return ANTIFIRE.EXTENDED_SUPER_ANTIFIRE;
@@ -81,7 +91,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "food",
             name = "Food",
             description = "What food to use?",
-            position = 7
+            position = 8
     )
     default String FOOD() {
         return "Manta ray";
@@ -91,7 +101,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "Loot",
             name = "Loot Names",
             description = "Enter the name of the loot you want to pick up",
-            position = 8
+            position = 9
     )
     default String LOOTNAMES() {
         return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe";

@@ -410,8 +410,8 @@ class AutoVorkathPlugin : Plugin() {
                 return
             }
             if (inHouse()) {
-                TileObjects.search().nameContains("Lunar Isle Portal").first().ifPresent { portal ->
-                    TileObjectInteraction.interact(portal, "Enter")
+                TileObjects.search().nameContains(config.PORTAL().toString()).first().ifPresent { portal ->
+                    TileObjectInteraction.interact(portal, config.PORTAL().action())
                 }
                 return
             }
@@ -538,7 +538,7 @@ class AutoVorkathPlugin : Plugin() {
         NPCs.search().nameContains("Vorkath").result().isNotEmpty() && client.isInInstancedRegion
 
     private fun isVorkathAsleep(): Boolean = NPCs.search().withId(8059).result().isNotEmpty()
-    private fun inHouse(): Boolean = TileObjects.search().nameContains("Lunar Isle Portal").result().isNotEmpty()
+    private fun inHouse(): Boolean = TileObjects.search().nameContains(config.PORTAL().toString()).result().isNotEmpty()
 
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
