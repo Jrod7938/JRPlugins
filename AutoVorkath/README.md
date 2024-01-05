@@ -1,4 +1,4 @@
-AutoVorkath
+### AutoVorkath By JR
 
 Automation plugins for runelite
 
