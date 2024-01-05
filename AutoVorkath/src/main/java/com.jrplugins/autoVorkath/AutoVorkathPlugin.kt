@@ -145,6 +145,17 @@ class AutoVorkathPlugin : Plugin() {
             eat()
             changeStateTo(State.FIGHTING)
         }
+        if (e.message.contains("There is no ammo left in your quiver.")) {
+            Inventory.search().nameContains(config.TELEPORT().toString()).first().ifPresent { teleport ->
+                InventoryInteraction.useItem(teleport, config.TELEPORT().action())
+            }
+            EthanApiPlugin.sendClientMessage("No ammo, stopping plugin.")
+            drankAntiFire = false
+            drankRangePotion = false
+            isPrepared = false
+            activatePrayers(false)
+            EthanApiPlugin.stopPlugin(this)
+        }
     }
 
     @Subscribe
