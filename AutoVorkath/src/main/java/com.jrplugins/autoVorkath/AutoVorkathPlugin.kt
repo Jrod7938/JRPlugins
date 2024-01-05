@@ -277,8 +277,6 @@ class AutoVorkathPlugin : Plugin() {
                     }
                 }
             } else { // Start Woox Walk
-                println("Acid Pools: $acidPools")
-                println("Safe Tiles: $safeTiles")
                 if (client.localPlayer.worldLocation.distanceTo(safeTiles?.get(1)) >= 2) {
                     eat()
                     MovementPackets.queueMovement(safeTiles?.get(1))
