@@ -19,6 +19,7 @@ https://discord.gg/PwRB5yt8KH
 
 **Things to know**
 
+- Only Supports Range (NO MELEE)
 - Needs POH
 - Needs Ornate rejuvenation pool
 - Needs Lunar Isles Portal in POH

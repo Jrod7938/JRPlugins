@@ -14,7 +14,7 @@ public interface AutoVorkathConfig extends Config {
             position = 0
     )
     default CROSSBOW CROSSBOW() {
-        return CROSSBOW.ARMADYL_CROSSBOW;
+        return CROSSBOW.DRAGON_HUNTER_CROSSBOW;
     }
 
     @ConfigItem(
