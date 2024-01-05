@@ -68,10 +68,20 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "antiFirePotion",
+            name = "Antifire Potion",
+            description = "What Antifire potion to use?",
+            position = 6
+    )
+    default ANTIFIRE ANTIFIRE() {
+        return ANTIFIRE.EXTENDED_SUPER_ANTIFIRE;
+    }
+
+    @ConfigItem(
             keyName = "food",
             name = "Food",
             description = "What food to use?",
-            position = 6
+            position = 7
     )
     default String FOOD() {
         return "Manta ray";
@@ -81,7 +91,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "Loot",
             name = "Loot Names",
             description = "Enter the name of the loot you want to pick up",
-            position = 7
+            position = 8
     )
     default String LOOTNAMES() {
         return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe";

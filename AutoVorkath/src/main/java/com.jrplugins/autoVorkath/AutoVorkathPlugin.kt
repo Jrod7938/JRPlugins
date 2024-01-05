@@ -456,7 +456,7 @@ class AutoVorkathPlugin : Plugin() {
             return
         }
         if (!drankAntiFire) {
-            Inventory.search().nameContains("super antifire").first().ifPresent { antiFire ->
+            Inventory.search().nameContains(config.ANTIFIRE().toString()).first().ifPresent { antiFire ->
                 InventoryInteraction.useItem(antiFire, "Drink")
             }
             drankAntiFire = true
@@ -523,8 +523,8 @@ class AutoVorkathPlugin : Plugin() {
         if (!hasItem("Rune pouch")) {
             withdraw("Rune pouch", 1)
         }
-        if (BankInventory.search().nameContains("super antifire").result().size <= 1) {
-            withdraw("super antifire", 1)
+        if (BankInventory.search().nameContains(config.ANTIFIRE().toString()).result().size <= 1) {
+            withdraw(config.ANTIFIRE().toString(), 1)
         }
         if (!Inventory.full()) {
             for (i in 1..Inventory.getEmptySlots()) {
@@ -544,7 +544,7 @@ class AutoVorkathPlugin : Plugin() {
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
 
     private fun readyToFight(): Boolean = Inventory.search().nameContains(config.FOOD()).result().size >= 17
-            && Inventory.search().nameContains("super antifire").result().isNotEmpty()
+            && Inventory.search().nameContains(config.ANTIFIRE().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
             && Inventory.search().nameContains(config.TELEPORT().toString()).result().isNotEmpty()
