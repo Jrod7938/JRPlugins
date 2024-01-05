@@ -82,6 +82,7 @@ class AutoVorkathPlugin : Plugin() {
     private var lootNames: List<String>? = null
 
     private val bankArea: WorldArea = WorldArea(2096, 3911, 20, 11, 0)
+    private val bankLocation: WorldPoint = WorldPoint(2099, 3919, 0)
     private val fremennikArea: WorldArea = WorldArea(2627, 3672, 24, 30, 0)
 
     enum class State {
@@ -333,8 +334,12 @@ class AutoVorkathPlugin : Plugin() {
                     sendKey(KeyEvent.VK_SPACE)
                     return
                 }
-                NPCs.search().nameContains("Sirsal Banker").nearestToPlayer().ifPresent { banker ->
-                    NPCInteraction.interact(banker, "Talk-to")
+                if (client.localPlayer.worldLocation != bankLocation) {
+                    MovementPackets.queueMovement(bankLocation)
+                } else {
+                    NPCs.search().nameContains("Sirsal Banker").nearestToPlayer().ifPresent { banker ->
+                        NPCInteraction.interact(banker, "Talk-to")
+                    }
                 }
             } else {
                 if (inVorkathArea()) {
@@ -363,8 +368,12 @@ class AutoVorkathPlugin : Plugin() {
         if (bankArea.contains(client.localPlayer.worldLocation)) {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
-                    TileObjects.search().nameContains("Bank booth").nearestToPlayer().ifPresent { bank ->
-                        TileObjectInteraction.interact(bank, "Bank")
+                    if (client.localPlayer.worldLocation != bankLocation) {
+                        MovementPackets.queueMovement(bankLocation)
+                    } else {
+                        TileObjects.search().nameContains("Bank booth").nearestToPlayer().ifPresent { bank ->
+                            TileObjectInteraction.interact(bank, "Bank")
+                        }
                     }
                     return
                 } else {
