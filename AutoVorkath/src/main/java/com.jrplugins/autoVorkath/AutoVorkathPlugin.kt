@@ -383,7 +383,7 @@ class AutoVorkathPlugin : Plugin() {
                     MovementPackets.queueMovement(middle)
                 }
             }
-            eat(30)
+            eat(75)
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
             }
