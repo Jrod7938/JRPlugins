@@ -231,7 +231,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun lootingState() {
-        if (lootQueue.isEmpty()) {
+        if (lootQueue.isEmpty() || TileItems.search().empty()) {
             changeStateTo(State.WALKING_TO_BANK, 1)
             return
         }
@@ -240,7 +240,6 @@ class AutoVorkathPlugin : Plugin() {
                 InventoryInteraction.useItem(crossbow, "Wield")
             }
         }
-
         lootQueue.forEach {
             if (!isMoving()) {
                 if (!Inventory.full()) {
