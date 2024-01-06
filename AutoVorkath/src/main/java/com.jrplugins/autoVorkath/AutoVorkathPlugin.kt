@@ -67,6 +67,7 @@ class AutoVorkathPlugin : Plugin() {
     private val redProjectileId = 1481
     private val acidProjectileId = 1483
     private val acidRedProjectileId = 1482
+    private val whiteProjectileId = 395
 
     private var isPrepared = false
     private var drankAntiFire = false
@@ -136,20 +137,6 @@ class AutoVorkathPlugin : Plugin() {
             drankRangePotion = false
             isPrepared = false
         }
-        if (e.message.contains("You have been frozen!")) {
-            activatePrayers(false)
-            if (Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()) {
-                InventoryInteraction.useItem(config.SLAYERSTAFF().toString(), "Wield")
-            }
-            drinkPrayer()
-            eat(75)
-            changeStateTo(State.SPAWN)
-        }
-        if (e.message.contains("You become unfrozen as you kill the spawn")) {
-            drinkPrayer()
-            eat(75)
-            changeStateTo(State.FIGHTING)
-        }
         if (e.message.contains("There is no ammo left in your quiver.")) {
             teleToHouse()
             EthanApiPlugin.sendClientMessage("No ammo, stopping plugin.")
@@ -177,13 +164,6 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     @Subscribe
-    fun onNpcSpawned(e: NpcSpawned) {
-        if (e.npc.name == "Zombified Spawn") {
-            changeStateTo(State.SPAWN)
-        }
-    }
-
-    @Subscribe
     fun onNpcDespawned(e: NpcDespawned) {
         if (e.npc.name == "Zombified Spawn") {
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
@@ -200,7 +180,14 @@ class AutoVorkathPlugin : Plugin() {
                 acidPools.add(WorldPoint.fromLocal(client, e.position))
                 changeStateTo(State.ACID)
             }
-
+            whiteProjectileId -> {
+                drinkPrayer()
+                eat(75)
+                Inventory.search().nameContains(config.SLAYERSTAFF().name).first().ifPresent { staff ->
+                    InventoryInteraction.useItem(staff, "Wield")
+                }
+                changeStateTo(State.SPAWN)
+            }
             acidRedProjectileId -> changeStateTo(State.ACID)
             rangeProjectileId, magicProjectileId, purpleProjectileId, blueProjectileId -> activatePrayers(true)
             redProjectileId -> changeStateTo(State.RED_BALL)
