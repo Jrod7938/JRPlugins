@@ -72,6 +72,8 @@ class AutoVorkathPlugin : Plugin() {
     private var isPrepared = false
     private var drankAntiFire = false
     private var drankRangePotion = false
+    private var lastDrankAntiFire: Long = 0
+    private var lastDrankRangePotion: Long = 0
 
     private val lootQueue: MutableList<ItemStack> = mutableListOf()
     private var acidPools: HashSet<WorldPoint> = hashSetOf()
@@ -115,6 +117,8 @@ class AutoVorkathPlugin : Plugin() {
         botState = null
         drankAntiFire = false
         drankRangePotion = false
+        lastDrankAntiFire = 0
+        lastDrankRangePotion = 0
         lootQueue.clear()
         acidPools.clear()
         breakHandler.stopPlugin(this)
@@ -239,7 +243,7 @@ class AutoVorkathPlugin : Plugin() {
                     TileItems.search().withId(it.id).first().ifPresent { item ->
                         item.interact(false)
                         lootQueue.removeAt(lootQueue.indexOf(it))
-                        tickDelay = 1
+                        tickDelay = if (isMoving()) 3 else 1
                     }
                     return
                 } else {
@@ -529,20 +533,24 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun prepareState() {
-        if (!drankRangePotion) {
-            Inventory.search().nameContains(config.RANGEPOTION().toString()).first().ifPresent { rangingPotion ->
-                InventoryInteraction.useItem(rangingPotion, "Drink")
+        val currentTime = System.currentTimeMillis()
+
+        if (!drankRangePotion && currentTime - lastDrankRangePotion > config.RANGEPOTION().time()) {
+            Inventory.search().nameContains(config.RANGEPOTION().toString()).first().ifPresent { rangePotion ->
+                InventoryInteraction.useItem(rangePotion, "Drink")
+                lastDrankRangePotion = System.currentTimeMillis()
+                drankRangePotion = true
+                tickDelay = 2
             }
-            drankRangePotion = true
-            tickDelay = 2
             return
         }
-        if (!drankAntiFire) {
+        if (!drankAntiFire && currentTime - lastDrankAntiFire > config.ANTIFIRE().time()) {
             Inventory.search().nameContains(config.ANTIFIRE().toString()).first().ifPresent { antiFire ->
                 InventoryInteraction.useItem(antiFire, "Drink")
+                lastDrankAntiFire = System.currentTimeMillis()
+                drankAntiFire = true
+                tickDelay = 2
             }
-            drankAntiFire = true
-            tickDelay = 2
             return
         }
 
