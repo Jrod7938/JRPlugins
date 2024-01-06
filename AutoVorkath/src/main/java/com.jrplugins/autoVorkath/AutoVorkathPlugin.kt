@@ -450,6 +450,7 @@ class AutoVorkathPlugin : Plugin() {
                     if (client.localPlayer.worldLocation != bankLocation) {
                         MousePackets.queueClickPacket()
                         MovementPackets.queueMovement(bankLocation)
+                        return
                     } else {
                         NPCs.search().nameContains("Jack").nearestToPlayer().ifPresent { bank ->
                             NPCInteraction.interact(bank, "Bank")
@@ -459,6 +460,7 @@ class AutoVorkathPlugin : Plugin() {
                     }
                 } else {
                     bank()
+                    return
                 }
             }
         } else {
