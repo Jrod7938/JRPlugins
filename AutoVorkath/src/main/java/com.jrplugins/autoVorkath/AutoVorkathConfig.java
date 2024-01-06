@@ -94,7 +94,7 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "food amount",
+            keyName = "foodAmount",
             name = "Food Amount",
             description = "MAX FOOD : MIN FOOD",
             position = 8
@@ -104,10 +104,20 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "poolDrinkat",
+            name = "Ornate Pool Drink",
+            description = "HEALTH : PRAYER",
+            position = 9
+    )
+    default Dimension POOLDRINK() {
+        return new Dimension(90, 90);
+    }
+
+    @ConfigItem(
             keyName = "eatat",
             name = "Eat at",
             description = "Eat at what health?",
-            position = 9
+            position = 10
     )
     default int EATAT() {
         return 75;
@@ -117,7 +127,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "food",
             name = "Food",
             description = "What food to use? (NOT MANTA RAY!)",
-            position = 10
+            position = 11
     )
     default String FOOD() {
         return "Shark";
