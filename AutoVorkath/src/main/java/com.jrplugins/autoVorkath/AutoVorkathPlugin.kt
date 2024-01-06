@@ -104,10 +104,6 @@ class AutoVorkathPlugin : Plugin() {
         println("Auto Vorkath Plugin Activated")
         botState = State.THINKING
         running = client.gameState == GameState.LOGGED_IN
-        if (!running) {
-            EthanApiPlugin.stopPlugin(this)
-            return
-        }
         breakHandler.registerPlugin(this)
         breakHandler.startPlugin(this)
         overlayManager.add(autoVorkathOverlay)
