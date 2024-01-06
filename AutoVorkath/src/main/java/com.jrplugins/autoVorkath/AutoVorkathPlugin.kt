@@ -12,7 +12,6 @@ import com.example.Packets.MovementPackets
 import com.example.Packets.WidgetPackets
 import com.google.inject.Provides
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
-import lombok.Setter
 import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
@@ -20,14 +19,11 @@ import net.runelite.api.events.*
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.NpcLootReceived
-import net.runelite.client.game.ItemManager
 import net.runelite.client.game.ItemStack
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
 import java.awt.event.KeyEvent
-import java.util.*
-import java.util.stream.Collectors
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -54,9 +50,6 @@ class AutoVorkathPlugin : Plugin() {
     @Inject
     private lateinit var config: AutoVorkathConfig
 
-    @Inject
-    private lateinit var itemManager: ItemManager
-
     @Provides
     fun getConfig(configManager: ConfigManager): AutoVorkathConfig {
         return configManager.getConfig(AutoVorkathConfig::class.java)
@@ -81,12 +74,12 @@ class AutoVorkathPlugin : Plugin() {
     private var lastDrankRangePotion: Long = 0
 
     private val lootQueue: MutableList<ItemStack> = mutableListOf()
+    private var lootId: MutableList<Int> = mutableListOf()
     private var acidPools: HashSet<WorldPoint> = hashSetOf()
 
     private var initialAcidMove = false
 
-    @Setter
-    private var lootNames: List<String>? = null
+    private var redBallLocation: WorldPoint = WorldPoint(0, 0, 0)
 
     private val bankArea: WorldArea = WorldArea(2096, 3911, 20, 11, 0)
     private val bankLocation: WorldPoint = WorldPoint(2099, 3919, 0)
@@ -164,6 +157,7 @@ class AutoVorkathPlugin : Plugin() {
         items.stream().forEach { item ->
             if (item != null) {
                 lootQueue.add(item)
+                lootId.add(item.id)
             }
         }
         changeStateTo(State.LOOTING)
@@ -186,10 +180,14 @@ class AutoVorkathPlugin : Plugin() {
                 acidPools.add(WorldPoint.fromLocal(client, e.position))
                 changeStateTo(State.ACID)
             }
+
             whiteProjectileId -> changeStateTo(State.SPAWN)
             acidRedProjectileId -> changeStateTo(State.ACID)
             rangeProjectileId, magicProjectileId, purpleProjectileId, blueProjectileId -> activatePrayers(true)
-            redProjectileId -> changeStateTo(State.RED_BALL)
+            redProjectileId -> {
+                redBallLocation = WorldPoint.fromLocal(client, e.position)
+                changeStateTo(State.RED_BALL)
+            }
         }
     }
 
@@ -314,7 +312,7 @@ class AutoVorkathPlugin : Plugin() {
                     //println("Attacked Vorkath")
                 }
             } else {
-                eat(60)
+                eat(config.EATAT())
                 // Move to the safe tile if the player is not close enough
                 MousePackets.queueClickPacket()
                 //println("Moving to safe tile: $safeTile")
@@ -326,21 +324,13 @@ class AutoVorkathPlugin : Plugin() {
             teleToHouse()
             changeStateTo(State.WALKING_TO_BANK)
         }
-
-
     }
 
     private fun redBallState() {
         drinkPrayer()
-        eat(75)
+        eat(config.EATAT())
         MousePackets.queueClickPacket()
-        MovementPackets.queueMovement(
-            WorldPoint(
-                client.localPlayer.worldLocation.x + 2,
-                client.localPlayer.worldLocation.y,
-                0
-            )
-        )
+        MovementPackets.queueMovement(WorldPoint(redBallLocation.x + 2, redBallLocation.y, redBallLocation.plane))
         changeStateTo(State.FIGHTING, 2)
     }
 
@@ -387,7 +377,7 @@ class AutoVorkathPlugin : Plugin() {
                     MovementPackets.queueMovement(middle)
                 }
             }
-            eat(75)
+            eat(config.EATAT())
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
             }
@@ -399,6 +389,7 @@ class AutoVorkathPlugin : Plugin() {
         if (isVorkathAsleep()) {
             acidPools.clear()
             lootQueue.clear()
+            lootId.clear()
             if (!isMoving()) {
                 NPCs.search().withAction("Poke").first().ifPresent { sleepingVorkath ->
                     NPCInteraction.interact(sleepingVorkath, "Poke")
@@ -597,9 +588,11 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun bank() {
-        getLootNames()?.forEach { lootName ->
-            if (BankInventory.search().nameContains(lootName).result().isNotEmpty()) {
-                BankInventoryInteraction.useItem(lootName, "Deposit-All")
+        lootId.forEach { id ->
+            if (BankInventory.search().withId(id).result().isNotEmpty()) {
+                BankInventoryInteraction.useItem(id, "Deposit-All")
+            } else {
+                lootId.remove(id)
             }
         }
         if (!hasItem(config.TELEPORT().toString())) {
@@ -668,8 +661,8 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun inventoryHasLoot(): Boolean {
-        getLootNames()?.forEach { lootName ->
-            if (Inventory.search().nameContains(lootName).result().isNotEmpty()) {
+        lootId.forEach { id ->
+            if (Inventory.search().withId(id).result().isNotEmpty()) {
                 return true
             }
         }
@@ -707,14 +700,6 @@ class AutoVorkathPlugin : Plugin() {
         WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1)
     }
 
-    private fun getLootNames(): List<String>? {
-        if (lootNames == null) lootNames =
-            Arrays.stream<String>(LOOTNAMES().split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()).map<String> { obj: String -> obj.trim { it <= ' ' } }
-                .collect(Collectors.toList<String>())
-        return lootNames
-    }
-
     private fun activatePrayers(on: Boolean) {
         if (config.ACTIVATERIGOUR()) {
             PrayerInteraction.setPrayerState(Prayer.RIGOUR, on)
@@ -733,8 +718,4 @@ class AutoVorkathPlugin : Plugin() {
         tickDelay = ticksToDelay
         // println("State : $stateName")
     }
-
-    fun LOOTNAMES() =
-        "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe,Manta ray,Rune sq shield,Wrath talisman,Dragonstone,Vorkath's head"
-
 }

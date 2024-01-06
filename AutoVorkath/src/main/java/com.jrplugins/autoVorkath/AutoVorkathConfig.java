@@ -104,10 +104,20 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "eatat",
+            name = "Eat at",
+            description = "Eat at what health?",
+            position = 9
+    )
+    default int EATAT() {
+        return 75;
+    }
+
+    @ConfigItem(
             keyName = "food",
             name = "Food",
             description = "What food to use? (NOT MANTA RAY!)",
-            position = 9
+            position = 10
     )
     default String FOOD() {
         return "Shark";
