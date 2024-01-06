@@ -4,6 +4,8 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
+import java.awt.*;
+
 @ConfigGroup("AutoVorkath")
 public interface AutoVorkathConfig extends Config {
 
@@ -88,22 +90,32 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "food amount",
+            name = "Food Amount",
+            description = "MAX FOOD : MIN FOOD",
+            position = 8
+    )
+    default Dimension FOODAMOUNT() {
+        return new Dimension(15, 10);
+    }
+
+    @ConfigItem(
             keyName = "food",
             name = "Food",
             description = "What food to use?",
-            position = 8
+            position = 9
     )
     default String FOOD() {
-        return "Manta ray";
+        return "Shark";
     }
 
     @ConfigItem(
             keyName = "Loot",
             name = "Loot Names",
-            description = "Enter the name of the loot you want to pick up",
-            position = 9
+            description = "Enter the name of the loot you want to pick up (YOUR FOOD MUST NOT BE IN HERE)",
+            position = 10
     )
     default String LOOTNAMES() {
-        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe";
+        return "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe,Manta ray";
     }
 }

@@ -12,10 +12,7 @@ import lombok.Setter
 import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
 import net.runelite.api.coords.WorldPoint
-import net.runelite.api.events.ChatMessage
-import net.runelite.api.events.GameTick
-import net.runelite.api.events.NpcSpawned
-import net.runelite.api.events.ProjectileMoved
+import net.runelite.api.events.*
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.NpcLootReceived
@@ -76,7 +73,7 @@ class AutoVorkathPlugin : Plugin() {
     private var drankRangePotion = false
 
     private val lootQueue: MutableList<ItemStack> = mutableListOf()
-    private var acidPools: MutableList<WorldPoint> = mutableListOf()
+    private var acidPools: HashSet<WorldPoint> = hashSetOf()
 
     private var initialAcidMove = false
 
@@ -118,6 +115,7 @@ class AutoVorkathPlugin : Plugin() {
         drankAntiFire = false
         drankRangePotion = false
         lootQueue.clear()
+        acidPools.clear()
         breakHandler.stopPlugin(this)
         breakHandler.unregisterPlugin(this)
         overlayManager.remove(autoVorkathOverlay)
@@ -140,9 +138,16 @@ class AutoVorkathPlugin : Plugin() {
         }
         if (e.message.contains("You have been frozen!")) {
             activatePrayers(false)
+            if (Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()) {
+                InventoryInteraction.useItem(config.SLAYERSTAFF().toString(), "Wield")
+            }
+            drinkPrayer()
+            eat(77)
+            changeStateTo(State.SPAWN)
         }
         if (e.message.contains("You become unfrozen as you kill the spawn")) {
-            eat()
+            drinkPrayer()
+            eat(77)
             changeStateTo(State.FIGHTING)
         }
         if (e.message.contains("There is no ammo left in your quiver.")) {
@@ -179,15 +184,34 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     @Subscribe
+    fun onNpcDespawned(e: NpcDespawned) {
+        if (e.npc.name == "Zombified Spawn") {
+            if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
+                InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
+            }
+            changeStateTo(State.FIGHTING)
+        }
+    }
+
+    @Subscribe
     fun onProjectileMoved(e: ProjectileMoved) {
         when (e.projectile.id) {
-            acidProjectileId, acidRedProjectileId -> {
-                acidPools =
-                    TileObjects.search().nameContains("Acid pool").result().map { it.worldLocation }.toMutableList()
+            acidProjectileId -> {
+                acidPools.add(WorldPoint.fromLocal(client, e.position))
                 changeStateTo(State.ACID)
             }
+
+            acidRedProjectileId -> changeStateTo(State.ACID)
             rangeProjectileId, magicProjectileId, purpleProjectileId, blueProjectileId -> activatePrayers(true)
             redProjectileId -> changeStateTo(State.RED_BALL)
+        }
+    }
+
+    @Subscribe
+    fun onGameObjectDespawned(e: GameObjectDespawned) {
+        if (e.gameObject.id == 32000) {
+            acidPools.clear()
+            changeStateTo(State.FIGHTING)
         }
     }
 
@@ -245,61 +269,75 @@ class AutoVorkathPlugin : Plugin() {
         }
         lootQueue.removeAt(0)
         if (isMoving()) tickDelay = 4
-        else tickDelay = 2
         return
     }
 
     private fun acidState() {
         if (!runIsOff()) enableRun()
-        val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
-        val middle = WorldPoint(vorkath.x + 3, vorkath.y - 8, 0)
-        val right: WorldPoint
-        val left: WorldPoint
-        val safeTiles = findSafeColumn(middle)
-
         activatePrayers(false)
+        if (!inVorkathArea()) {
+            acidPools.clear()
+            changeStateTo(State.THINKING)
+            return
+        }
 
-        if (doesProjectileExistById(acidProjectileId) || doesProjectileExistById(acidRedProjectileId)) {
-            if (acidPools.isEmpty()) { // Acid Pools aren't on the floor yet, start chicken walk
-                right = WorldPoint(middle.x + 3, middle.y - 3, 0)
-                left = WorldPoint(middle.x - 3, middle.y - 3, 0)
+        val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
+        val swPoint = WorldPoint(vorkath.x + 1, vorkath.y - 11, 0)
 
-                if (!initialAcidMove) {
-                    initialAcidMove = true
-                    MousePackets.queueClickPacket();
-                    MovementPackets.queueMovement(left)
-                } else {
-                    if (client.localPlayer.worldLocation.distanceTo(left) >= 2) {
-                        eat()
-                        MousePackets.queueClickPacket();
-                        MovementPackets.queueMovement(left)
-                    } else {
-                        drinkPrayer()
-                        MousePackets.queueClickPacket();
-                        MovementPackets.queueMovement(right)
-                    }
-                }
-            } else { // Start Woox Walk
-                if (client.localPlayer.worldLocation.distanceTo(safeTiles?.get(1)) >= 2) {
-                    eat()
-                    MousePackets.queueClickPacket();
-                    MovementPackets.queueMovement(safeTiles?.get(1))
-                } else {
-                    NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
-                        NPCInteraction.interact(vorkath, "Attack")
-                    }
-                    drinkPrayer()
-                }
+        fun findSafeTiles(): WorldPoint? {
+            val wooxWalkArea = WorldArea(swPoint, 5, 1)
+            //println("Woox Walk Area: ${wooxWalkArea.toWorldPointList()}")
+
+            // Function to check if a tile has an acid pool
+            fun isTileSafe(tile: WorldPoint): Boolean = tile !in acidPools
+                    && WorldPoint(tile.x, tile.y + 1, tile.plane) !in acidPools
+                    && WorldPoint(tile.x, tile.y + 2, tile.plane) !in acidPools
+                    && WorldPoint(tile.x, tile.y + 3, tile.plane) !in acidPools
+                    && WorldPoint(tile.x, tile.y + 4, tile.plane) !in acidPools
+                    && WorldPoint(tile.x, tile.y + 5, tile.plane) !in acidPools
+                    && WorldPoint(tile.x, tile.y + 6, tile.plane) !in acidPools
+
+            return wooxWalkArea.toWorldPointList().firstOrNull { isTileSafe(it) }
+        }
+
+        TileObjects.search().withId(ObjectID.ACID_POOL_32000).result().forEach { tileObject ->
+            acidPools.add(tileObject.worldLocation)
+        }
+
+        TileObjects.search().withId(ObjectID.ACID_POOL).result().forEach { tileObject ->
+            acidPools.add(tileObject.worldLocation)
+        }
+
+        TileObjects.search().withId(ObjectID.ACID_POOL_37991).result().forEach { tileObject ->
+            acidPools.add(tileObject.worldLocation)
+        }
+
+        val safeTile: WorldPoint? = findSafeTiles()
+        //println("Acid pools: $acidPools")
+        //println("Left Tile: $swPoint")
+        //println("Safe tile: $safeTile")
+
+        val playerLocation = client.localPlayer.worldLocation
+
+        if (playerLocation.distanceTo(safeTile) <= 3) {
+            // Attack Vorkath if the player close to the safe tile
+            NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
+                NPCInteraction.interact(vorkath, "Attack")
+                //println("Attacked Vorkath")
             }
         } else {
-            acidPools.clear()
-            initialAcidMove = false
-            changeStateTo(State.FIGHTING)
+            // Move to the safe tile if the player is not close enough
+            MousePackets.queueClickPacket()
+            //println("Moving to safe tile: $safeTile")
+            //println("Player location: $playerLocation")
+            MovementPackets.queueMovement(safeTile)
         }
     }
 
     private fun redBallState() {
-        MousePackets.queueClickPacket();
+        drinkPrayer()
+        eat(50)
+        MousePackets.queueClickPacket()
         MovementPackets.queueMovement(
             WorldPoint(
                 client.localPlayer.worldLocation.x + 2,
@@ -311,22 +349,19 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun spawnState() {
-        if (Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()) {
-            InventoryInteraction.useItem(config.SLAYERSTAFF().toString(), "Wield")
+        if (!inVorkathArea()) {
+            changeStateTo(State.THINKING)
+            return
         }
-        if (Equipment.search().nameContains(config.SLAYERSTAFF().toString()).result().isEmpty()) {
-            NPCs.search().nameContains("Zombified Spawn").first().ifPresent { spawn ->
-                NPCInteraction.interact(spawn, "Attack")
-            }
-        }
-        if (NPCs.search().nameContains("Zombified Spawn").result().isEmpty()) {
-            changeStateTo(State.FIGHTING)
+        NPCs.search().nameContains("Zombified Spawn").first().ifPresent { spawn ->
+            NPCInteraction.interact(spawn, "Attack")
         }
     }
 
     private fun fightingState() {
         if (runIsOff()) enableRun()
-        if (!client.isInInstancedRegion || NPCs.search().nameContains("Vorkath").result().isEmpty()) {
+        acidPools.clear()
+        if (!inVorkathArea()) {
             changeStateTo(State.THINKING)
             return
         } else {
@@ -336,33 +371,40 @@ class AutoVorkathPlugin : Plugin() {
                 changeStateTo(State.WALKING_TO_BANK)
                 return
             }
-            eat()
-            if (client.localPlayer.worldLocation != middle) {
-                if (!isMoving()) {
-                    MousePackets.queueClickPacket()
-                    MovementPackets.queueMovement(middle)
-                }
-            }
-            if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
-                InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
-            }
             if (client.localPlayer.interacting == null) {
                 NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
                     NPCInteraction.interact(vorkath, "Attack")
                 }
                 return
             }
+            if (client.localPlayer.worldLocation != middle) {
+                if (!isMoving()) {
+                    MousePackets.queueClickPacket()
+                    MovementPackets.queueMovement(middle)
+                }
+            }
+            eat(40)
+            if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
+                InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
+            }
+
         }
     }
 
     private fun pokeState() {
         if (isVorkathAsleep()) {
+            acidPools.clear()
+            lootQueue.clear()
             if (!isMoving()) {
                 NPCs.search().withAction("Poke").first().ifPresent { sleepingVorkath ->
                     NPCInteraction.interact(sleepingVorkath, "Poke")
                 }
             }
         } else {
+            val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
+            val middle = WorldPoint(vorkath.x + 3, vorkath.y - 5, 0)
+            MousePackets.queueClickPacket()
+            MovementPackets.queueMovement(middle)
             changeStateTo(State.FIGHTING)
             return
         }
@@ -378,7 +420,7 @@ class AutoVorkathPlugin : Plugin() {
                     return
                 }
                 if (client.localPlayer.worldLocation != bankLocation) {
-                    MousePackets.queueClickPacket();
+                    MousePackets.queueClickPacket()
                     MovementPackets.queueMovement(bankLocation)
                 } else {
                     NPCs.search().nameContains("Sirsal Banker").nearestToPlayer().ifPresent { banker ->
@@ -413,7 +455,7 @@ class AutoVorkathPlugin : Plugin() {
             if (!isMoving()) {
                 if (!Bank.isOpen()) {
                     if (client.localPlayer.worldLocation != bankLocation) {
-                        MousePackets.queueClickPacket();
+                        MousePackets.queueClickPacket()
                         MovementPackets.queueMovement(bankLocation)
                     } else {
                         NPCs.search().nameContains("Jack").nearestToPlayer().ifPresent { bank ->
@@ -569,7 +611,7 @@ class AutoVorkathPlugin : Plugin() {
             withdraw(config.ANTIFIRE().toString(), 1)
         }
         if (!Inventory.full()) {
-            for (i in 1..Inventory.getEmptySlots()) {
+            for (i in 1..config.FOODAMOUNT().width - Inventory.getItemAmount(config.FOOD())) {
                 withdraw(config.FOOD(), 1)
             }
         }
@@ -585,19 +627,20 @@ class AutoVorkathPlugin : Plugin() {
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
 
-    private fun readyToFight(): Boolean = Inventory.search().nameContains(config.FOOD()).result().size >= 17
-            && Inventory.search().nameContains(config.ANTIFIRE().toString()).result().isNotEmpty()
-            && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
-            && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
-            && Inventory.search().nameContains(config.TELEPORT().toString()).result().isNotEmpty()
-            && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
-            && Inventory.search().nameContains(config.PRAYERPOTION().toString()).result().isNotEmpty()
-            && !inventoryHasLoot()
+    private fun readyToFight(): Boolean =
+        Inventory.search().nameContains(config.FOOD()).result().size >= config.FOODAMOUNT().height
+                && Inventory.search().nameContains(config.ANTIFIRE().toString()).result().isNotEmpty()
+                && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
+                && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
+                && Inventory.search().nameContains(config.TELEPORT().toString()).result().isNotEmpty()
+                && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
+                && Inventory.search().nameContains(config.PRAYERPOTION().toString()).result().isNotEmpty()
+                && !inventoryHasLoot()
 
-    private fun needsToEat(): Boolean = client.getBoostedSkillLevel(Skill.HITPOINTS) <= 77
+    private fun needsToEat(at: Int): Boolean = client.getBoostedSkillLevel(Skill.HITPOINTS) <= at
 
-    private fun eat() {
-        if (needsToEat()) {
+    private fun eat(at: Int) {
+        if (needsToEat(at)) {
             if (Inventory.search().withAction("Eat").result().isNotEmpty()) {
                 Inventory.search().withAction("Eat").first().ifPresent { food ->
                     InventoryInteraction.useItem(food, "Eat")
@@ -654,17 +697,7 @@ class AutoVorkathPlugin : Plugin() {
         WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1)
     }
 
-    private fun doesProjectileExistById(id: Int): Boolean {
-        for (projectile in client.projectiles) {
-            if (projectile.id == id) {
-                //println("Projectile $id found")
-                return true
-            }
-        }
-        return false
-    }
-
-    fun getLootNames(): List<String>? {
+    private fun getLootNames(): List<String>? {
         if (lootNames == null) lootNames =
             Arrays.stream<String>(config.LOOTNAMES().split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()).map<String> { obj: String -> obj.trim { it <= ' ' } }
@@ -672,7 +705,7 @@ class AutoVorkathPlugin : Plugin() {
         return lootNames
     }
 
-    fun hasStackableLoot(comp: ItemComposition): Boolean {
+    private fun hasStackableLoot(comp: ItemComposition): Boolean {
         val name = comp.name
         val itemQry = Inventory.search().withName(name)
         if (itemQry.first().isEmpty) {
@@ -692,21 +725,6 @@ class AutoVorkathPlugin : Plugin() {
         Inventory.search().nameContains(config.TELEPORT().toString()).first().ifPresent { teleport ->
             InventoryInteraction.useItem(teleport, config.TELEPORT().action())
         }
-    }
-
-    private fun findSafeColumn(middle: WorldPoint): List<WorldPoint>? {
-        // Function to check if a tile has an acid pool
-        fun isTileSafe(tile: WorldPoint): Boolean = tile !in acidPools
-
-        // Function to get a column of tiles
-        fun getColumn(columnX: Int): List<WorldPoint> =
-            (0..3).map { yOffset -> WorldPoint(columnX, middle.y - yOffset, middle.plane) }
-
-        // Check each column around the middle (including the middle)
-        val columns = listOf(-1, 0, 1).map { xOffset -> getColumn(middle.x + xOffset) }
-
-        // Return the first column where all tiles are safe
-        return columns.firstOrNull { column -> column.all { tile -> isTileSafe(tile) } }
     }
 
     private fun changeStateTo(stateName: State, ticksToDelay: Int = 0) {
