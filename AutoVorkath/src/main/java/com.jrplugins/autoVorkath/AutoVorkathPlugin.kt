@@ -299,19 +299,27 @@ class AutoVorkathPlugin : Plugin() {
 
         val playerLocation = client.localPlayer.worldLocation
 
-        if (playerLocation.distanceTo(safeTile) <= 3) {
-            // Attack Vorkath if the player close to the safe tile
-            NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
-                NPCInteraction.interact(vorkath, "Attack")
-                //println("Attacked Vorkath")
+        safeTile?.let {
+            if (playerLocation.distanceTo(safeTile) <= 3) {
+                // Attack Vorkath if the player close to the safe tile
+                NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
+                    NPCInteraction.interact(vorkath, "Attack")
+                    //println("Attacked Vorkath")
+                }
+            } else {
+                // Move to the safe tile if the player is not close enough
+                MousePackets.queueClickPacket()
+                //println("Moving to safe tile: $safeTile")
+                //println("Player location: $playerLocation")
+                MovementPackets.queueMovement(safeTile)
             }
-        } else {
-            // Move to the safe tile if the player is not close enough
-            MousePackets.queueClickPacket()
-            //println("Moving to safe tile: $safeTile")
-            //println("Player location: $playerLocation")
-            MovementPackets.queueMovement(safeTile)
+        } ?: run {
+            EthanApiPlugin.sendClientMessage("NO SAFE TILES! TELEPORTING TF OUT!")
+            teleToHouse()
+            changeStateTo(State.WALKING_TO_BANK)
         }
+
+
     }
 
     private fun redBallState() {
