@@ -232,24 +232,22 @@ class AutoVorkathPlugin : Plugin() {
                 InventoryInteraction.useItem(crossbow, "Wield")
             }
         }
-        val itemStack: ItemStack = lootQueue[0]
-        TileItems.search().withId(itemStack.id).first().ifPresent { item: ETileItem ->
-            val comp = itemManager.getItemComposition(item.getTileItem().id)
-            if (comp.isStackable || comp.note != -1) {
-                if (hasStackableLoot(comp)) {
-                    item.interact(false)
+
+        lootQueue.forEach {
+            if (!isMoving()) {
+                if (!Inventory.full()) {
+                    TileItems.search().withId(it.id).first().ifPresent { item ->
+                        item.interact(false)
+                        lootQueue.removeAt(lootQueue.indexOf(it))
+                    }
+                    return
+                } else {
+                    EthanApiPlugin.sendClientMessage("Inventory full, going to bank.")
+                    lootQueue.clear()
+                    changeStateTo(State.WALKING_TO_BANK)
                 }
             }
-            if (!Inventory.full()) {
-                item.interact(false)
-            } else {
-                EthanApiPlugin.sendClientMessage("Inventory full, going to bank.")
-                changeStateTo(State.WALKING_TO_BANK)
-            }
         }
-        lootQueue.removeAt(0)
-        if (isMoving()) tickDelay = 4
-        return
     }
 
     private fun acidState() {
