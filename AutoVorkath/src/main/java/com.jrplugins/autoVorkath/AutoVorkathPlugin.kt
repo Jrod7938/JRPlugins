@@ -160,12 +160,9 @@ class AutoVorkathPlugin : Plugin() {
     fun onNpcLootReceived(event: NpcLootReceived) {
         if (!running) return
         val items = event.items
-        items.stream().filter { item: ItemStack ->
-            val comp: ItemComposition = itemManager.getItemComposition(item.id)
-            getLootNames()!!.contains(comp.name)
-        }.forEach { it: ItemStack? ->
-            if (it != null) {
-                lootQueue.add(it)
+        items.stream().forEach { item ->
+            if (item != null) {
+                lootQueue.add(item)
             }
         }
         changeStateTo(State.LOOTING)
@@ -253,6 +250,7 @@ class AutoVorkathPlugin : Plugin() {
                     EthanApiPlugin.sendClientMessage("Inventory full, going to bank.")
                     lootQueue.clear()
                     changeStateTo(State.WALKING_TO_BANK)
+                    return
                 }
             }
         }
@@ -348,6 +346,7 @@ class AutoVorkathPlugin : Plugin() {
             changeStateTo(State.THINKING)
             return
         }
+        activatePrayers(false)
         if (Equipment.search().nameContains(config.SLAYERSTAFF().toString()).result().isEmpty()) {
             Inventory.search().nameContains(config.SLAYERSTAFF().toString()).first().ifPresent { staff ->
                 InventoryInteraction.useItem(staff, "Wield")
@@ -707,19 +706,10 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun getLootNames(): List<String>? {
         if (lootNames == null) lootNames =
-            Arrays.stream<String>(config.LOOTNAMES().split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            Arrays.stream<String>(LOOTNAMES().split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()).map<String> { obj: String -> obj.trim { it <= ' ' } }
                 .collect(Collectors.toList<String>())
         return lootNames
-    }
-
-    private fun hasStackableLoot(comp: ItemComposition): Boolean {
-        val name = comp.name
-        val itemQry = Inventory.search().withName(name)
-        if (itemQry.first().isEmpty) {
-            return false
-        }
-        return itemQry.onlyNoted().first().isPresent || itemQry.quantityGreaterThan(1).first().isPresent
     }
 
     private fun activatePrayers(on: Boolean) {
@@ -740,4 +730,8 @@ class AutoVorkathPlugin : Plugin() {
         tickDelay = ticksToDelay
         // println("State : $stateName")
     }
+
+    fun LOOTNAMES() =
+        "Green dragonhide,Blue dragonhide,Superior dragon bones,Battlestaff,Diamond,Dragonstone bolt tips,Chaos rune,Black dragonhide,Dragon bones,Dragon plateskirt,Red dragonhide,Grapes,Magic logs,Coins,Onyx bolt tips,Rune kiteshield,Loop half of key,Death rune,Adamantite ore,Rune longsword,Dragon bolts (unf),Dragon longsword,Dragon platelegs,Dragonbone necklace,Draconic visage,Skeletal visage,Jar of decay,Wrath rune,Dragon arrowtips,Rune dart tip,Dragon dart tip,Dragon stone,Dragon battleaxe,Manta ray,Rune sq shield,Wrath talisman,Dragonstone,Vorkath's head"
+
 }
