@@ -486,9 +486,9 @@ class AutoVorkathPlugin : Plugin() {
                 teleToHouse()
                 return
             }
-            if (client.getBoostedSkillLevel(Skill.HITPOINTS) <= config.POOLDRINK().width || client.getBoostedSkillLevel(
+            if (client.getBoostedSkillLevel(Skill.HITPOINTS) < config.POOLDRINK().width || client.getBoostedSkillLevel(
                     Skill.PRAYER
-                ) <= config.POOLDRINK().height
+                ) < config.POOLDRINK().height
             ) {
                 TileObjects.search().nameContains("pool of").withAction("Drink").first().ifPresent { pool ->
                     TileObjectInteraction.interact(pool, "Drink")
