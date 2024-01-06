@@ -142,12 +142,12 @@ class AutoVorkathPlugin : Plugin() {
                 InventoryInteraction.useItem(config.SLAYERSTAFF().toString(), "Wield")
             }
             drinkPrayer()
-            eat(77)
+            eat(75)
             changeStateTo(State.SPAWN)
         }
         if (e.message.contains("You become unfrozen as you kill the spawn")) {
             drinkPrayer()
-            eat(77)
+            eat(75)
             changeStateTo(State.FIGHTING)
         }
         if (e.message.contains("There is no ammo left in your quiver.")) {
@@ -336,7 +336,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun redBallState() {
         drinkPrayer()
-        eat(50)
+        eat(75)
         MousePackets.queueClickPacket()
         MovementPackets.queueMovement(
             WorldPoint(
@@ -383,7 +383,7 @@ class AutoVorkathPlugin : Plugin() {
                     MovementPackets.queueMovement(middle)
                 }
             }
-            eat(40)
+            eat(30)
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
             }
