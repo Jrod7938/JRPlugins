@@ -29,6 +29,7 @@ import java.awt.event.KeyEvent
 import java.util.*
 import java.util.stream.Collectors
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 @PluginDescriptor(
@@ -272,7 +273,6 @@ class AutoVorkathPlugin : Plugin() {
             val wooxWalkArea = WorldArea(swPoint, 5, 1)
             //println("Woox Walk Area: ${wooxWalkArea.toWorldPointList()}")
 
-            // Function to check if a tile has an acid pool
             fun isTileSafe(tile: WorldPoint): Boolean = tile !in acidPools
                     && WorldPoint(tile.x, tile.y + 1, tile.plane) !in acidPools
                     && WorldPoint(tile.x, tile.y + 2, tile.plane) !in acidPools
@@ -281,7 +281,10 @@ class AutoVorkathPlugin : Plugin() {
                     && WorldPoint(tile.x, tile.y + 5, tile.plane) !in acidPools
                     && WorldPoint(tile.x, tile.y + 6, tile.plane) !in acidPools
 
-            return wooxWalkArea.toWorldPointList().firstOrNull { isTileSafe(it) }
+            val safeTiles = wooxWalkArea.toWorldPointList().filter { isTileSafe(it) }
+
+            // Find the closest safe tile by x-coordinate to the player
+            return safeTiles.minByOrNull { abs(it.x - client.localPlayer.worldLocation.x) }
         }
 
         TileObjects.search().withId(ObjectID.ACID_POOL_32000).result().forEach { tileObject ->
