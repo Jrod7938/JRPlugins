@@ -313,6 +313,7 @@ class AutoVorkathPlugin : Plugin() {
                     //println("Attacked Vorkath")
                 }
             } else {
+                eat(60)
                 // Move to the safe tile if the player is not close enough
                 MousePackets.queueClickPacket()
                 //println("Moving to safe tile: $safeTile")
