@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.jrplugins.AutoChop
 
 import net.runelite.client.config.Config

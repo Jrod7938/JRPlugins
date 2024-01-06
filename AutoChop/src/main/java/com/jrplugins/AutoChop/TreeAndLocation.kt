@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
 package com.jrplugins.AutoChop
 
 import lombok.Getter
