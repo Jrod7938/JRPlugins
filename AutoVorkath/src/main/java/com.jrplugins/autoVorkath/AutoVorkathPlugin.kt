@@ -180,14 +180,7 @@ class AutoVorkathPlugin : Plugin() {
                 acidPools.add(WorldPoint.fromLocal(client, e.position))
                 changeStateTo(State.ACID)
             }
-            whiteProjectileId -> {
-                drinkPrayer()
-                eat(75)
-                Inventory.search().nameContains(config.SLAYERSTAFF().name).first().ifPresent { staff ->
-                    InventoryInteraction.useItem(staff, "Wield")
-                }
-                changeStateTo(State.SPAWN)
-            }
+            whiteProjectileId -> changeStateTo(State.SPAWN)
             acidRedProjectileId -> changeStateTo(State.ACID)
             rangeProjectileId, magicProjectileId, purpleProjectileId, blueProjectileId -> activatePrayers(true)
             redProjectileId -> changeStateTo(State.RED_BALL)
@@ -340,8 +333,15 @@ class AutoVorkathPlugin : Plugin() {
             changeStateTo(State.THINKING)
             return
         }
-        NPCs.search().nameContains("Zombified Spawn").first().ifPresent { spawn ->
-            NPCInteraction.interact(spawn, "Attack")
+        if (Equipment.search().nameContains(config.SLAYERSTAFF().toString()).result().isEmpty()) {
+            Inventory.search().nameContains(config.SLAYERSTAFF().toString()).first().ifPresent { staff ->
+                InventoryInteraction.useItem(staff, "Wield")
+            }
+            return
+        } else {
+            NPCs.search().nameContains("Zombified Spawn").first().ifPresent { spawn ->
+                NPCInteraction.interact(spawn, "Attack")
+            }
         }
     }
 
