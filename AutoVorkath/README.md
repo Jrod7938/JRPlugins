@@ -22,4 +22,5 @@ https://discord.gg/PwRB5yt8KH
 - Only Supports Range (NO MELEE)
 - Needs POH
 - Needs Ornate rejuvenation pool
+- Needs Ornate Jewellery Box (Set to GE)
 - Needs Lunar Isles Portal in POH
