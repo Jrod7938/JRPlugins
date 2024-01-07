@@ -265,7 +265,7 @@ class AutoVorkathPlugin : Plugin() {
         }
 
         val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
-        val swPoint = WorldPoint(vorkath.x + 1, vorkath.y - 11, 0)
+        val swPoint = WorldPoint(vorkath.x + 1, vorkath.y - 8, 0)
 
         fun findSafeTiles(): WorldPoint? {
             val wooxWalkArea = WorldArea(swPoint, 5, 1)
@@ -275,9 +275,7 @@ class AutoVorkathPlugin : Plugin() {
                     && WorldPoint(tile.x, tile.y + 1, tile.plane) !in acidPools
                     && WorldPoint(tile.x, tile.y + 2, tile.plane) !in acidPools
                     && WorldPoint(tile.x, tile.y + 3, tile.plane) !in acidPools
-                    && WorldPoint(tile.x, tile.y + 4, tile.plane) !in acidPools
-                    && WorldPoint(tile.x, tile.y + 5, tile.plane) !in acidPools
-                    && WorldPoint(tile.x, tile.y + 6, tile.plane) !in acidPools
+
 
             val safeTiles = wooxWalkArea.toWorldPointList().filter { isTileSafe(it) }
 
@@ -305,7 +303,7 @@ class AutoVorkathPlugin : Plugin() {
         val playerLocation = client.localPlayer.worldLocation
 
         safeTile?.let {
-            if (playerLocation.distanceTo(safeTile) <= 3) {
+            if (playerLocation == safeTile) {
                 // Attack Vorkath if the player close to the safe tile
                 NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
                     NPCInteraction.interact(vorkath, "Attack")
