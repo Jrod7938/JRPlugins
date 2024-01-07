@@ -4,7 +4,7 @@ Automation plugins for runelite
 
 # Video
 
-https://www.youtube.com/watch?v=AJcxpyeCFHM
+https://youtu.be/WDsQEb_kP8Y
 
 # Discord
 
