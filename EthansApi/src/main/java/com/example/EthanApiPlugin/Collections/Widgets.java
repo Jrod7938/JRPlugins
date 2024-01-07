@@ -51,12 +51,7 @@ public class Widgets {
                     returnList.add(nestedChild);
                 }
             }
-            Widget[] staticChildren;
-            try {
-                staticChildren = widget.getStaticChildren();
-            } catch (NullPointerException e) {
-                continue;
-            }
+            Widget[] staticChildren = widget.getStaticChildren();
             if (staticChildren != null) {
                 for (Widget staticChild : staticChildren) {
                     if (staticChild == null) {
