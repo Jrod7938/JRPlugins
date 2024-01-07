@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.example.EthanApiPlugin.PathFinding;
 
 import com.example.EthanApiPlugin.EthanApiPlugin;
@@ -7,15 +12,12 @@ import org.roaringbitmap.RoaringBitmap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 public class GlobalCollisionMap {
     static RoaringBitmap bitmap = init();
+
     static byte[] load() {
         try {
             InputStream is = GlobalCollisionMap.class.getResourceAsStream("map");
@@ -25,6 +27,7 @@ public class GlobalCollisionMap {
         }
         return null;
     }
+
     public static RoaringBitmap init() {
         RoaringBitmap bitmap = new RoaringBitmap();
         try {
@@ -39,22 +42,27 @@ public class GlobalCollisionMap {
     public static boolean east(WorldPoint wp) {
         return bitmap.contains(packed(wp) | (1 << 30));
     }
+
     public static boolean north(WorldPoint wp) {
         return bitmap.contains(packed(wp));
     }
+
     public static boolean south(WorldPoint wp) {
         return north(wp.dy(-1));
     }
+
     public static boolean west(WorldPoint wp) {
         return east(wp.dx(-1));
     }
 
-    public static int packed(int x, int y, int plane){
+    public static int packed(int x, int y, int plane) {
         return (x & 16383) | ((y & 16383) << 14) | (plane << 28);
     }
-    public static WorldPoint unpack(int packed){
+
+    public static WorldPoint unpack(int packed) {
         return new WorldPoint(packed & 16383, (packed >> 14) & 16383, packed >> 28);
     }
+
     public static int packed(WorldPoint wp) {
         return (wp.getX() & 16383) | ((wp.getY() & 16383) << 14) | (wp.getPlane() << 28);
     }
@@ -70,7 +78,7 @@ public class GlobalCollisionMap {
             WorldPoint currentData = current.getData();
             if (currentData.equals(p)) {
                 List<WorldPoint> ret = new ArrayList<>();
-                while (current!=null) {
+                while (current != null) {
                     ret.add(current.getData());
                     current = current.getPrevious();
                 }

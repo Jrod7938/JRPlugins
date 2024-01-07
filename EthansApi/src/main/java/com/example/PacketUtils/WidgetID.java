@@ -1,26 +1,6 @@
 /*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
+ * Copyright (c) 2017-2024. By Jrod7938
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.example.PacketUtils;
 
@@ -586,6 +566,30 @@ public final class WidgetID {
         static final int PIETY = 35;
         static final int RIGOUR = 33;
         static final int AUGURY = 36;
+        static final int RP_REJUVENATION = 20;
+        static final int RP_ANCIENT_STRENGTH = 9;
+        static final int RP_ANCIENT_SIGHT = 10;
+        static final int RP_ANCIENT_WILL = 11;
+        static final int RP_PROTECT_ITEM = 32;
+        static final int RP_RUINOUS_GRACE = 21;
+        static final int RP_DAMPEN_MAGIC = 18;
+        static final int RP_DAMPEN_RANGED = 17;
+        static final int RP_DAMPEN_MELEE = 16;
+        static final int RP_TRINITAS = 12;
+        static final int RP_BERSERKER = 24;
+        static final int RP_PURGE = 19;
+        static final int RP_METABOLISE = 23;
+        static final int RP_REBUKE = 30;
+        static final int RP_VINDICATION = 31;
+        static final int RP_DECIMATE = 13;
+        static final int RP_ANNIHILATE = 14;
+        static final int RP_VAPORISE = 15;
+        static final int RP_FUMUS_VOW = 25;
+        static final int RP_UMBRA_VOW = 27;
+        static final int RP_CRUORS_VOW = 26;
+        static final int RP_GLACIES_VOW = 28;
+        static final int RP_WRATH = 22;
+        static final int RP_INTENSIFY = 29;
     }
 
     public static class QuickPrayer {

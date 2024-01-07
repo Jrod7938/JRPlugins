@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
@@ -28,6 +33,9 @@ public class Bank {
         if (lastUpdateTick < client.getTickCount()) {
             Bank.bankItems.clear();
             int i = 0;
+            if (client.getItemContainer(InventoryID.BANK) == null) {
+                return new ItemQuery(new ArrayList<>());
+            }
             for (Item item : client.getItemContainer(InventoryID.BANK).getItems()) {
                 try {
                     if (item == null) {

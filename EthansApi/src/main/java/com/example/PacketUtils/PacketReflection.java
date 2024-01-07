@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.example.PacketUtils;
 
 import com.example.Packets.BufferMethods;

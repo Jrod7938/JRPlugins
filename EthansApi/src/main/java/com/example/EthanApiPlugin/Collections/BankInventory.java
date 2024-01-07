@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
@@ -22,42 +27,15 @@ public class BankInventory {
 
     public static ItemQuery search() {
         if (lastUpdateTick < client.getTickCount()) {
+            if (client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER) == null) {
+                return new ItemQuery(new ArrayList<>());
+            }
             BankInventory.bankInventoryItems =
                     Arrays.stream(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
             lastUpdateTick = client.getTickCount();
         }
         return new ItemQuery(bankInventoryItems.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
-//    @Subscribe
-//    public void onWidgetLoaded(WidgetLoaded e) {
-//        if (e.getGroupId() == WidgetID.BANK_INVENTORY_GROUP_ID) {
-//            try {
-//                BankInventory.bankInventoryItems =
-//                        Arrays.stream(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
-//            } catch (NullPointerException err) {
-//                BankInventory.bankInventoryItems.clear();
-//            }
-//        }
-//    }
-
-//    @Subscribe
-//    public void onItemContainerChanged(ItemContainerChanged e) {
-//        if (e.getContainerId() == 93) {
-//            if (client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER) == null) {
-//                BankInventory.bankInventoryItems.clear();
-//                return;
-//            }
-//            try {
-//                BankInventory.bankInventoryItems =
-//                        Arrays.stream(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
-//                System.out.println("bankInventoryItems: "+bankInventoryItems.size());
-//                return;
-//            } catch (NullPointerException err) {
-//                BankInventory.bankInventoryItems.clear();
-//                return;
-//            }
-//        }
-//    }
 
     @Subscribe
     public void onGameStateChanged(GameStateChanged gameStateChanged) {

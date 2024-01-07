@@ -1,6 +1,9 @@
-package com.example.EthanApiPlugin.Collections.query;
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
 
-import lombok.Getter;
+package com.example.EthanApiPlugin.Collections.query;
 
 public enum QuickPrayer {
     THICK_SKIN(0),
@@ -32,12 +35,15 @@ public enum QuickPrayer {
     PIETY(26),
     RIGOUR(24),
     AUGURY(27);
-    @Getter
     private final int index;
     private int varbit;
 
     QuickPrayer(int index) {
+        this.varbit = varbit;
         this.index = index;
     }
 
+    public int getIndex() {
+        return index;
+    }
 }
