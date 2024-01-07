@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
+
 package com.example.EthanApiPlugin;
 
 import com.example.EthanApiPlugin.Collections.*;
@@ -1231,6 +1236,7 @@ public class EthanApiPlugin extends Plugin {
         eventBus.register(RuneLite.getInjector().getInstance(Inventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(Bank.class));
         eventBus.register(RuneLite.getInjector().getInstance(BankInventory.class));
+        eventBus.register(RuneLite.getInjector().getInstance(GrandExchangeInventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(NPCs.class));
         eventBus.register(RuneLite.getInjector().getInstance(TileObjects.class));
         eventBus.register(RuneLite.getInjector().getInstance(Players.class));
