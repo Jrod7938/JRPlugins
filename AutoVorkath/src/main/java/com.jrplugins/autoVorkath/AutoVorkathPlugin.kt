@@ -19,6 +19,7 @@ import net.runelite.api.events.*
 import net.runelite.client.config.ConfigManager
 import net.runelite.client.eventbus.Subscribe
 import net.runelite.client.events.NpcLootReceived
+import net.runelite.client.game.ItemManager
 import net.runelite.client.game.ItemStack
 import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
@@ -50,6 +51,9 @@ class AutoVorkathPlugin : Plugin() {
     @Inject
     private lateinit var config: AutoVorkathConfig
 
+    @Inject
+    private lateinit var itemManager: ItemManager
+
     @Provides
     fun getConfig(configManager: ConfigManager): AutoVorkathConfig {
         return configManager.getConfig(AutoVorkathConfig::class.java)
@@ -57,6 +61,7 @@ class AutoVorkathPlugin : Plugin() {
 
     var botState: State? = null
     var tickDelay: Int = 0
+    var killCount: Int = 0
     private var running = false
     private val rangeProjectileId = 1477
     private val magicProjectileId = 393
@@ -74,7 +79,7 @@ class AutoVorkathPlugin : Plugin() {
     private var lastDrankRangePotion: Long = 0
 
     private val lootQueue: MutableList<ItemStack> = mutableListOf()
-    private var lootId: MutableList<Int> = mutableListOf()
+    private var lootNames: MutableSet<String> = mutableSetOf()
     private var acidPools: HashSet<WorldPoint> = hashSetOf()
 
     private var initialAcidMove = false
@@ -96,6 +101,10 @@ class AutoVorkathPlugin : Plugin() {
         SPAWN,
         RED_BALL,
         LOOTING,
+        WALKING_TO_GE,
+        GETTING_ITEM,
+        SELLING,
+        MULING,
         THINKING,
         NONE
     }
@@ -104,6 +113,7 @@ class AutoVorkathPlugin : Plugin() {
         println("Auto Vorkath Plugin Activated")
         botState = State.THINKING
         running = client.gameState == GameState.LOGGED_IN
+        lootNames = mutableSetOf()
         breakHandler.registerPlugin(this)
         breakHandler.startPlugin(this)
         overlayManager.add(autoVorkathOverlay)
@@ -117,7 +127,9 @@ class AutoVorkathPlugin : Plugin() {
         drankRangePotion = false
         lastDrankAntiFire = 0
         lastDrankRangePotion = 0
+        killCount = 0
         lootQueue.clear()
+        lootNames.clear()
         acidPools.clear()
         breakHandler.stopPlugin(this)
         breakHandler.unregisterPlugin(this)
@@ -157,9 +169,11 @@ class AutoVorkathPlugin : Plugin() {
         items.stream().forEach { item ->
             if (item != null) {
                 lootQueue.add(item)
-                lootId.add(item.id)
+                val comp: ItemComposition = itemManager.getItemComposition(item.id)
+                lootNames.add(comp.name)
             }
         }
+        killCount++
         changeStateTo(State.LOOTING)
     }
 
@@ -220,15 +234,212 @@ class AutoVorkathPlugin : Plugin() {
                 State.RED_BALL -> redBallState()
                 State.LOOTING -> lootingState()
                 State.THINKING -> thinkingState()
+                State.WALKING_TO_GE -> walkingToGEState()
+                State.GETTING_ITEM -> gettingItemState()
+                State.SELLING -> sellingItemState()
+                State.MULING -> mulingState()
                 State.NONE -> println("None State")
                 null -> println("Null State")
             }
         }
     }
 
+    private fun mulingState() {
+        if (!isMoving()) {
+            if (Bank.isOpen()) {
+                if (BankInventory.search().withName("Coins").result().isEmpty()) {
+                    Bank.search().withName("Coins").first().ifPresent { coins ->
+                        BankInteraction.useItem(coins, "Withdraw-All")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                } else {
+                    Players.search().withName(config.MULENAME()).first().ifPresent { mule ->
+                        PlayerInteractionHelper.interact(mule, "Trade with")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                }
+            } else {
+                if (Widgets.search().hiddenState(false).withTextContains("Other player has accepted.").result()
+                        .isNotEmpty()
+                ) {
+                    Widgets.search().withAction("Accept").hiddenState(false).first().ifPresent { accept ->
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(accept, "Accept")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                }
+                if (Widgets.search().hiddenState(false).withTextContains("Trading with:").result().isNotEmpty()) {
+                    if (TradeInventory.search().withName("Coins").result().isNotEmpty()) {
+                        TradeInventory.search().withName("Coins").first().ifPresent { coins ->
+                            tickDelay = 4
+                            MousePackets.queueClickPacket()
+                            WidgetPackets.queueWidgetAction(coins, "Offer-All")
+                            return@ifPresent
+                        }
+                    }
+                    Widgets.search().withAction("Accept").hiddenState(false).first().ifPresent { accept ->
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(accept, "Accept")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                    return
+                }
+                if (Inventory.search().withName("Coins").result().isEmpty()) {
+                    changeStateTo(State.WALKING_TO_BANK, 1)
+                    return
+                }
+            }
+        }
+    }
+
+    private fun sellingItemState() {
+        if (!isMoving()) {
+            if (geIsOpen()) {
+                if (geInventoryHasLoot() && Widgets.search().withTextContains("Select an offer slot to set up")
+                        .hiddenState(false).result().isNotEmpty()
+                ) {
+                    val itemToSell = GrandExchangeInventory.search().result()
+                        .firstOrNull { !it.name.contains(config.TELEPORT().toString()) }
+                    itemToSell?.let {
+                        GeInventoryInteraction.offerItem(itemToSell)
+                        //println("Offered Item")
+                        tickDelay = 1
+                        return
+                    } ?: run {
+                        changeStateTo(State.GETTING_ITEM, 1)
+                        return
+                    }
+                }
+                if (Widgets.search().withTextContains("Confirm").hiddenState(false).result().isNotEmpty()) {
+                    Widgets.search().withAction("-5%").first().ifPresent { minus ->
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(minus, "-5%")
+                        //println("Minus 5%")
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(minus, "-5%")
+                        //println("Minus 5%")
+                    }
+                    Widgets.search().withAction("Confirm").first().ifPresent { confirm ->
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(confirm, "Confirm")
+                        //println("Confirm")
+                        lootNames.remove(lootNames.toList()[0])
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                    return
+                }
+                if (Widgets.search().withAction("Collect to inventory").hiddenState(false).result().isNotEmpty()) {
+                    Widgets.search().withAction("Collect to inventory").first().ifPresent { collect ->
+                        MousePackets.queueClickPacket()
+                        WidgetPackets.queueWidgetAction(collect, "Collect to inventory")
+                    }
+                    NPCs.search().nameContains("Banker").nearestToPlayer().ifPresent { banker ->
+                        NPCInteraction.interact(banker, "Bank")
+                    }
+                    changeStateTo(State.GETTING_ITEM, 1)
+                }
+            }
+        }
+    }
+
+    private fun gettingItemState() {
+        if (lootNames.isEmpty()) {
+            if (Bank.isOpen()) {
+                BankInventory.search().withId(995).first().ifPresent { coins ->
+                    BankInventoryInteraction.useItem(coins, "Deposit-All")
+                }
+                Widgets.search().withAction("Close").first().ifPresent { close ->
+                    MousePackets.queueClickPacket()
+                    WidgetPackets.queueWidgetAction(close, "Close")
+                }
+            }
+            if (config.MULE() && config.MULENAME()
+                    .isNotEmpty()
+            ) changeStateTo(State.MULING) else changeStateTo(State.WALKING_TO_BANK)
+            return
+        }
+        if (!isMoving()) {
+            if (Bank.isOpen()) {
+                if (BankInventory.search().withId(995).result().isNotEmpty()) {
+                    BankInventory.search().withId(995).first().ifPresent { coins ->
+                        BankInteraction.useItem(coins, "Deposit-All")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                }
+                if (bankInventoryHasLoot()) {
+                    NPCs.search().nameContains("Grand Exchange Clerk").nearestToPlayer().ifPresent { clerk ->
+                        NPCInteraction.interact(clerk, "Exchange")
+                    }
+                    changeStateTo(State.SELLING, 1)
+                    return
+                } else {
+                    if (client.getVarbitValue(3958) == 0) {
+                        Widgets.search().withId(786456).withAction("Note").first().ifPresent { note ->
+                            MousePackets.queueClickPacket()
+                            WidgetPackets.queueWidgetAction(note, "Note")
+                            return@ifPresent
+                        }
+                    }
+                    Bank.search().withName(lootNames.toList()[0]).first().ifPresent { item ->
+                        BankInteraction.useItem(item, "Withdraw-All")
+                        tickDelay = 1
+                        return@ifPresent
+                    }
+                }
+            } else {
+                NPCs.search().nameContains("Banker").nearestToPlayer().ifPresent { banker ->
+                    NPCInteraction.interact(banker, "Bank")
+                    return@ifPresent
+                }
+            }
+        }
+    }
+
+    private fun walkingToGEState() {
+        if (!isMoving()) {
+            if (inVorkathArea() || !inGE() && !inHouse()) {
+                teleToHouse()
+                return
+            }
+            if (inHouse()) {
+                TileObjects.search().nameContains("Ornate Jewellery Box").first().ifPresent { box ->
+                    TileObjectInteraction.interact(box, "Grand Exchange")
+                    return@ifPresent
+                }
+            }
+            if (Bank.isOpen()) {
+                BankInventory.search().result().filter { !it.name.contains(config.TELEPORT().toString()) }
+                    .forEach { item ->
+                        BankInteraction.useItem(item, "Deposit-All")
+                    }
+                if (BankInventory.search().result().size == 1) { // only has teleport in inventory
+                    //println("LootId Before Check: $lootNames")
+                    lootNames = lootNames.filter {
+                        Bank.search().quantityGreaterThan(1).tradeAble().withName(it).result().isNotEmpty()
+                    }.toMutableSet()
+                    //println("LootId After Check: $lootNames")
+                    changeStateTo(State.GETTING_ITEM, 1)
+                    return
+                }
+            } else {
+                NPCs.search().nameContains("Banker").nearestToPlayer().ifPresent { banker ->
+                    NPCInteraction.interact(banker, "Bank")
+                    return@ifPresent
+                }
+            }
+        }
+    }
+
     private fun lootingState() {
         if (lootQueue.isEmpty() || TileItems.search().empty()) {
-            changeStateTo(State.WALKING_TO_BANK, 1)
+            if (killCount % config.SELLAT() == 0 && killCount != 0) changeStateTo(State.WALKING_TO_GE)
+            else changeStateTo(State.WALKING_TO_BANK, 1)
             return
         }
         if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
@@ -338,6 +549,7 @@ class AutoVorkathPlugin : Plugin() {
             return
         }
         activatePrayers(false)
+        drinkPrayer()
         if (Equipment.search().nameContains(config.SLAYERSTAFF().toString()).result().isEmpty()) {
             Inventory.search().nameContains(config.SLAYERSTAFF().toString()).first().ifPresent { staff ->
                 InventoryInteraction.useItem(staff, "Wield")
@@ -387,7 +599,7 @@ class AutoVorkathPlugin : Plugin() {
         if (isVorkathAsleep()) {
             acidPools.clear()
             lootQueue.clear()
-            lootId.clear()
+            lootNames.clear()
             if (!isMoving()) {
                 NPCs.search().withAction("Poke").first().ifPresent { sleepingVorkath ->
                     NPCInteraction.interact(sleepingVorkath, "Poke")
@@ -524,7 +736,11 @@ class AutoVorkathPlugin : Plugin() {
                 changeStateTo(State.BANKING)
                 return
             } else { // Player is not in bank area
-                changeStateTo(State.WALKING_TO_BANK)
+                if (killCount == 0) {
+                    changeStateTo(State.WALKING_TO_BANK)
+                    return
+                }
+                if (killCount % config.SELLAT() == 0) changeStateTo(State.WALKING_TO_GE) else changeStateTo(State.WALKING_TO_BANK)
                 return
             }
         }
@@ -589,11 +805,11 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun bank() {
-        lootId.forEach { id ->
-            if (BankInventory.search().withId(id).result().isNotEmpty()) {
-                BankInventoryInteraction.useItem(id, "Deposit-All")
+        lootNames.forEach { item ->
+            if (BankInventory.search().nameContains(item).result().isNotEmpty()) {
+                BankInventoryInteraction.useItem(item, "Deposit-All")
             } else {
-                lootId.remove(id)
+                lootNames.remove(item)
             }
         }
         if (!hasItem(config.TELEPORT().toString())) {
@@ -614,6 +830,11 @@ class AutoVorkathPlugin : Plugin() {
         if (BankInventory.search().nameContains(config.ANTIFIRE().toString()).result().size <= 1) {
             withdraw(config.ANTIFIRE().toString(), 1)
         }
+        if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
+            if (BankInventory.search().nameContains("Anti-venom").result().size <= 1) {
+                withdraw("Anti-venom", 1)
+            }
+        }
         if (!Inventory.full()) {
             for (i in 1..config.FOODAMOUNT().width - Inventory.getItemAmount(config.FOOD())) {
                 withdraw(config.FOOD(), 1)
@@ -627,6 +848,11 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun isVorkathAsleep(): Boolean = NPCs.search().withId(8059).result().isNotEmpty()
     private fun inHouse(): Boolean = TileObjects.search().nameContains(config.PORTAL().toString()).result().isNotEmpty()
+
+    private fun inGE(): Boolean = NPCs.search().nameContains("Grand Exchange Clerk").result().isNotEmpty()
+
+    private fun geIsOpen(): Boolean =
+        Widgets.search().withTextContains("Grand Exchange").hiddenState(false).result().isNotEmpty()
 
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
     private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
@@ -662,13 +888,33 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun inventoryHasLoot(): Boolean {
-        lootId.forEach { id ->
-            if (Inventory.search().withId(id).result().isNotEmpty()) {
+        lootNames.forEach { item ->
+            if (Inventory.search().nameContains(item).result().isNotEmpty()) {
                 return true
             }
         }
         return false
     }
+
+    private fun bankInventoryHasLoot(): Boolean {
+        lootNames.forEach { item ->
+            if (BankInventory.search().withName(item).result().isNotEmpty()) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun geInventoryHasLoot(): Boolean {
+        lootNames.forEach { item ->
+            if (GrandExchangeInventory.search().withName(item).result().isNotEmpty()) {
+                return true
+            }
+        }
+        return false
+    }
+
+
 
     private fun sendKey(key: Int) {
         keyEvent(KeyEvent.KEY_PRESSED, key)
@@ -687,8 +933,8 @@ class AutoVorkathPlugin : Plugin() {
         client.canvas.dispatchEvent(e)
     }
 
-    fun hasItem(name: String): Boolean = Inventory.search().nameContains(name).result().isNotEmpty()
-    fun withdraw(name: String, amount: Int) {
+    private fun hasItem(name: String): Boolean = Inventory.search().nameContains(name).result().isNotEmpty()
+    private fun withdraw(name: String, amount: Int) {
         Bank.search().nameContains(name).first().ifPresent { item ->
             BankInteraction.withdrawX(item, amount)
         }

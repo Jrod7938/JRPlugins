@@ -1237,6 +1237,7 @@ public class EthanApiPlugin extends Plugin {
         eventBus.register(RuneLite.getInjector().getInstance(Bank.class));
         eventBus.register(RuneLite.getInjector().getInstance(BankInventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(GrandExchangeInventory.class));
+        eventBus.register(RuneLite.getInjector().getInstance(TradeInventory.class));
         eventBus.register(RuneLite.getInjector().getInstance(NPCs.class));
         eventBus.register(RuneLite.getInjector().getInstance(TileObjects.class));
         eventBus.register(RuneLite.getInjector().getInstance(Players.class));

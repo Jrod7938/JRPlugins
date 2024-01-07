@@ -124,10 +124,40 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "sellAt",
+            name = "Sell At",
+            description = "Sell items at what kill?",
+            position = 11
+    )
+    default int SELLAT() {
+        return 15;
+    }
+
+    @ConfigItem(
+            keyName = "mule",
+            name = "Mule GP?",
+            description = "Trade GP after selling? (TARGET MUST BE IN GE)",
+            position = 12
+    )
+    default boolean MULE() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "muleName",
+            name = "Mule Name",
+            description = "Name of player in GE to trade.",
+            position = 13
+    )
+    default String MULENAME() {
+        return "";
+    }
+
+    @ConfigItem(
             keyName = "food",
             name = "Food",
             description = "What food to use? (NOT MANTA RAY!)",
-            position = 11
+            position = 14
     )
     default String FOOD() {
         return "Shark";
