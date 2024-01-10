@@ -101,7 +101,7 @@ public interface AutoVorkathConfig extends Config {
             position = 8
     )
     default Dimension FOODAMOUNT() {
-        return new Dimension(15, 10);
+        return new Dimension(17, 15);
     }
 
     @ConfigItem(
