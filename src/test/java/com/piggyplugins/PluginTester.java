@@ -25,6 +25,7 @@ import com.piggyplugins.SixHourLog.SixHourLogPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
+import com.polyplugins.AutoRuneDragon.RuneDragonsPlugin;
 import com.polyplugins.Butterfly.ButterflyPlugin;
 import com.polyplugins.Chompy.AutoChompyPlugin;
 import com.polyplugins.Dialogue.DialogueContinuerPlugin;
@@ -67,7 +68,8 @@ public class PluginTester {
                 EthanPrayerFlickerPlugin.class,
                 RunEnabler.class,
                 AutoVorkathPlugin.class,
-                RsnHiderPlugin.class
+                RsnHiderPlugin.class,
+                RuneDragonsPlugin.class
         );
         RuneLite.main(args);
     }
