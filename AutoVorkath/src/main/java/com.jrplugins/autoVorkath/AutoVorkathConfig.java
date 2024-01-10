@@ -4,6 +4,7 @@
  */
 package com.jrplugins.autoVorkath;
 
+import com.jrplugins.autoVorkath.enums.*;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;

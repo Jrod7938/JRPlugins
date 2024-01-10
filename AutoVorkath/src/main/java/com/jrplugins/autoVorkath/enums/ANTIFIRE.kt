@@ -3,7 +3,7 @@
  *
  */
 
-package com.jrplugins.autoVorkath
+package com.jrplugins.autoVorkath.enums
 
 import lombok.Getter
 import lombok.RequiredArgsConstructor
