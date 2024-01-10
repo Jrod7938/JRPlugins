@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 01/10/2024 13:33 EST*
+*Updated 01/10/2024 15:22 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
@@ -14,6 +14,7 @@ Run PluginTester.java within src/test/java/com/piggyplugins folder
 - AutoVorkath WOOX WALK
 - AutoChop (Supports Some Forestry Events)
 - RSNHider
+- Auto Rune Dragons
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*
 - SpeedDartMaker
 - RooftopAgility *(iRooftops by illumine partially ported & modified by piggyplugins)*
