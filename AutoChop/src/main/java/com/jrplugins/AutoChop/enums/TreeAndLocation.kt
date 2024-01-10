@@ -2,7 +2,7 @@
  * Copyright (c) 2024. By Jrod7938
  *
  */
-package com.jrplugins.AutoChop
+package com.jrplugins.AutoChop.enums
 
 import lombok.Getter
 import lombok.RequiredArgsConstructor

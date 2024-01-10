@@ -16,6 +16,7 @@ import com.example.Packets.WidgetPackets
 import com.example.PathingTesting.PathingTesting
 import com.google.inject.Inject
 import com.google.inject.Provides
+import com.jrplugins.AutoChop.enums.State
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
 import net.runelite.api.*
 import net.runelite.api.coords.WorldArea
@@ -38,7 +39,7 @@ import java.util.function.Supplier
 @PluginDescriptor(
     name = "<html><font color=\"#9ddbff\">[JR]</font> Auto Chop </html>",
     description = "Choppy Choppy",
-    tags = ["jc"],
+    tags = ["jr", "woodcutting", "forestry"],
     enabledByDefault = false
 )
 class AutoChop : Plugin() {
