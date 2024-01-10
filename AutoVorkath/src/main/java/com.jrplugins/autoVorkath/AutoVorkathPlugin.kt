@@ -59,7 +59,7 @@ class AutoVorkathPlugin : Plugin() {
         return configManager.getConfig(AutoVorkathConfig::class.java)
     }
 
-    var botState: State? = null
+    var botState: State = State.NONE
     var tickDelay: Int = 0
     var killCount: Int = 0
     private var running = false
@@ -122,7 +122,7 @@ class AutoVorkathPlugin : Plugin() {
     override fun shutDown() {
         println("Auto Vorkath Plugin Deactivated")
         running = false
-        botState = null
+        botState = State.NONE
         drankAntiFire = false
         drankRangePotion = false
         lastDrankAntiFire = 0
@@ -239,7 +239,6 @@ class AutoVorkathPlugin : Plugin() {
                 State.SELLING -> sellingItemState()
                 State.MULING -> mulingState()
                 State.NONE -> println("None State")
-                null -> println("Null State")
             }
         }
     }
