@@ -1,6 +1,9 @@
 # Release 1.0
 
-*Updated 01/05/2024 4:55 EST*
+*Updated 01/10/2024 13:33 EST*
+
+## Instructions
+Run PluginTester.java within src/test/java/com/piggyplugins folder
 
 ## Discord
 
@@ -25,9 +28,6 @@
 - Cannon Reloader
 - PowerSkiller *Intended to serve as a tutorial plugin for the discord server*
 - Vardorvis Helper
-
-## Instructions
-Run PluginTester.java
 
 ### Thanks To
 
