@@ -599,7 +599,6 @@ class AutoVorkathPlugin : Plugin() {
         if (isVorkathAsleep()) {
             acidPools.clear()
             lootQueue.clear()
-            lootNames.clear()
             if (!isMoving()) {
                 NPCs.search().withAction("Poke").first().ifPresent { sleepingVorkath ->
                     NPCInteraction.interact(sleepingVorkath, "Poke")
