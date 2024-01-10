@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,8 +27,6 @@ public class PacketReflection {
     public static Class PacketBufferNode = null;
     public static Field PACKETWRITER = null;
     public static Object isaac = null;
-    public static Field mouseHandlerLastPressedTime = null;
-    public static Field clientMouseLastLastPressedTimeMillis = null;
 
 
     @Inject
@@ -59,19 +56,12 @@ public class PacketReflection {
             PACKETWRITER.setAccessible(false);
             isaacClass = isaac.getClass();
             getPacketBufferNode = Arrays.stream(classWithgetPacketBufferNode.getDeclaredMethods()).filter(m -> m.getReturnType().equals(PacketBufferNode)).collect(Collectors.toList()).get(0);
-            mouseHandlerLastPressedTime = clientInstance.getClass().getClassLoader().loadClass(ObfuscatedNames.MouseHandler_lastPressedTimeMillisClass).getDeclaredField(ObfuscatedNames.MouseHandler_lastPressedTimeMillisField);
-            clientMouseLastLastPressedTimeMillis = clientInstance.getClass().getDeclaredField(ObfuscatedNames.clientMouseLastLastPressedTimeMillis);
         } catch (Exception e) {
             e.printStackTrace();
             log.warn("Failed to load Into Client");
             return false;
         }
         return true;
-    }
-
-    @SneakyThrows
-    public static void writeObject(String obfname, Object buffer, Object input) {
-        BufferMethods.makeBufferCall(obfname, buffer, (Integer) input);
     }
 
     @SneakyThrows
@@ -135,9 +125,12 @@ public class PacketReflection {
             params = List.of("npcIndex", "itemId", "slot", "widgetId", "ctrlDown");
         }
         if (params != null) {
-            for (Map.Entry<String, String> stringEntry : def.fields.entrySet()) {
-                if (params.contains(stringEntry.getKey())) {
-                    writeObject(stringEntry.getValue(), buffer, objects[params.indexOf(stringEntry.getKey())]);
+            for (int i = 0; i < def.writeData.length; i++) {
+                int index = params.indexOf(def.writeData[i]);
+                Object writeValue = objects[index];
+                for (String s : def.writeMethods[i]) {
+                    System.out.println("Writing: " + s + " " + writeValue);
+                    BufferMethods.writeValue(s, (Integer) writeValue, buffer);
                 }
             }
             PACKETWRITER.setAccessible(true);

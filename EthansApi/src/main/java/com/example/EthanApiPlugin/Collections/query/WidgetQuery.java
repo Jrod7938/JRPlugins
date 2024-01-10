@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2024. By Jrod7938
- *
- */
-
 package com.example.EthanApiPlugin.Collections.query;
 
 import net.runelite.api.widgets.Widget;
@@ -10,6 +5,7 @@ import net.runelite.client.util.Text;
 import net.runelite.client.util.WildcardMatcher;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class WidgetQuery {
@@ -21,6 +17,11 @@ public class WidgetQuery {
 
     public List<Widget> result() {
         return widgets;
+    }
+
+    public WidgetQuery filter(Predicate<? super Widget> predicate) {
+        widgets = widgets.stream().filter(predicate).collect(Collectors.toList());
+        return this;
     }
 
     public WidgetQuery withAction(String action) {

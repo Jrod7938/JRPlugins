@@ -11,7 +11,7 @@ public class EquipmentUtil {
 
     public enum EquipmentSlot {
         HEAD(0), CAPE(1), NECKLACE(2), MAIN_HAND(3),
-        TORSO(4), OFF_HAND(5), AMMO(6), LEGS(7),
+        TORSO(4), OFF_HAND(5), AMMO(13), LEGS(7),
         HANDS(9), FEET(10), RING(12);
         @Getter
         private final int index;

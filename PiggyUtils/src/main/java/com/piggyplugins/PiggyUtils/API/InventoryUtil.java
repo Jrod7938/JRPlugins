@@ -2,12 +2,13 @@ package com.piggyplugins.PiggyUtils.API;
 
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
+import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
+import net.runelite.api.Varbits;
 import net.runelite.api.widgets.Widget;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class InventoryUtil {
     public static boolean useItemNoCase(String name, String... actions) {
@@ -106,6 +107,14 @@ public class InventoryUtil {
 
         return false;
     }
+    public static boolean hasAnyItems(Collection<Integer> itemIds) {
+        for (Integer id : itemIds) {
+            if (hasItem(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean hasItem(int id) {
         return getItemAmount(id) > 0;
@@ -118,4 +127,59 @@ public class InventoryUtil {
     public static int emptySlots() {
         return 28 - Inventory.search().result().size();
     }
+
+    //Credit to marcojacobsNL
+    public static boolean runePouchContains(int id) {
+        Set<Integer> runePouchIds = new HashSet<>();
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE1) != 0) {
+            runePouchIds.add(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE1)).getItemId());
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE2) != 0) {
+            runePouchIds.add(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE2)).getItemId());
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE3) != 0) {
+            runePouchIds.add(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE3)).getItemId());
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE4) != 0) {
+            runePouchIds.add(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE4)).getItemId());
+        }
+        for (int runePouchId : runePouchIds) {
+            if (runePouchId == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Credit to marcojacobsNL
+    public static boolean runePouchContains(Collection<Integer> ids) {
+        for (int runeId : ids) {
+            if (!runePouchContains(runeId)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Credit to marcojacobsNL
+    public static int runePouchQuanitity(int id) {
+        Map<Integer, Integer> runePouchSlots = new HashMap<>();
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE1) != 0) {
+            runePouchSlots.put(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE1)).getItemId(), EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_AMOUNT1));
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE2) != 0) {
+            runePouchSlots.put(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE2)).getItemId(), EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_AMOUNT2));
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE3) != 0) {
+            runePouchSlots.put(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE3)).getItemId(), EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_AMOUNT3));
+        }
+        if (EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE4) != 0) {
+            runePouchSlots.put(Runes.getRune(EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_RUNE4)).getItemId(), EthanApiPlugin.getClient().getVarbitValue(Varbits.RUNE_POUCH_AMOUNT4));
+        }
+        if (runePouchSlots.containsKey(id)) {
+            return runePouchSlots.get(id);
+        }
+        return 0;
+    }
+
 }

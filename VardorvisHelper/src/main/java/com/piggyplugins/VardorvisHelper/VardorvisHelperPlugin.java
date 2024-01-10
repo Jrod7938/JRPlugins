@@ -2,6 +2,7 @@ package com.piggyplugins.VardorvisHelper;
 
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.Widgets;
+import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.PrayerUtil;
@@ -14,6 +15,7 @@ import net.runelite.api.SpriteID;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
@@ -149,7 +151,7 @@ public class VardorvisHelperPlugin extends Plugin {
                 handleRangeFirstGameTick();
             }
         }
-//        doBloodCaptcha();
+        doBloodCaptcha();
 
     }
 
@@ -185,9 +187,12 @@ public class VardorvisHelperPlugin extends Plugin {
      * 1 tick blood captcha. Thanks @Lunatik
      */
     private void doBloodCaptcha() {
-        List<Widget> captchaBlood = Widgets.search().hiddenState(false).withAction("Destroy").result();
+        List<Widget> captchaBlood = Widgets.search().filter(widget -> widget.getParentId() != 10551374).hiddenState(false).withAction("Destroy").result();
         if (!captchaBlood.isEmpty()) {
-            captchaBlood.forEach(x -> WidgetPackets.queueWidgetAction(x, "Destroy"));
+            captchaBlood.forEach(x -> {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetAction(x, "Destroy");
+            });
         }
     }
 

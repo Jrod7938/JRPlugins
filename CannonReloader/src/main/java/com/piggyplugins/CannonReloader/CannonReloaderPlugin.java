@@ -1,24 +1,27 @@
 package com.piggyplugins.CannonReloader;
 
+import com.example.EthanApiPlugin.Collections.Bank;
 import com.example.EthanApiPlugin.Collections.Inventory;
+import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.InteractionApi.BankInteraction;
 import com.example.InteractionApi.InventoryInteraction;
+import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.MousePackets;
 import com.example.Packets.MovementPackets;
+import com.example.Packets.WidgetPackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
-import com.piggyplugins.PiggyUtils.API.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.TileObject;
-import net.runelite.api.VarPlayer;
+import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -31,8 +34,6 @@ import net.runelite.client.ui.overlay.OverlayManager;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @PluginDescriptor(
@@ -71,10 +72,20 @@ public class CannonReloaderPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
+        if (client.getGameState() != GameState.LOGGED_IN) {
+            clientThread.invoke(() -> {
+                EthanApiPlugin.stopPlugin(this);
+            });
+            return;
+        }
         tileOverlay = new CannonReloaderTileOverlay(client, this, config);
         overlayManager.add(tileOverlay);
         remainingCannonballs = 0;
         timeout = 0;
+        clientThread.invokeLater(() -> {
+            EthanApiPlugin.sendClientMessage("[Cannon Reloader] Make sure you set your cannon and safespot locations!");
+            EthanApiPlugin.sendClientMessage("[Cannon Reloader] Right click the cannon and the safe spot to set your desired locations.");
+        });
     }
 
     @Override
@@ -82,6 +93,36 @@ public class CannonReloaderPlugin extends Plugin {
         overlayManager.remove(tileOverlay);
         remainingCannonballs = 0;
         timeout = 0;
+        cannonSpot = null;
+        safespotTile = null;
+
+    }
+
+    @Subscribe
+    public void onMenuEntryAdded(MenuEntryAdded event) {
+        if (client.getGameState() != GameState.LOGGED_IN)
+            return;
+        if (event.getOption().equals("Fire")) {
+            MenuEntry cannonEntry = client.createMenuEntry(-1).setOption("Set Cannon Location")
+                    .setTarget("").setType(MenuAction.RUNELITE)
+                    .onClick(e -> {
+                        Tile target = client.getSelectedSceneTile();
+                        if (target != null)
+                            cannonSpot = target.getWorldLocation();
+                    });
+        }
+        if (event.getOption().equals("Walk here")) {
+            MenuEntry safespotEntry = client.createMenuEntry(-2)
+                    .setOption("Set Safespot Location")
+                    .setTarget("")
+                    .setType(MenuAction.RUNELITE)
+                    .onClick(e -> {
+                        Tile target = client.getSelectedSceneTile();
+                        if (target != null)
+                            safespotTile = target.getWorldLocation();
+
+                    });
+        }
     }
 
     @Subscribe
@@ -90,14 +131,18 @@ public class CannonReloaderPlugin extends Plugin {
             return;
         }
         playerLocation = client.getLocalPlayer().getWorldLocation();
-        safespotTile = getCoords(config.SafespotCoords());
-        cannonSpot = getCoords(config.CannonCoords());
+        if (cannonSpot == null || (config.useSafespot() && safespotTile == null)) {
+            return;
+        }
+//        safespotTile = getCoords(config.SafespotCoords());
+//        log.info("canon spot: " + cannonSpot);
+//        log.info("safespot: " + safespotTile);
+//        cannonSpot = getCoords(config.CannonCoords());
 
         if (timeout > 0) {
             timeout--;
             return;
         }
-
         //Out of cannonballs, pick up cannon
         if (Inventory.search().withName("Cannonball").first().isEmpty() && isCannonSetUp()) {
             handlePickUpCannon();
@@ -109,7 +154,7 @@ public class CannonReloaderPlugin extends Plugin {
             return;
         }
         //if safespot is activated, handle walking to safespot
-        if (config.UseSafespot() && !isStandingOnSafespot()) {
+        if (config.useSafespot() && !isStandingOnSafespot()) {
             handleSafespot();
         }
     }
@@ -147,6 +192,7 @@ public class CannonReloaderPlugin extends Plugin {
 
         TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().ifPresent(x -> {
             TileObjectInteraction.interact(x, "Repair");
+            timeout = 3;
         });
 
         TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Fire").first().ifPresent(x -> {
@@ -162,7 +208,7 @@ public class CannonReloaderPlugin extends Plugin {
 
     private boolean needsToRepairOrReloadCannon() {
         return TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().isPresent() ||
-                remainingCannonballs <= config.CannonLowAmount();
+                remainingCannonballs <= config.cannonLowAmount();
     }
 
     private boolean isCannonSetUp() {
@@ -176,11 +222,6 @@ public class CannonReloaderPlugin extends Plugin {
                 TileObjectInteraction.interact(x, "Pick-up");
             });
         }
-    }
-
-    private WorldPoint getCoords(String coords) {
-        List<Integer> configCoords = Arrays.stream(coords.split(",")).map(Integer::parseInt).collect(Collectors.toList());
-        return new WorldPoint(configCoords.get(0), configCoords.get(1), client.getLocalPlayer().getWorldLocation().getPlane());
     }
 
     @Subscribe

@@ -17,6 +17,15 @@ public class PlayerUtil {
     @Inject
     private Client client;
 
+    /**
+     * 0- Auto retaliate on
+     * 1- Auto retaliate off
+     * @return
+     */
+    public boolean isAutoRetaliating() {
+        return client.getVarpValue(172) == 0;
+    }
+
     public boolean inArea(WorldArea area) {
         return area.contains(client.getLocalPlayer().getWorldLocation());
     }
@@ -91,11 +100,11 @@ public class PlayerUtil {
     }
 
     public boolean isBeingInteracted(String name) {
-        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal().first().isPresent();
+        return NPCs.search().filter(npc -> npc.getName() != null && npc.getName().equalsIgnoreCase(name)).interactingWithLocal().first().isPresent();
     }
 
     public NPCQuery getBeingInteracted(String name) {
-        return NPCs.search().withNameIgnoreCase(name).interactingWithLocal();
+        return NPCs.search().filter(npc -> npc.getName() != null && npc.getName().equalsIgnoreCase(name)).interactingWithLocal();
     }
 
     /**
