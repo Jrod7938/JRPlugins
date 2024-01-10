@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.17.2'
+    def runeLiteVersion = '1.10.19'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -69,6 +69,7 @@ dependencies {
     testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
     implementation project(path: ':AutoAerial')
+    implementation project(path: ":AutoRuneDragons")
     implementation project(path: ':AutoBoner')
     implementation project(path: ':AutoChompy')
     implementation project(path: ':AutoCombat')
@@ -131,7 +132,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.19'
+version = '1.0.22'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
