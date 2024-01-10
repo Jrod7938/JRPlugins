@@ -1,4 +1,4 @@
-### AutoVorkath By JR
+# [JR] Auto Vorkath
 
 Automation plugins for runelite
 
@@ -9,8 +9,6 @@ https://youtu.be/WDsQEb_kP8Y
 # Discord
 
 https://discord.gg/PwRB5yt8KH
-
-# [JR]Auto Vorkath
 
 **How to setup**:
 
