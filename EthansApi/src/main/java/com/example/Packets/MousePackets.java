@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
 
 public class MousePackets{
-
+    
     static Client client = RuneLite.getInjector().getInstance(Client.class);
     private static final Random random = new Random();
     private static long randomDelay = randomDelay();
