@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2024. By Jrod7938
- *
- */
-
 package com.example.EthanApiPlugin.PathFinding;
 
 import net.runelite.api.coords.WorldPoint;
@@ -19,7 +14,6 @@ public class Node {
         this.data = null;
         this.previous = null;
     }
-
     Node(WorldPoint data, Node previous) {
         this.data = data;
         this.previous = previous;

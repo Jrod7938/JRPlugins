@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2024. By Jrod7938
- *
- */
-
 package com.example.EthanApiPlugin.PathFinding;
 
 import com.example.EthanApiPlugin.EthanApiPlugin;
@@ -17,7 +12,6 @@ import java.util.zip.GZIPInputStream;
 
 public class GlobalCollisionMap {
     static RoaringBitmap bitmap = init();
-
     static byte[] load() {
         try {
             InputStream is = GlobalCollisionMap.class.getResourceAsStream("map");
@@ -27,7 +21,6 @@ public class GlobalCollisionMap {
         }
         return null;
     }
-
     public static RoaringBitmap init() {
         RoaringBitmap bitmap = new RoaringBitmap();
         try {
@@ -42,15 +35,12 @@ public class GlobalCollisionMap {
     public static boolean east(WorldPoint wp) {
         return bitmap.contains(packed(wp) | (1 << 30));
     }
-
     public static boolean north(WorldPoint wp) {
         return bitmap.contains(packed(wp));
     }
-
     public static boolean south(WorldPoint wp) {
         return north(wp.dy(-1));
     }
-
     public static boolean west(WorldPoint wp) {
         return east(wp.dx(-1));
     }
@@ -62,7 +52,6 @@ public class GlobalCollisionMap {
     public static WorldPoint unpack(int packed) {
         return new WorldPoint(packed & 16383, (packed >> 14) & 16383, packed >> 28);
     }
-
     public static int packed(WorldPoint wp) {
         return (wp.getX() & 16383) | ((wp.getY() & 16383) << 14) | (wp.getPlane() << 28);
     }

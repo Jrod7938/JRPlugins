@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2024. By Jrod7938
- *
- */
-
 package com.example;
 
 import org.json.JSONObject;
