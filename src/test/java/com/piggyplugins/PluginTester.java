@@ -24,6 +24,7 @@ import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SixHourLog.SixHourLogPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
+import com.piggyplugins.VardorvisHelper.VardorvisHelperPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
 import com.polyplugins.AutoRuneDragon.RuneDragonsPlugin;
@@ -71,7 +72,8 @@ public class PluginTester {
                 AutoVorkathPlugin.class,
                 RsnHiderPlugin.class,
                 RuneDragonsPlugin.class,
-                AutoTitheFarmPlugin.class
+                AutoTitheFarmPlugin.class,
+                VardorvisHelperPlugin.class
         );
         RuneLite.main(args);
     }
