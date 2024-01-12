@@ -63,6 +63,17 @@ public interface AutoTitheFarmConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "switchGearDuringHarvestingPhase",
+            name = "Switch gear for xp",
+            description = "Will switch gear to farmer's equipment (if available) during harvesting phase.",
+            position = 3,
+            section = SETUP
+    )
+    default boolean switchGearDuringHarvestingPhase() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "StopIfReachedFruitAmountFarmed",
             name = "Enable stop condition below",
             description = " ",
