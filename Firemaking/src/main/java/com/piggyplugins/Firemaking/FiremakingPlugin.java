@@ -8,6 +8,7 @@ import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.MathUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
@@ -70,7 +71,7 @@ public class FiremakingPlugin extends Plugin {
         overlayManager.add(overlay);
         timeout = 0;
         lastStartTile++;
-        clientThread.invokeLater(() -> {
+        clientThread.invoke(() -> {
             location = config.getLocation();
             startTiles = location.getStartTiles();
             logName = config.getLogs();
@@ -84,15 +85,17 @@ public class FiremakingPlugin extends Plugin {
         started = false;
         timeout = 0;
         lastStartTile = -1;
+        firstFire = true;
+
     }
 
     @Subscribe
     public void onConfigChanged(ConfigChanged event) {
         if (!event.getGroup().equals("AutoFiremaking"))
             return;
-        location = config.getLocation();
-        startTiles = location.getStartTiles();
-        logName = config.getLogs();
+//        location = config.getLocation();
+//        startTiles = location.getStartTiles();
+//        logName = config.getLogs();
     }
 
 
@@ -101,6 +104,11 @@ public class FiremakingPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN || !started || EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() != -1) {
             return;
         }
+
+        location = config.getLocation();
+        startTiles = location.getStartTiles();
+        logName = config.getLogs();
+
         if (timeout > 0) {
             timeout--;
             return;
@@ -116,13 +124,13 @@ public class FiremakingPlugin extends Plugin {
                 if (banker.isPresent()) {
                     MousePackets.queueClickPacket();
                     NPCPackets.queueNPCAction(banker.get(), "Bank");
-                    timeout = ThreadLocalRandom.current().nextInt(2, 5);
+                    timeout = MathUtil.random(1, 3);
                     return;
                 }
             }
             if (Inventory.getEmptySlots() < 27) {
                 depositInventory();
-                timeout = 2;
+                timeout = 1;
                 return;
             }
             if (!hasTinderbox()) {
@@ -139,7 +147,7 @@ public class FiremakingPlugin extends Plugin {
                 Bank.search().withName(logName).first().ifPresentOrElse(item -> {
                     MousePackets.queueClickPacket();
                     BankInteraction.useItem(item, "Withdraw-all");
-                    timeout = ThreadLocalRandom.current().nextInt(2, 5);
+                    timeout = MathUtil.random(1, 3);
                 }, () -> {
                     started = false;
                     client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Out of logs", null);

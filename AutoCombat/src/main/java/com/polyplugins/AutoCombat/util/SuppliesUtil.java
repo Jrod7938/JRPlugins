@@ -54,6 +54,16 @@ public class SuppliesUtil {
      *
      * @return The first potion found, or null if none are found
      */
+    public Widget findRangingPotion() {
+        Optional<Widget> potion = Inventory.search().onlyUnnoted().withAction("Drink").nameContains("anging potion").first();
+        return potion.orElse(null);
+    }
+
+    /**
+     * Finds any unnoted Combat Potion in the inventory
+     *
+     * @return The first potion found, or null if none are found
+     */
     public Widget findCombatPotion() {
         Optional<Widget> potion = Inventory.search().onlyUnnoted().withAction("Drink").nameContains("ombat potion").first();
         return potion.orElse(null);

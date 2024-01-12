@@ -11,6 +11,7 @@ import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.PlayerUtil;
+import com.polyplugins.Trapper.data.Salamander;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
@@ -118,6 +119,7 @@ public class AutoTrapperPlugin extends Plugin {
             startTile = client.getLocalPlayer().getWorldLocation();
         ticksNotInRegion = helper.inRegion(config.salamander().getRegionId()) ? 0 : ticksNotInRegion + 1;
         maxTraps = helper.getMaxTraps();
+        if (config.salamander() == Salamander.BLACK_SALAMANDER) maxTraps++; //+1 for wildy
         dropSalamanders();
         checkRunEnergy();
 
@@ -129,8 +131,12 @@ public class AutoTrapperPlugin extends Plugin {
 
         //this will eventually cause lost ropes and nets if another player is setting traps
         //maybe do something ab this eventually
-        if (helper.getSetTraps() + helper.getCaughtTraps() >= maxTraps)
-            return;
+        if (helper.getSetTraps() + helper.getCaughtTraps() >= maxTraps) {
+                if (EthanApiPlugin.playerPosition().distanceTo(startTile) > 0 && !EthanApiPlugin.isMoving()) {
+                    MousePackets.queueClickPacket();
+                    MovementPackets.queueMovement(startTile);
+                }
+        }
 
         TileObjects.search().filter(t -> startTile.distanceTo(t.getWorldLocation()) <= config.maxDist())
                 .withName("Young tree").withAction("Set-trap").nearestToPlayer().ifPresent(tree -> {

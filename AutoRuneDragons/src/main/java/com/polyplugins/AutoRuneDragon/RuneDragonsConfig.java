@@ -89,6 +89,12 @@ public interface RuneDragonsConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(keyName = "disablePrayers", name = "Dont use prayers?", description = "TURN THIS ON -ONLY- TO USE A PRAY FLICK PLUGIN ALONGSIDE!!!", position = 68, section = "potionConfig")
+	default boolean disablePrayers()
+	{
+		return false;
+	}
+
 	@ConfigItem(keyName = "praypotAmount", name = "Amount of Prayer Potions", description = "Amount of prayer potions to withdraw from the bank", position = 69, section = "potionConfig")
 	default int praypotAmount()
 	{

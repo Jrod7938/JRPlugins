@@ -914,6 +914,7 @@ public class RuneDragonsPlugin extends Plugin {
     }
 
     private void togglePrayers(boolean active) {
+        if (config.disablePrayers()) return;
         if (client.isPrayerActive(Prayer.PROTECT_FROM_MAGIC) != active) {
             PrayerUtil.togglePrayer(Prayer.PROTECT_FROM_MAGIC);
         }

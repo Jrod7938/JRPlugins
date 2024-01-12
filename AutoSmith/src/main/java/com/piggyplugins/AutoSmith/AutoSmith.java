@@ -87,7 +87,7 @@ public class AutoSmith extends Plugin {
 
     @Subscribe
     public void onGameTick(GameTick event) {
-        if (client.getGameState() != GameState.LOGGED_IN || EthanApiPlugin.isMoving() || !started) {
+        if (client.getGameState() != GameState.LOGGED_IN || !started) {
             return;
         }
 
@@ -108,7 +108,8 @@ public class AutoSmith extends Plugin {
             if (!hasEnoughBars()) {
                 isSmithing = false;
             }
-            return;
+            if (hasEnoughBars())
+                return;
         }
 
         checkRunEnergy();
@@ -125,7 +126,7 @@ public class AutoSmith extends Plugin {
                 boolean action = TileObjectInteraction.interact(anvil.get(), "Smith");
                 if (!action)
                     log.info("failed anvil interaction");
-                timeout = 2;
+                timeout = config.tickDelay() == 0 ? 1 : config.tickDelay();//must be at least 1
             }
         }
 
@@ -154,10 +155,10 @@ public class AutoSmith extends Plugin {
         if (!Bank.isOpen()) {
             if (banker.isPresent()) {
                 NPCInteraction.interact(banker.get(), "Bank");
-                timeout = 1;
+                timeout = config.tickDelay() == 0 ? 1 : config.tickDelay();
             } else if (bank.isPresent()) {
                 TileObjectInteraction.interact(bank.get(), "Bank");
-                timeout = 1;
+                timeout = config.tickDelay() == 0 ? 1 : config.tickDelay();
             } else {
                 client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Couldn't find bank or banker", null);
                 EthanApiPlugin.stopPlugin(this);
@@ -191,7 +192,7 @@ public class AutoSmith extends Plugin {
             EthanApiPlugin.sendClientMessage("No bars left");
             EthanApiPlugin.stopPlugin(this);
         });
-        timeout = 1;
+        timeout = config.tickDelay();
     }
 
     private boolean runIsOff() {

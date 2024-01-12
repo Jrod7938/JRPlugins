@@ -7,6 +7,6 @@ build
 nbactions.xml
 nb-configuration.xml
 nbproject/
-release/
-AutoTitheFarm/
 AutoSandCrabs/
+OneClickBlackjack/
+release/

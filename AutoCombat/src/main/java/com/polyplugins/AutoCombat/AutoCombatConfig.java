@@ -9,7 +9,7 @@ public interface AutoCombatConfig extends Config {
             keyName = "Toggle",
             name = "Toggle",
             description = "",
-            position = 0
+            position = -100
     )
     default Keybind toggle() {
         return Keybind.NOT_SET;
@@ -26,20 +26,20 @@ public interface AutoCombatConfig extends Config {
 
     @ConfigItem(
             keyName = "targetName",
-            name = "Target name",
+            name = "Target names",
             description = "",
-            position = 1,
+            position = -99,
             section = autoCombatConfig
     )
-    default String targetName() {
-        return "Chicken";
+    default String targetNames() {
+        return "Chicken,Goblin";
     }
 
     @ConfigItem(
             keyName = "useCombatPotion",
             name = "Combat potions?",
             description = "Uses regular or super combat potions",
-            position = 2,
+            position = -10,
             section = autoCombatConfig
     )
     default boolean useCombatPotion() {
@@ -54,11 +54,38 @@ public interface AutoCombatConfig extends Config {
             keyName = "useCombatAt",
             name = "Use at",
             description = "What level to use combat potions at",
-            position = 3,
+            position = -9,
             section = autoCombatConfig
     )
 
     default int useCombatPotAt() {
+        return 80;
+    }
+
+    @ConfigItem(
+            keyName = "useRangingPotion",
+            name = "Ranging potions?",
+            description = "Uses ranging potions",
+            position = -8,
+            section = autoCombatConfig
+    )
+    default boolean useRangingPotion() {
+        return false;
+    }
+
+    @Range(
+            min = 1,
+            max = 99
+    )
+    @ConfigItem(
+            keyName = "useRangingPotAt",
+            name = "Use at",
+            description = "What level to use ranging potions at",
+            position = -7,
+            section = autoCombatConfig
+    )
+
+    default int useRangingPotAt() {
         return 80;
     }
 
@@ -111,10 +138,19 @@ public interface AutoCombatConfig extends Config {
         return false;
     }
 
+    @ConfigItem(keyName = "breakTab",
+            name = "Break Tab on Task Done?",
+            description = "Break any teleport tablet when task completes",
+            position = 10,
+            section = autoCombatConfig)
+    default boolean breakTab() {
+        return false;
+    }
+
     @ConfigItem(keyName = "buryBones",
             name = "Bury bones/ashes",
             description = "Will bury ANY bone/ash in your inventory",
-            position = 9,
+            position = 10,
             section = autoCombatConfig)
     default boolean buryBones() {
         return false;

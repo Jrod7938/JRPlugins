@@ -12,6 +12,8 @@ import net.runelite.api.VarPlayer;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldArea;
 
+import java.util.List;
+
 @Slf4j
 public class PlayerUtil {
     @Inject
@@ -105,6 +107,9 @@ public class PlayerUtil {
 
     public NPCQuery getBeingInteracted(String name) {
         return NPCs.search().filter(npc -> npc.getName() != null && npc.getName().equalsIgnoreCase(name)).interactingWithLocal();
+    }
+    public NPCQuery getBeingInteracted(List<String> names) {
+        return NPCs.search().filter(npc -> npc.getName() != null && names.contains(npc.getName())).interactingWithLocal();
     }
 
     /**
