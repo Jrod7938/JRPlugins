@@ -20,8 +20,8 @@ public enum FiremakingLocation {
             new WorldPoint(3266, 3429, 0), new WorldPoint(3266, 3428, 0)))
     ),
     FALADOR_EAST("Falador East", new ArrayList<WorldPoint>(Arrays.asList(
-            new WorldPoint(3033, 3364, 0), new WorldPoint(3033, 3363, 0),
-            new WorldPoint(3033, 3362, 0), new WorldPoint(3033, 3361, 0)))
+            new WorldPoint(3033, 3362, 0), new WorldPoint(3033, 3361, 0),
+            new WorldPoint(3033, 3360, 0)))
     ),
     DRAYNOR("Draynor Village", new ArrayList<WorldPoint>(Arrays.asList(
             new WorldPoint(3105, 3250, 0), new WorldPoint(3097, 3249, 0),

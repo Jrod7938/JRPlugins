@@ -187,7 +187,7 @@ public class VardorvisHelperPlugin extends Plugin {
      * 1 tick blood captcha. Thanks @Lunatik
      */
     private void doBloodCaptcha() {
-        List<Widget> captchaBlood = Widgets.search().filter(widget -> widget.getParentId() != 10551374).hiddenState(false).withAction("Destroy").result();
+        List<Widget> captchaBlood = Widgets.search().filter(widget -> widget.getParentId() != 9764864).hiddenState(false).withAction("Destroy").result();
         if (!captchaBlood.isEmpty()) {
             captchaBlood.forEach(x -> {
                 MousePackets.queueClickPacket();

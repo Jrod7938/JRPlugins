@@ -34,5 +34,15 @@ public interface AutoSmithConfig extends Config {
         return SmithingItem.PLATE_BODY;
     }
 
+    @ConfigItem(
+            keyName = "tickDelay",
+            name = "Tick Delay",
+            description = "Slow down certain actions",
+            position = 3
+    )
+    default int tickDelay() {
+        return 0;
+    }
+
 
 }

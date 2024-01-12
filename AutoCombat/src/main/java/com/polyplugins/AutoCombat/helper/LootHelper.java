@@ -62,7 +62,7 @@ public class LootHelper {
      * @return
      */
     public List<String> getLootNames() {
-        if (lootNames == null)
+//        if (lootNames == null)
             lootNames = Arrays.stream(config.lootNames().split(",")).map(String::trim).collect(Collectors.toList());
         return lootNames;
     }

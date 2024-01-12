@@ -13,6 +13,8 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -31,11 +33,16 @@ public class Util {
      * @return The nearest npc, or null if none are found
      */
     public NPC findNpc(String name) {
-        NPCQuery npc = NPCs.search().alive().walkable().filter(n -> n.getName() != null && n.getName().equalsIgnoreCase(name)).withAction("Attack").filter(
+
+        NPCQuery npc = NPCs.search().alive().walkable().filter(n -> n.getName() != null && targetNames().contains(n.getName())).withAction("Attack").filter(
                 n -> !n.isInteracting() || (n.isInteracting() && n.getInteracting() instanceof Player
                         && n.getInteracting().equals(client.getLocalPlayer()))
         );
         return npc.nearestToPlayer().orElse(null);
+    }
+
+    public List<String> targetNames() {
+        return Arrays.asList(config.targetNames().split(","));
     }
 
     public boolean inMulti() {

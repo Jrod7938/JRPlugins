@@ -14,6 +14,7 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -23,7 +24,14 @@ public class SlayerHelper {
     @Inject
     private ClientThread clientThread;
 
-
+    public boolean isSlayerNPC(List<String> names) {
+        for (SlayerNpc snpc : SlayerNpc.values()) {
+            if (names.contains(snpc.getNpcName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isSlayerNPC(String name) {
         for (SlayerNpc snpc : SlayerNpc.values()) {
@@ -32,6 +40,14 @@ public class SlayerHelper {
             }
         }
         return false;
+    }
+
+    public SlayerNpc getSlayerInfo(List<String> names) {
+        if (!isSlayerNPC(names))
+            return null;
+        return Arrays.stream(SlayerNpc.values()).filter(snpc ->
+                names.contains(snpc.getNpcName())).findFirst().orElse(null);
+
     }
 
     public SlayerNpc getSlayerInfo(String name) {
