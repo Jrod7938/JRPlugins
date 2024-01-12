@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 01/10/2024 15:22 EST*
+*Updated 01/12/2024 17:36 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
@@ -13,6 +13,7 @@ Run PluginTester.java within src/test/java/com/piggyplugins folder
 
 - AutoVorkath WOOX WALK
 - AutoChop (Supports Some Forestry Events)
+- Auto Tithe Farm
 - RSNHider
 - Auto Rune Dragons
 - ChinBreakHandler *(made by Owain - modified to work with runelite)*

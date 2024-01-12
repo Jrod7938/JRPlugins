@@ -1,5 +1,6 @@
 package com.piggyplugins;
 
+import com.example.AutoTitheFarm.AutoTitheFarmPlugin;
 import com.example.E3t4g.et34g;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
@@ -69,7 +70,8 @@ public class PluginTester {
                 RunEnabler.class,
                 AutoVorkathPlugin.class,
                 RsnHiderPlugin.class,
-                RuneDragonsPlugin.class
+                RuneDragonsPlugin.class,
+                AutoTitheFarmPlugin.class
         );
         RuneLite.main(args);
     }
