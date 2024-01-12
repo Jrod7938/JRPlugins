@@ -71,6 +71,7 @@ dependencies {
     compileOnly project(path: ':ButterflyCatcher')
     testImplementation project(path: ':ButterflyCatcher')
 //    Uncomment for fat jar
+    implementation project(path: ':AutoTitheFarm')
     implementation project(path: ':AutoAerial')
     implementation project(path: ":AutoRuneDragons")
     implementation project(path: ':AutoBoner')
@@ -135,7 +136,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.24'
+version = '1.0.25'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
