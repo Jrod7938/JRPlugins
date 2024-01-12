@@ -14,6 +14,7 @@ https://discord.gg/PwRB5yt8KH
 
 - Equip your gear and inventory
 - Start at vorkath
+- Teleport Must be in Inventory AT ALL TIMES
 
 **Things to know**
 
