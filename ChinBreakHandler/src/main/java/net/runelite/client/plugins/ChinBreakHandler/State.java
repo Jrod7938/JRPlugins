@@ -1,4 +1,4 @@
-package com.piggyplugins.ChinBreakHandler;
+package net.runelite.client.plugins.ChinBreakHandler;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

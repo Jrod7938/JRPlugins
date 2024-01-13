@@ -1,7 +1,7 @@
-package com.piggyplugins.ChinBreakHandler.ui;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandler;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import com.piggyplugins.ChinBreakHandler.util.SwingUtilExtended;
+package net.runelite.client.plugins.ChinBreakHandler.ui;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;

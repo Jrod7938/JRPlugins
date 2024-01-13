@@ -1,10 +1,10 @@
-package com.piggyplugins.ChinBreakHandler.ui;
+package net.runelite.client.plugins.ChinBreakHandler.ui;
 import com.google.inject.Inject;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandler;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import com.piggyplugins.ChinBreakHandler.util.ConfigPanel;
-import com.piggyplugins.ChinBreakHandler.util.JMultilineLabel;
-import com.piggyplugins.ChinBreakHandler.util.SwingUtilExtended;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.util.ConfigPanel;
+import net.runelite.client.plugins.ChinBreakHandler.util.JMultilineLabel;
+import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.runelite.client.plugins.Plugin;

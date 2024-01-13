@@ -1,10 +1,10 @@
-package com.piggyplugins.ChinBreakHandler.ui;
+package net.runelite.client.plugins.ChinBreakHandler.ui;
 
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandler;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import com.piggyplugins.ChinBreakHandler.util.DeferredDocumentChangedListener;
-import com.piggyplugins.ChinBreakHandler.util.ProfilesData;
 import com.google.inject.Inject;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.util.DeferredDocumentChangedListener;
+import net.runelite.client.plugins.ChinBreakHandler.util.ProfilesData;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.ui.PluginPanel;
@@ -65,9 +65,18 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
         JCheckBox manualButton = new JCheckBox("Manual");
         JCheckBox profilesButton = new JCheckBox("Profiles plugin");
+        JCheckBox jagexLauncherButton = new JCheckBox("Jagex Launcher");
 
         String profilesSalt = configManager.getConfiguration("betterProfiles", "salt");
         boolean profilesSavePasswords = Boolean.parseBoolean(configManager.getConfiguration("betterProfiles", "rememberPassword"));
+
+        String jagexLauncher = configManager.getConfiguration("chinBreakHandler", "jagexLauncher");
+        boolean usingJagexLauncher = false;
+        if (jagexLauncher == null || jagexLauncher.isEmpty()) {
+            configManager.setConfiguration("chinBreakHandler", "jagexLauncher", false);
+        } else {
+            usingJagexLauncher = Boolean.parseBoolean(jagexLauncher);
+        }
 
         if (profilesSalt == null || profilesSalt.length() == 0 || !profilesSavePasswords)
         {
@@ -85,8 +94,18 @@ public class ChinBreakHandlerAccountPanel extends JPanel
             contentPanel(!profilesButton.isSelected());
         });
 
+        jagexLauncherButton.addActionListener(e -> {
+            configManager.setConfiguration("chinBreakHandler", "jagexlauncher", jagexLauncherButton.isSelected());
+            if (jagexLauncherButton.isSelected()) {
+                emptyContentPanel();
+                manualButton.setSelected(false);
+                profilesButton.setSelected(false);
+            }
+        });
+
         buttonGroup.add(manualButton);
         buttonGroup.add(profilesButton);
+        buttonGroup.add(jagexLauncherButton);
 
         boolean config = getConfigValue();
 
@@ -95,12 +114,27 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
         accountSelection.add(manualButton);
         accountSelection.add(profilesButton);
+        accountSelection.add(jagexLauncherButton);
 
         add(accountSelection, BorderLayout.NORTH);
 
-        contentPanel(config);
+        // Double check this value one more time.
+        jagexLauncher = configManager.getConfiguration("chinBreakHandler", "jagexLauncher");
+        usingJagexLauncher = Boolean.parseBoolean(jagexLauncher);
+
+        if (usingJagexLauncher) {
+            emptyContentPanel();
+        } else {
+            contentPanel(config);
+        }
 
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private void emptyContentPanel() {
+        contentPanel.removeAll();
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     private void contentPanel(boolean manual)

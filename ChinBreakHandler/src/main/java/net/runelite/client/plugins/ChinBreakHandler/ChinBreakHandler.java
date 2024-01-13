@@ -1,6 +1,6 @@
-package com.piggyplugins.ChinBreakHandler;
+package net.runelite.client.plugins.ChinBreakHandler;
 
-import com.piggyplugins.ChinBreakHandler.util.IntRandomNumberGenerator;
+import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;

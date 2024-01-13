@@ -22,24 +22,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package com.piggyplugins.ChinBreakHandler.util;
-
-import lombok.RequiredArgsConstructor;
+package net.runelite.client.plugins.ChinBreakHandler.util;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.ParseException;
 
-@RequiredArgsConstructor
-public final class UnitFormatterFactory extends JFormattedTextField.AbstractFormatterFactory
+final class UnitFormatter extends JFormattedTextField.AbstractFormatter
 {
     private final String units;
-    private final Map<JFormattedTextField, JFormattedTextField.AbstractFormatter> formatters = new HashMap<>();
+
+    UnitFormatter(String units)
+    {
+        this.units = units;
+    }
 
     @Override
-    public JFormattedTextField.AbstractFormatter getFormatter(final JFormattedTextField tf)
+    public Object stringToValue(final String text) throws ParseException
     {
-        return formatters.computeIfAbsent(tf, (key) -> new UnitFormatter(units));
+        final String trimmedText;
+
+        // Using the spinner controls causes the value to have the unit on the end, so remove it
+        if (text.endsWith(units))
+        {
+            trimmedText = text.substring(0, text.length() - units.length());
+        }
+        else
+        {
+            trimmedText = text;
+        }
+
+        try
+        {
+            return Integer.valueOf(trimmedText);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new ParseException(trimmedText + " is not an integer.", 0);
+        }
+    }
+
+    @Override
+    public String valueToString(final Object value)
+    {
+        return value + units;
     }
 }

@@ -1,4 +1,4 @@
-package com.piggyplugins.ChinBreakHandler;
+package net.runelite.client.plugins.ChinBreakHandler;
 
 import com.example.EthanApiPlugin.Collections.Widgets;
 import com.example.PacketUtils.WidgetID;
@@ -6,8 +6,8 @@ import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
-import com.piggyplugins.ChinBreakHandler.util.IntRandomNumberGenerator;
+import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
+import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.Getter;
@@ -304,6 +304,20 @@ public class ChinBreakHandlerPlugin extends Plugin {
                 }
             }
 
+            boolean usingJagexLauncher = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", "jagexLauncher"));
+
+            if (usingJagexLauncher) {
+                clientThread.invoke(() -> {
+                    // this might not even work tbh
+//                    sendKey(KeyEvent.VK_ENTER); // do we need these? surely not
+//                    sendKey(KeyEvent.VK_ENTER);
+//                    sendKey(KeyEvent.VK_ENTER);
+                    client.setGameState(GameState.LOGGING_IN);
+                });
+
+                return;
+            }
+
             if (username != null && password != null)
             {
                 String finalUsername = username;
@@ -333,13 +347,16 @@ public class ChinBreakHandlerPlugin extends Plugin {
     @Subscribe
     public void onGameStateChanged(GameStateChanged gameStateChanged)
     {
-        if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN)
+        if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN || gameStateChanged.getGameState() == GameState.CONNECTION_LOST)
         {
             state = State.LOGIN_SCREEN;
 
             if (!chinBreakHandler.getActivePlugins().isEmpty())
             {
-                if (optionsConfig.hopAfterBreak() && (optionsConfig.american() || optionsConfig.unitedKingdom() || optionsConfig.german() || optionsConfig.australian()))
+                if (optionsConfig.hopAfterBreak() && (optionsConfig.american()
+                        || optionsConfig.unitedKingdom()
+                        || optionsConfig.german()
+                        || optionsConfig.australian()))
                 {
                     hop();
                 }

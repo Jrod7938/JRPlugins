@@ -1,9 +1,9 @@
-package com.piggyplugins.ChinBreakHandler.ui;
+package net.runelite.client.plugins.ChinBreakHandler.ui;
 
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import com.piggyplugins.ChinBreakHandler.util.JMultilineLabel;
-import com.piggyplugins.ChinBreakHandler.util.OnOffToggleButton;
-import com.piggyplugins.ChinBreakHandler.util.UnitFormatterFactory;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.util.JMultilineLabel;
+import net.runelite.client.plugins.ChinBreakHandler.util.OnOffToggleButton;
+import net.runelite.client.plugins.ChinBreakHandler.util.UnitFormatterFactory;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.Units;
 import net.runelite.client.plugins.Plugin;

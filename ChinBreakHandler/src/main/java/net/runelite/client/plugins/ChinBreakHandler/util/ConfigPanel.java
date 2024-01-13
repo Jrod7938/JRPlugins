@@ -1,7 +1,7 @@
-package com.piggyplugins.ChinBreakHandler.util;
+package net.runelite.client.plugins.ChinBreakHandler.util;
 
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import com.piggyplugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.primitives.Ints;
 import io.reactivex.rxjava3.disposables.Disposable;

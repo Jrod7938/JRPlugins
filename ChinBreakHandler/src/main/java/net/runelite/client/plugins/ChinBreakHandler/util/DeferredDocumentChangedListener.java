@@ -1,4 +1,4 @@
-package com.piggyplugins.ChinBreakHandler.util;
+package net.runelite.client.plugins.ChinBreakHandler.util;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

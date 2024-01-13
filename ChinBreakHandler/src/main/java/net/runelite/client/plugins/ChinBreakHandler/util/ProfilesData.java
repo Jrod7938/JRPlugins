@@ -1,4 +1,4 @@
-package com.piggyplugins.ChinBreakHandler.util;
+package net.runelite.client.plugins.ChinBreakHandler.util;
 
 import net.runelite.client.config.ConfigManager;
 
