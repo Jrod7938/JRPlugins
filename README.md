@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 01/12/2024 17:36 EST*
+*Updated 01/13/2024 18:20 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
@@ -12,6 +12,7 @@ Run PluginTester.java within src/test/java/com/piggyplugins folder
 ## Plugins:
 
 - AutoVorkath WOOX WALK
+- Auto Leviathan Prayers
 - AutoChop (Supports Some Forestry Events)
 - Auto Tithe Farm
 - RSNHider
