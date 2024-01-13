@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = 'latest.release'
+    def runeLiteVersion = '1.10.19'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -130,6 +130,8 @@ dependencies {
     testImplementation project(path: ':AutoVorkath')
     compileOnly project(path: ':RSNHider')
     testImplementation project(path: ':RSNHider')
+    compileOnly project(path: ':AutoLeviathanPrayers')
+    testImplementation project(path: ':AutoLeviathanPrayers')
 
 
 }
