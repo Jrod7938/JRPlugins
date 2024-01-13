@@ -77,6 +77,7 @@ dependencies {
     implementation project(path: ':AutoBoner')
     implementation project(path: ':AutoChompy')
     implementation project(path: ':AutoCombat')
+    implementation project(path: ':AutoTrapper')
     implementation project(path: ':AutoSmith')
     implementation project(path: ':ButterflyCatcher')
     implementation project(path: ':DialogueContinuer')
@@ -136,7 +137,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.25'
+version = '1.0.26'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
