@@ -113,7 +113,7 @@ class AutoVorkathPlugin : Plugin() {
         println("Auto Vorkath Plugin Activated")
         botState = State.THINKING
         running = client.gameState == GameState.LOGGED_IN
-        lootNames = mutableSetOf()
+        lootNames = mutableSetOf("Teak seed")
         breakHandler.registerPlugin(this)
         breakHandler.startPlugin(this)
         overlayManager.add(autoVorkathOverlay)
@@ -337,6 +337,11 @@ class AutoVorkathPlugin : Plugin() {
                         MousePackets.queueClickPacket()
                         WidgetPackets.queueWidgetAction(collect, "Collect to inventory")
                     }
+                    NPCs.search().nameContains("Banker").nearestToPlayer().ifPresent { banker ->
+                        NPCInteraction.interact(banker, "Bank")
+                    }
+                    changeStateTo(State.GETTING_ITEM, 1)
+                } else {
                     NPCs.search().nameContains("Banker").nearestToPlayer().ifPresent { banker ->
                         NPCInteraction.interact(banker, "Bank")
                     }
