@@ -811,8 +811,6 @@ class AutoVorkathPlugin : Plugin() {
         lootNames.forEach { item ->
             if (BankInventory.search().nameContains(item).result().isNotEmpty()) {
                 BankInventoryInteraction.useItem(item, "Deposit-All")
-            } else {
-                lootNames.remove(item)
             }
         }
         if (!hasItem(config.TELEPORT().toString())) {
