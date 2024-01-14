@@ -446,6 +446,11 @@ class AutoVorkathPlugin : Plugin() {
                 InventoryInteraction.useItem(crossbow, "Wield")
             }
         }
+        if (Inventory.search().nameContains("Ruby dragon bolts (e)").result().isNotEmpty()) {
+            Inventory.search().nameContains("Ruby dragon bolts (e)").first().ifPresent { bolts ->
+                InventoryInteraction.useItem(bolts, "Wield")
+            }
+        }
         lootQueue.forEach {
             if (!isMoving()) {
                 if (!Inventory.full()) {
@@ -568,17 +573,33 @@ class AutoVorkathPlugin : Plugin() {
             changeStateTo(State.THINKING)
             return
         } else {
-            val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
-            val middle = WorldPoint(vorkath.x + 3, vorkath.y - 5, 0)
+            val vorkath = NPCs.search().nameContains("Vorkath").first().get()
+            val maxHealth = vorkath.healthScale
+            val currentHealthRatio = vorkath.healthRatio
+            val middle = WorldPoint(vorkath.worldLocation.x + 3, vorkath.worldLocation.y - 5, 0)
             if (isVorkathAsleep()) {
                 changeStateTo(State.WALKING_TO_BANK)
                 return
             }
             if (client.localPlayer.interacting == null) {
-                NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
-                    NPCInteraction.interact(vorkath, "Attack")
+                if (maxHealth != -1 && currentHealthRatio != -1) {
+                    val healthPercentage = (currentHealthRatio * 100) / maxHealth
+                    println("HEALTH PERCENTAGE: $healthPercentage")
+
+                    if (healthPercentage < 35 && config.SWITCHBOLTS()) {
+                        Inventory.search().nameContains("Diamond dragon bolts (e)").first().ifPresent {
+                            InventoryInteraction.useItem(it, "Wield")
+                        }
+                        NPCInteraction.interact(vorkath, "Attack")
+                        return
+                    } else {
+                        Inventory.search().nameContains("Ruby dragon bolts (e)").first().ifPresent {
+                            InventoryInteraction.useItem(it, "Wield")
+                        }
+                        NPCInteraction.interact(vorkath, "Attack")
+                        return
+                    }
                 }
-                return
             }
             if (client.localPlayer.worldLocation != middle) {
                 if (!isMoving()) {
@@ -832,6 +853,11 @@ class AutoVorkathPlugin : Plugin() {
         if (BankInventory.search().nameContains(config.ANTIFIRE().toString()).result().size <= 1) {
             withdraw(config.ANTIFIRE().toString(), 1)
         }
+        if (!hasItem("Diamond dragon bolts (e)")) {
+            Bank.search().nameContains("Diamond dragon bolts (e)").first().ifPresent { bolts ->
+                BankInteraction.useItem(bolts, "Withdraw-All")
+            }
+        }
         if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
             if (BankInventory.search().nameContains("Anti-venom").result().size <= 1) {
                 withdraw("Anti-venom", 1)
@@ -840,6 +866,12 @@ class AutoVorkathPlugin : Plugin() {
         if (!Inventory.full()) {
             for (i in 1..config.FOODAMOUNT().width - Inventory.getItemAmount(config.FOOD())) {
                 withdraw(config.FOOD(), 1)
+            }
+        }
+        if (Bank.isOpen()) {
+            Widgets.search().withAction("Close").first().ifPresent { close ->
+                MousePackets.queueClickPacket()
+                WidgetPackets.queueWidgetAction(close, "Close")
             }
         }
         changeStateTo(State.THINKING)
@@ -915,7 +947,6 @@ class AutoVorkathPlugin : Plugin() {
         }
         return false
     }
-
 
 
     private fun sendKey(key: Int) {

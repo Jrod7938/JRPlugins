@@ -8,6 +8,7 @@ import com.jrplugins.autoVorkath.enums.*;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Range;
 
 import java.awt.*;
 
@@ -65,10 +66,20 @@ public interface AutoVorkathConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "switchBolts",
+            name = "Switch Bolts",
+            description = "Change to Diamond Bolts (e) at 20% health?",
+            position = 5
+    )
+    default boolean SWITCHBOLTS() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "rangePotion",
             name = "Ranging Potion",
             description = "What Ranging potion to use?",
-            position = 5
+            position = 6
     )
     default RANGE_POTION RANGEPOTION() {
         return RANGE_POTION.DIVINE_RANGING_POTION;
@@ -78,7 +89,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "prayerPotion",
             name = "Prayer Potion",
             description = "What Prayer potion to use?",
-            position = 6
+            position = 7
     )
     default PRAYER_POTION PRAYERPOTION() {
         return PRAYER_POTION.PRAYER;
@@ -88,7 +99,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "antiFirePotion",
             name = "Antifire Potion",
             description = "What Antifire potion to use?",
-            position = 7
+            position = 8
     )
     default ANTIFIRE ANTIFIRE() {
         return ANTIFIRE.EXTENDED_SUPER_ANTIFIRE;
@@ -98,37 +109,45 @@ public interface AutoVorkathConfig extends Config {
             keyName = "foodAmount",
             name = "Food Amount",
             description = "MAX FOOD : MIN FOOD",
-            position = 8
+            position = 9
     )
     default Dimension FOODAMOUNT() {
-        return new Dimension(17, 15);
+        return new Dimension(16, 15);
     }
 
     @ConfigItem(
             keyName = "poolDrinkat",
             name = "Ornate Pool Drink",
             description = "HEALTH : PRAYER",
-            position = 9
+            position = 10
     )
     default Dimension POOLDRINK() {
         return new Dimension(90, 90);
     }
 
+    @Range(
+            min = 40,
+            max = 90
+    )
     @ConfigItem(
             keyName = "eatat",
             name = "Eat at",
             description = "Eat at what health?",
-            position = 10
+            position = 11
     )
     default int EATAT() {
         return 75;
     }
 
+    @Range(
+            min = 1,
+            max = 2000
+    )
     @ConfigItem(
             keyName = "sellAt",
             name = "Sell At",
             description = "Sell items at what kill?",
-            position = 11
+            position = 12
     )
     default int SELLAT() {
         return 15;
@@ -138,7 +157,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "mule",
             name = "Mule GP?",
             description = "Trade GP after selling? (TARGET MUST BE IN GE)",
-            position = 12
+            position = 13
     )
     default boolean MULE() {
         return false;
@@ -148,7 +167,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "muleName",
             name = "Mule Name",
             description = "Name of player in GE to trade.",
-            position = 13
+            position = 14
     )
     default String MULENAME() {
         return "";
@@ -158,7 +177,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "food",
             name = "Food",
             description = "What food to use? (NOT MANTA RAY!)",
-            position = 14
+            position = 15
     )
     default String FOOD() {
         return "Shark";
