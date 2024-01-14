@@ -831,7 +831,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun bank() {
         lootNames.forEach { item ->
-            if (BankInventory.search().nameContains(item).result().isNotEmpty()) {
+            if (hasItem(item)) {
                 BankInventoryInteraction.useItem(item, "Deposit-All")
             }
         }
@@ -859,7 +859,7 @@ class AutoVorkathPlugin : Plugin() {
             }
         }
         if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
-            if (BankInventory.search().nameContains("Anti-venom").result().size <= 1) {
+            if (!hasItem("Anti-venom")) {
                 withdraw("Anti-venom", 1)
             }
         }
@@ -960,7 +960,7 @@ class AutoVorkathPlugin : Plugin() {
         client.canvas.dispatchEvent(e)
     }
 
-    private fun hasItem(name: String): Boolean = Inventory.search().nameContains(name).result().isNotEmpty()
+    private fun hasItem(name: String): Boolean = BankInventory.search().nameContains(name).result().isNotEmpty()
     private fun withdraw(name: String, amount: Int) {
         Bank.search().nameContains(name).first().ifPresent { item ->
             BankInteraction.withdrawX(item, amount)
