@@ -467,7 +467,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun acidState() {
         if (!runIsOff()) enableRun()
-        activatePrayers(false)
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (!inVorkathArea()) {
             acidPools.clear()
             changeStateTo(State.THINKING)
@@ -586,6 +586,7 @@ class AutoVorkathPlugin : Plugin() {
                     MovementPackets.queueMovement(middle)
                 }
             }
+            drinkAntiVenom()
             eat(config.EATAT())
             if (Inventory.search().nameContains(config.CROSSBOW().toString()).result().isNotEmpty()) {
                 InventoryInteraction.useItem(config.CROSSBOW().toString(), "Wield")
@@ -765,14 +766,8 @@ class AutoVorkathPlugin : Plugin() {
             }
             return
         }
-
         drinkPrayer()
-
-        if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
-            Inventory.search().nameContains("Anti-venom").first().ifPresent {
-                InventoryInteraction.useItem("Anti-venom", "Drink")
-            }
-        }
+        drinkAntiVenom()
         isPrepared = drankAntiFire && drankRangePotion && !inventoryHasLoot()
         if (isPrepared) {
             changeStateTo(State.THINKING)
@@ -780,6 +775,16 @@ class AutoVorkathPlugin : Plugin() {
         } else {
             changeStateTo(State.WALKING_TO_BANK)
             return
+        }
+    }
+
+    private fun drinkAntiVenom() {
+        if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
+            if (client.getVarbitValue(VarPlayer.POISON) >= -38) {
+                Inventory.search().nameContains("Anti-venom").first().ifPresent {
+                    InventoryInteraction.useItem(it, "Drink")
+                }
+            }
         }
     }
 
