@@ -249,11 +249,22 @@ public class ChinBreakHandlerPlugin extends Plugin {
         }
     }
 
+    private boolean loginCheck() {
+        Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
+        Map<Plugin, Instant> plannedBreaks = chinBreakHandler.getPlannedBreaks();
+
+        if (optionsConfig.autoLoginOnDisconnect()) {
+            return activeBreaks.isEmpty() && plannedBreaks.isEmpty();
+        }
+
+        return activeBreaks.isEmpty();
+    }
+
     private void seconds(long ignored)
     {
         Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
 
-        if (activeBreaks.isEmpty() || client.getGameState() != GameState.LOGIN_SCREEN)
+        if (loginCheck() || client.getGameState() != GameState.LOGIN_SCREEN)
         {
             return;
         }

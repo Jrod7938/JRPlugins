@@ -26,6 +26,17 @@ public interface OptionsConfig extends Config {
         return 0;
     }
 
+    @ConfigItem(
+            keyName = "autoLoginOnDisconnect",
+            name = "Auto Login",
+            description = "Will automatically log you in if you disconnect while a break is planned",
+            position = 2,
+            section = misc
+    )
+    default boolean autoLoginOnDisconnect() {
+        return true;
+    }
+
     @ConfigSection(
             name = "Hopping",
             description = "",
