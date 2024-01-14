@@ -783,7 +783,9 @@ class AutoVorkathPlugin : Plugin() {
             if (client.getVarbitValue(VarPlayer.POISON) >= -38) {
                 Inventory.search().nameContains("Anti-venom").first().ifPresent {
                     InventoryInteraction.useItem(it, "Drink")
+                    tickDelay = 2
                 }
+                return
             }
         }
     }
