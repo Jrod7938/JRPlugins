@@ -584,7 +584,7 @@ class AutoVorkathPlugin : Plugin() {
             if (client.localPlayer.interacting == null) {
                 if (maxHealth != -1 && currentHealthRatio != -1) {
                     val healthPercentage = (currentHealthRatio * 100) / maxHealth
-                    println("HEALTH PERCENTAGE: $healthPercentage")
+                    //println("HEALTH PERCENTAGE: $healthPercentage")
 
                     if (healthPercentage < 35 && config.SWITCHBOLTS()) {
                         Inventory.search().nameContains("Diamond dragon bolts (e)").first().ifPresent {
