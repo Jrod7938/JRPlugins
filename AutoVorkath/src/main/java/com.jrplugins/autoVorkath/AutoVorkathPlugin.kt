@@ -868,12 +868,6 @@ class AutoVorkathPlugin : Plugin() {
                 withdraw(config.FOOD(), 1)
             }
         }
-        if (Bank.isOpen()) {
-            Widgets.search().withAction("Close").first().ifPresent { close ->
-                MousePackets.queueClickPacket()
-                WidgetPackets.queueWidgetAction(close, "Close")
-            }
-        }
         changeStateTo(State.THINKING)
     }
 
