@@ -875,7 +875,7 @@ class AutoVorkathPlugin : Plugin() {
                 withdraw(config.FOOD(), 1)
             }
         }
-        changeStateTo(State.THINKING)
+        changeStateTo(State.WALKING_TO_VORKATH)
     }
 
     private fun inVorkathArea(): Boolean =
