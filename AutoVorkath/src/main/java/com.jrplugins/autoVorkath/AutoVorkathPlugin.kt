@@ -858,9 +858,11 @@ class AutoVorkathPlugin : Plugin() {
         if (BankInventory.search().nameContains(config.ANTIFIRE().toString()).result().size <= 1) {
             withdraw(config.ANTIFIRE().toString(), 1)
         }
-        if (!hasItem("Diamond dragon bolts (e)")) {
-            Bank.search().nameContains("Diamond dragon bolts (e)").first().ifPresent { bolts ->
-                BankInteraction.useItem(bolts, "Withdraw-All")
+        if (config.SWITCHBOLTS()) {
+            if (!hasItem("Diamond dragon bolts (e)")) {
+                Bank.search().nameContains("Diamond dragon bolts (e)").first().ifPresent { bolts ->
+                    BankInteraction.useItem(bolts, "Withdraw-All")
+                }
             }
         }
         if (Equipment.search().nameContains("Serpentine helm").result().isEmpty()) {
