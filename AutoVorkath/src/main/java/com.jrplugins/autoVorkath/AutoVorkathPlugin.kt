@@ -113,7 +113,7 @@ class AutoVorkathPlugin : Plugin() {
         println("Auto Vorkath Plugin Activated")
         botState = State.THINKING
         running = client.gameState == GameState.LOGGED_IN
-        lootNames = mutableSetOf("Teak seed")
+        lootNames = mutableSetOf()
         breakHandler.registerPlugin(this)
         breakHandler.startPlugin(this)
         overlayManager.add(autoVorkathOverlay)
