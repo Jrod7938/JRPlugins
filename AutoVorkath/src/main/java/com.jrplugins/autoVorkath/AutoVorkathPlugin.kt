@@ -924,7 +924,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun inventoryHasLoot(): Boolean {
         lootNames.forEach { item ->
-            if (Inventory.search().nameContains(item).result().isNotEmpty()) {
+            if (Inventory.search().withName(item).result().isNotEmpty()) {
                 return true
             }
         }
