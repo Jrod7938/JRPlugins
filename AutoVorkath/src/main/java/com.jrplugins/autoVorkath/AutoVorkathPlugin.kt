@@ -773,7 +773,7 @@ class AutoVorkathPlugin : Plugin() {
     private fun prepareState() {
         val currentTime = System.currentTimeMillis()
 
-        if (!drankRangePotion && currentTime - lastDrankRangePotion > config.RANGEPOTION().time()) {
+        if (!drankRangePotion || currentTime - lastDrankRangePotion > config.RANGEPOTION().time()) {
             Inventory.search().nameContains(config.RANGEPOTION().toString()).first().ifPresent { rangePotion ->
                 InventoryInteraction.useItem(rangePotion, "Drink")
                 lastDrankRangePotion = System.currentTimeMillis()
@@ -782,7 +782,7 @@ class AutoVorkathPlugin : Plugin() {
             }
             return
         }
-        if (!drankAntiFire && currentTime - lastDrankAntiFire > config.ANTIFIRE().time()) {
+        if (!drankAntiFire || currentTime - lastDrankAntiFire > config.ANTIFIRE().time()) {
             Inventory.search().nameContains(config.ANTIFIRE().toString()).first().ifPresent { antiFire ->
                 InventoryInteraction.useItem(antiFire, "Drink")
                 lastDrankAntiFire = System.currentTimeMillis()
