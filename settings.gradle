@@ -4,7 +4,6 @@ pluginManagement {
     }
 }
 rootProject.name = 'example'
-include 'PiggyLoader'
 include 'AoeWarn'
 include 'AutoJugHumidifier'
 include 'AutoRifts'
