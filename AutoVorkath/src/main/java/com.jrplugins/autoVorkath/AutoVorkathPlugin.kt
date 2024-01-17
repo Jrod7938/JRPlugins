@@ -468,7 +468,8 @@ class AutoVorkathPlugin : Plugin() {
                 } else {
                     EthanApiPlugin.sendClientMessage("Inventory full, going to bank.")
                     lootQueue.clear()
-                    changeStateTo(State.WALKING_TO_BANK)
+                    if (killCount % config.SELLAT() == 0 && killCount != 0) changeStateTo(State.WALKING_TO_GE)
+                    else changeStateTo(State.WALKING_TO_BANK, 1)
                     return
                 }
             }
