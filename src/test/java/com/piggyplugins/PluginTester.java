@@ -15,7 +15,6 @@ import com.piggyplugins.AutoAerial.AutoAerialPlugin;
 import com.piggyplugins.AutoJugHumidifier.AutoJugHumidifierPlugin;
 import com.piggyplugins.AutoRifts.AutoRiftsPlugin;
 import com.piggyplugins.AutoSmith.AutoSmith;
-import com.piggyplugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import com.piggyplugins.Firemaking.FiremakingPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
@@ -36,6 +35,7 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import rsnhider.RsnHiderPlugin;
 
 public class PluginTester {
