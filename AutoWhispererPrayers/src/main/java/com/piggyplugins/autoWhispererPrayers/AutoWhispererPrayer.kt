@@ -10,7 +10,7 @@ import java.awt.AWTException
 
 @PluginDescriptor(
     name = "<html><font color=\"#9ddbff\">[JR]</font> Auto Whisperer Prayers",
-    description = "Auto Leviathan Prayer plugin",
+    description = "Auto Whisperer Prayer plugin",
     tags = ["Whisperer", "prayer", "jr", "dt2", "auto", "boss"],
     enabledByDefault = false
 )
