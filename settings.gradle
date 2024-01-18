@@ -52,5 +52,5 @@ include 'AutoChop'
 include 'AutoVorkath'
 include 'RSNHider'
 include 'AutoLeviathanPrayers'
-
+include 'AutoWhispererPrayers'
 

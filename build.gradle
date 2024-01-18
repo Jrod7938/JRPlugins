@@ -82,6 +82,8 @@ dependencies {
     testImplementation project(path: ':RSNHider')
     compileOnly project(path: ':AutoLeviathanPrayers')
     testImplementation project(path: ':AutoLeviathanPrayers')
+    compileOnly project(path: ':AutoWhispererPrayers')
+    testImplementation project(path: ':AutoWhispererPrayers')
 }
 
 sourceSets {
