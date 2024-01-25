@@ -36,7 +36,6 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
-import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import rsnhider.RsnHiderPlugin;
 
 public class PluginTester {
@@ -58,7 +57,6 @@ public class PluginTester {
                 RooftopAgilityPlugin.class,
                 UpkeepPlugin.class,
                 AutoChop.class,
-                ChinBreakHandlerPlugin.class,
                 PathingTesting.class,
                 PiggyUtilsPlugin.class,
                 SixHourLogPlugin.class,
