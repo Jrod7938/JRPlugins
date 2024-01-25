@@ -73,6 +73,8 @@ class AutoChop : Plugin() {
 
     var tickDelay = 0
 
+    private val distance = 15
+
     @Provides
     private fun getConfig(configManager: ConfigManager): AutoChopConfig {
         return configManager.getConfig(AutoChopConfig::class.java)
@@ -93,6 +95,7 @@ class AutoChop : Plugin() {
         breakHandler.unregisterPlugin(this);
         keyManager.unregisterKeyListener(toggle)
         overlayManager.remove(autoChopOverlay)
+        started = false
     }
 
     @Subscribe
@@ -223,7 +226,7 @@ class AutoChop : Plugin() {
             }
             if (pheasantExists()) {
                 val pheasantNPCLocations = NPCs.search().withName("Pheasant").result().map { it.worldLocation }
-                TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15)
+                TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(distance)
                     .filter { nest -> !pheasantNPCLocations.contains(nest.worldLocation) }
                     .nearestToPlayer().ifPresent { pheasant ->
                         TileObjectInteraction.interact(pheasant, "Retrieve-egg")
@@ -290,7 +293,7 @@ class AutoChop : Plugin() {
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (treeRootExists()) {
                 useSpecial()
-                TileObjects.search().nameContains("infused Tree root").withAction("Chop down").withinDistance(15)
+                TileObjects.search().nameContains("infused Tree root").withAction("Chop down").withinDistance(distance)
                     .nearestToPlayer().ifPresent { treeRoot ->
                         TileObjectInteraction.interact(treeRoot, "Chop down")
                     }
@@ -308,7 +311,8 @@ class AutoChop : Plugin() {
                 return
             }
             if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isNotEmpty()) {
-                val campFire = TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(15)
+                val campFire =
+                    TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(distance)
                     .nearestToPlayer()
                 if (campFire.isPresent) {
                     TileObjectInteraction.interact(campFire.get(), "Tend-to")
@@ -386,7 +390,7 @@ class AutoChop : Plugin() {
     private fun handleSearchingState() {
         TileObjects.search().nameContains(autoChopConfig.TREEANDLOCATION().treeName())
             .withAction(autoChopConfig.TREEANDLOCATION().treeAction())
-            .withinDistance(10).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
+            .withinDistance(distance).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
                 useSpecial()
                 TileObjectInteraction.interact(tree, autoChopConfig.TREEANDLOCATION().treeAction())
                 changeStateTo(State.CUTTING)
@@ -465,10 +469,10 @@ class AutoChop : Plugin() {
 
     private fun foxTrapExists(): Boolean = NPCs.search().nameContains("Fox trap").result().isNotEmpty()
     private fun treeRootExists(): Boolean =
-        TileObjects.search().nameContains("infused Tree root").withinDistance(15).result().isNotEmpty()
+        TileObjects.search().nameContains("infused Tree root").withinDistance(distance).result().isNotEmpty()
 
     private fun rainbowExists(): Boolean =
-        TileObjects.search().nameContains("ainbow").withinDistance(15).result().isNotEmpty()
+        TileObjects.search().nameContains("ainbow").withinDistance(distance).result().isNotEmpty()
 
     private fun beeHiveExists(): Boolean =
         NPCs.search().nameContains("nfinished Beehive").result().isNotEmpty()
@@ -477,13 +481,13 @@ class AutoChop : Plugin() {
         TileObjects.search().nameContains("Sturdy beehive").result().isNotEmpty()
 
     private fun rainbowLocation(): WorldPoint =
-        TileObjects.search().nameContains("ainbow").withinDistance(15).nearestToPlayer().get().worldLocation
+        TileObjects.search().nameContains("ainbow").withinDistance(distance).nearestToPlayer().get().worldLocation
 
     private fun campFireExists(): Boolean =
-        TileObjects.search().nameContains("Campfire").withinDistance(15).result().isNotEmpty()
+        TileObjects.search().nameContains("Campfire").withinDistance(distance).result().isNotEmpty()
 
     private fun pheasantExists(): Boolean =
-        TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(15).result()
+        TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(distance).result()
             .isNotEmpty()
     private fun ritualCircleExists(): Boolean = circles.isNotEmpty()
     private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
