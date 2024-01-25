@@ -263,16 +263,14 @@ class AutoChop : Plugin() {
     }
 
     private fun handleRainbowState() {
-        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
-            if (rainbowExists()) {
-                if (client.localPlayer.worldLocation != rainbowLocation()) {
-                    PathingTesting.walkTo(rainbowLocation())
-                    tickDelay = 1
-                    return
-                }
-            } else {
-                changeStateTo(State.IDLE)
+        if (rainbowExists()) {
+            if (client.localPlayer.worldLocation != rainbowLocation()) {
+                PathingTesting.walkTo(rainbowLocation())
+                tickDelay = 1
+                return
             }
+        } else {
+            changeStateTo(State.IDLE)
         }
     }
 
@@ -313,7 +311,7 @@ class AutoChop : Plugin() {
             if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isNotEmpty()) {
                 val campFire =
                     TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(distance)
-                    .nearestToPlayer()
+                        .nearestToPlayer()
                 if (campFire.isPresent) {
                     TileObjectInteraction.interact(campFire.get(), "Tend-to")
                     return
@@ -489,6 +487,7 @@ class AutoChop : Plugin() {
     private fun pheasantExists(): Boolean =
         TileObjects.search().nameContains("Pheasant Nest").withAction("Retrieve-egg").withinDistance(distance).result()
             .isNotEmpty()
+
     private fun ritualCircleExists(): Boolean = circles.isNotEmpty()
     private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
     private fun hasAxe(): Boolean = !Equipment.search().nameContains("axe").empty()
@@ -561,7 +560,6 @@ class AutoChop : Plugin() {
 
         return null // No entling found that needs pruning
     }
-
 
 
     private fun breakPlayersAnimation(): Boolean {
