@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
 package com.piggyplugins.autoWhispererPrayers
 
 import com.example.InteractionApi.PrayerInteraction
