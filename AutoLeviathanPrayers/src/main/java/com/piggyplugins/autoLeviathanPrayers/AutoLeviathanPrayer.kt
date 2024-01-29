@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2024. By Jrod7938
+ *
+ */
 package com.piggyplugins.autoLeviathanPrayers
 
 import com.example.InteractionApi.PrayerInteraction
