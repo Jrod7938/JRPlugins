@@ -69,7 +69,7 @@ public class Equipment {
                 if (w == null || w.getActions() == null) {
                     continue;
                 }
-                equipment.add(new EquipmentItemWidget(w.getName(), item.getId(), w.getId(), i, w.getActions()));
+                equipment.add(new EquipmentItemWidget(w.getName(), item.getId(), w.getId(), -1, w.getActions()));
             }
             lastUpdateTick = client.getTickCount();
         }
@@ -103,4 +103,3 @@ public class Equipment {
 //        }
 //    }
 }
-
