@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@PluginDescriptor(name = "PathingTesting", description = "", enabledByDefault = false, tags = {"Testing"})
+@PluginDescriptor(name = "PathingTesting", description = "", enabledByDefault = true, tags = {"Testing"})
 public class PathingTesting extends Plugin {
     static List<WorldPoint> path = new ArrayList<>();
     static List<WorldPoint> fullPath = new ArrayList<>();
