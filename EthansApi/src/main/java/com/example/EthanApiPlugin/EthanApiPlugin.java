@@ -47,6 +47,7 @@ public class EthanApiPlugin extends Plugin {
     static ItemManager itemManager = RuneLite.getInjector().getInstance(ItemManager.class);
     static Method doAction = null;
     static String animationField = null;
+    static final HashSet<WorldPoint> EMPTY_SET = new HashSet<>();
     public static final int[][] directionsMap = {
             {-2, 0},
             {0, 2},
@@ -103,7 +104,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("af");
+            skullField = player.getClass().getDeclaredField("al");
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -111,7 +112,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * -921814889;
+            var1 = skullField.getInt(player) * 220135685;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
@@ -173,7 +174,7 @@ public class EthanApiPlugin extends Plugin {
                 }
                 int value = declaredField.getInt(npc);
                 declaredField.setInt(npc, 4795789);
-                if (npc.getAnimation() == -70627403 * 4795789) {
+                if (npc.getAnimation() == 1049413981 * 4795789) {
                     animationField = declaredField.getName();
                     declaredField.setInt(npc, value);
                     declaredField.setAccessible(false);
@@ -195,18 +196,18 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static int pathLength(NPC npc) {
-        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("du");
+        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("bs");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(npc) * 6573123;
+        int path = pathLength.getInt(npc) * 614875555;
         pathLength.setAccessible(false);
         return path;
     }
 
     @SneakyThrows
     public static int pathLength(Player player) {
-        Field pathLength = player.getClass().getSuperclass().getDeclaredField("du");
+        Field pathLength = player.getClass().getSuperclass().getDeclaredField("bs");
         pathLength.setAccessible(true);
-        int path = pathLength.getInt(player) * 6573123;
+        int path = pathLength.getInt(player) * 614875555;
         pathLength.setAccessible(false);
         return path;
     }
@@ -272,35 +273,48 @@ public class EthanApiPlugin extends Plugin {
     }
 
     public static List<WorldPoint> reachableTiles() {
-        HashSet<Tile> retPoints = new HashSet<>();
-        Tile[][] tiles = client.getScene().getTiles()[client.getPlane()];
+        boolean[][] visited = new boolean[104][104];
         int[][] flags = client.getCollisionMaps()[client.getPlane()].getFlags();
-        Tile firstPoint = tiles[client.getLocalPlayer().getWorldLocation().getX() - client.getBaseX()][client.getLocalPlayer().getWorldLocation().getY() - client.getBaseY()];
-        Queue<Tile> queue = new LinkedList<>();
+        WorldPoint playerLoc = client.getLocalPlayer().getWorldLocation();
+        int firstPoint = (playerLoc.getX()-client.getBaseX() << 16) | playerLoc.getY()-client.getBaseY();
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
         queue.add(firstPoint);
         while (!queue.isEmpty()) {
-            Tile tile = queue.poll();
-            int x = tile.getSceneLocation().getX();
-            int y = tile.getSceneLocation().getY();
-
-            if (y > 0 && canMoveSouth(flags[x][y]) && canMoveTo(flags[x][y - 1]) && !retPoints.contains(tiles[x][y - 1])) {
-                queue.add(tiles[x][y - 1]);
-                retPoints.add(tiles[x][y - 1]);
+            int point = queue.poll();
+            short x =(short)(point >> 16);
+            short y = (short)point;
+            if (y < 0 || x < 0 || y > 104 || x > 104) {
+                continue;
             }
-            if (y < 127 && canMoveNorth(flags[x][y]) && canMoveTo(flags[x][y + 1]) && !retPoints.contains(tiles[x][y + 1])) {
-                queue.add(tiles[x][y + 1]);
-                retPoints.add(tiles[x][y + 1]);
+            if ((flags[x][y] & CollisionDataFlag.BLOCK_MOVEMENT_SOUTH) == 0 && (flags[x][y - 1] & CollisionDataFlag.BLOCK_MOVEMENT_FULL) == 0 && !visited[x][y - 1]) {
+                queue.add((x << 16) | (y - 1));
+                visited[x][y - 1] = true;
             }
-            if (x > 0 && canMoveWest(flags[x][y]) && canMoveTo(flags[x - 1][y]) && !retPoints.contains(tiles[x - 1][y])) {
-                queue.add(tiles[x - 1][y]);
-                retPoints.add(tiles[x - 1][y]);
+            if ((flags[x][y] & CollisionDataFlag.BLOCK_MOVEMENT_NORTH) == 0 && (flags[x][y + 1] & CollisionDataFlag.BLOCK_MOVEMENT_FULL) == 0 && !visited[x][y + 1]) {
+                queue.add((x << 16) | (y + 1));
+                visited[x][y + 1] = true;
             }
-            if (x < 127 && canMoveEast(flags[x][y]) && canMoveTo(flags[x + 1][y]) && !retPoints.contains(tiles[x + 1][y])) {
-                queue.add(tiles[x + 1][y]);
-                retPoints.add(tiles[x + 1][y]);
+            if ((flags[x][y] & CollisionDataFlag.BLOCK_MOVEMENT_WEST) == 0 && (flags[x - 1][y] & CollisionDataFlag.BLOCK_MOVEMENT_FULL) == 0 && !visited[x - 1][y]) {
+                queue.add(((x - 1) << 16) | y);
+                visited[x - 1][y] = true;
+            }
+            if ((flags[x][y] & CollisionDataFlag.BLOCK_MOVEMENT_EAST) == 0 && (flags[x + 1][y] & CollisionDataFlag.BLOCK_MOVEMENT_FULL) == 0 && !visited[x + 1][y]) {
+                queue.add(((x + 1) << 16) | y);
+                visited[x + 1][y] = true;
             }
         }
-        return retPoints.stream().map(Tile::getWorldLocation).collect(Collectors.toList());
+        int baseX = client.getBaseX();
+        int baseY = client.getBaseY();
+        int plane = client.getPlane();
+        List<WorldPoint> finalPoints = new ArrayList<>();
+        for (int x = 0; x < 104; ++x) {
+            for (int y = 0; y < 104; ++y) {
+                if (visited[x][y]) {
+                    finalPoints.add(new WorldPoint(baseX + x, baseY + y, plane));
+                }
+            }
+        }
+        return finalPoints;
     }
 
 //    public static List<WorldPoint> reachableTiles() {
@@ -430,7 +444,7 @@ public class EthanApiPlugin extends Plugin {
             }
         }
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, (byte) 90);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, (byte) -1);
         doAction.setAccessible(false);
     }
 
@@ -654,6 +668,7 @@ public class EthanApiPlugin extends Plugin {
     public static ClientUI getClientUI() {
         return clientUI;
     }
+
 
     public static ArrayList<WorldPoint> pathToGoal(WorldPoint goal, HashSet<WorldPoint> dangerous) {
         ArrayList<List<WorldPoint>> paths = new ArrayList<>();
