@@ -42,6 +42,7 @@ public class ChinBreakHandler {
     private final Map<Plugin, Integer> amountOfBreaks = new HashMap<>();
 
     private final PublishSubject<Plugin> logoutActionSubject = PublishSubject.create();
+    private final PublishSubject<Plugin> loginActionSubject = PublishSubject.create();
 
     public final PublishSubject<ConfigChanged> configChanged = PublishSubject.create();
 
@@ -157,6 +158,14 @@ public class ChinBreakHandler {
     public Map<Plugin, Instant> getActiveBreaks()
     {
         return activeBreaks;
+    }
+
+    public static String getBankPin(ConfigManager configManager) {
+        String pin = configManager.getConfiguration("chinBreakHandler", "accountselection-manual-pin");
+        if (pin == null || pin.length() != 4) {
+            return null;
+        }
+        return pin;
     }
 
     public static int getOrDefaultFrom(Plugin plugin, ConfigManager configManager) {
@@ -296,6 +305,10 @@ public class ChinBreakHandler {
         return logoutActionSubject.hide();
     }
 
+    public @NonNull Observable<Plugin> getLoginActionObservable() {
+        return loginActionSubject.hide();
+    }
+
     public Map<Plugin, Instant> getStartTimes()
     {
         return startTimes;
@@ -309,5 +322,9 @@ public class ChinBreakHandler {
     public int getTotalAmountOfBreaks()
     {
         return amountOfBreaks.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public void loginNow(Plugin plugin) {
+        loginActionSubject.onNext(plugin);
     }
 }

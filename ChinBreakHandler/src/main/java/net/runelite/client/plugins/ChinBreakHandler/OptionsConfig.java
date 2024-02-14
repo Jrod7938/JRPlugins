@@ -37,6 +37,28 @@ public interface OptionsConfig extends Config {
         return true;
     }
 
+    @ConfigItem(
+            keyName = "avoidWorldsPlayerCount",
+            name = "Max Players",
+            description = "Maximum amount of players a world should have when hopping",
+            position = 3,
+            section = misc
+    )
+    default int avoidWorldsPlayerCount() {
+        return 1500;
+    }
+
+    @ConfigItem(
+            keyName = "avoidWorldsNumbers",
+            name = "Avoid Worlds",
+            description = "World numbers you want to avoid hopping to separated by commas.",
+            position = 4,
+            section = misc
+    )
+    default String avoidWorldsNumbers() {
+        return "302,330";
+    }
+
     @ConfigSection(
             name = "Hopping",
             description = "",

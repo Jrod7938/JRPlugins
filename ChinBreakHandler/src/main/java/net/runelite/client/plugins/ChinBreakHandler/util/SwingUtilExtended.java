@@ -3,11 +3,9 @@ package net.runelite.client.plugins.ChinBreakHandler.util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
-import net.runelite.client.ui.components.CustomScrollBarUI;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.OSType;
 import net.runelite.client.util.OSXUtil;
-import org.pushingpixels.substance.internal.SubstanceSynapse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,7 +41,6 @@ public class SwingUtilExtended
         UIManager.put("Button.foreground", Color.WHITE);
         UIManager.put("MenuItem.foreground", Color.WHITE);
         UIManager.put("Panel.background", ColorScheme.DARK_GRAY_COLOR);
-        UIManager.put("ScrollBarUI", CustomScrollBarUI.class.getName());
         UIManager.put("TextField.selectionBackground", ColorScheme.BRAND_ORANGE_TRANSPARENT);
         UIManager.put("TextField.selectionForeground", Color.WHITE);
         UIManager.put("FormattedTextField.selectionBackground", ColorScheme.BRAND_ORANGE_TRANSPARENT);
@@ -187,7 +184,6 @@ public class SwingUtilExtended
         button.setSize(scaledImage.getWidth(), scaledImage.getHeight());
         button.setToolTipText(navigationButton.getTooltip());
         button.setIcon(new ImageIcon(scaledImage));
-        button.putClientProperty(SubstanceSynapse.FLAT_LOOK, Boolean.TRUE);
         button.setFocusable(false);
         button.addActionListener(e ->
         {
@@ -216,7 +212,6 @@ public class SwingUtilExtended
             button.setComponentPopupMenu(popupMenu);
         }
 
-        navigationButton.setOnSelect(button::doClick);
         return button;
     }
 
