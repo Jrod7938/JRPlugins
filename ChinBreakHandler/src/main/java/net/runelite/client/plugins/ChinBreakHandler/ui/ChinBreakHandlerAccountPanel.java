@@ -14,6 +14,10 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -166,6 +170,31 @@ public class ChinBreakHandlerAccountPanel extends JPanel
             passwordField.getDocument().addDocumentListener(passwordListener);
 
             contentPanel.add(passwordField);
+
+            contentPanel.add(new JLabel("Bank Pin"));
+
+            final JPasswordField pinField = new JPasswordField();
+            pinField.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+            pinField.setText(configManager.getConfiguration("chinBreakHandler", "accountselection-manual-pin"));
+            PlainDocument document = (PlainDocument) pinField.getDocument();
+            document.setDocumentFilter(new DocumentFilter() {
+                @Override
+                public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                    String string = fb.getDocument().getText(0, fb.getDocument().getLength()) + text;
+
+                    if (string.length() <= 4) {
+                        super.replace(fb, offset, length, text, attrs);
+                    }
+                }
+            });
+
+            DeferredDocumentChangedListener pinListener = new DeferredDocumentChangedListener();
+            pinListener.addChangeListener(e -> {
+                configManager.setConfiguration("chinBreakHandler", "accountselection-manual-pin", String.valueOf(pinField.getPassword()));
+            });
+            pinField.getDocument().addDocumentListener(pinListener);
+
+            contentPanel.add(pinField);
         }
         else if (ChinBreakHandlerPlugin.data == null)
         {
