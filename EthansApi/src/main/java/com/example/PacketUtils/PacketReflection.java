@@ -1,12 +1,12 @@
 package com.example.PacketUtils;
 
 import com.example.Packets.BufferMethods;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -28,7 +28,6 @@ public class PacketReflection {
     Client clientInstance;
     public static Client client = null;
 
-    @SneakyThrows
     public boolean LoadPackets() {
         try {
             client = clientInstance;
@@ -59,22 +58,41 @@ public class PacketReflection {
         return true;
     }
 
-    @SneakyThrows
     public static void sendPacket(PacketDef def, Object... objects) {
         Object packetBufferNode = null;
         getPacketBufferNode.setAccessible(true);
         long garbageValue = Math.abs(Long.parseLong(ObfuscatedNames.getPacketBufferNodeGarbageValue));
         if (garbageValue < 256) {
-            packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
-                    isaac, Byte.parseByte(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+            try {
+                packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
+                        isaac, Byte.parseByte(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         } else if (garbageValue < 32768) {
-            packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
-                    isaac, Short.parseShort(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+            try {
+                //System.out.println("getPacketBufferNode: "+getPacketBufferNode);
+                //System.out.println("isaac: "+isaac);
+                packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
+                        isaac, Short.parseShort(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+                //System.out.println("packetBufferNode: "+packetBufferNode);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         } else if (garbageValue < Integer.MAX_VALUE) {
-            packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
-                    isaac, Integer.parseInt(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+            try {
+                packetBufferNode = getPacketBufferNode.invoke(null, fetchPacketField(def.name).get(ClientPacket),
+                        isaac, Integer.parseInt(ObfuscatedNames.getPacketBufferNodeGarbageValue));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
-        Object buffer = packetBufferNode.getClass().getDeclaredField(ObfuscatedNames.packetBufferFieldName).get(packetBufferNode);
+        Object buffer = null;
+        try {
+            buffer = packetBufferNode.getClass().getDeclaredField(ObfuscatedNames.packetBufferFieldName).get(packetBufferNode);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
         getPacketBufferNode.setAccessible(false);
         List<String> params = null;
         if (def.type == PacketType.RESUME_PAUSEBUTTON) {
@@ -124,12 +142,14 @@ public class PacketReflection {
                 int index = params.indexOf(def.writeData[i]);
                 Object writeValue = objects[index];
                 for (String s : def.writeMethods[i]) {
-                    System.out.println("Writing: " + s + " " + writeValue);
+                    //System.out.println("Writing " + s + " " + writeValue);
                     BufferMethods.writeValue(s, (Integer) writeValue, buffer);
                 }
             }
             PACKETWRITER.setAccessible(true);
             try {
+                //System.out.println(PACKETWRITER);
+                //System.out.println(PACKETWRITER.get(null));
                 addNode(PACKETWRITER.get(null), packetBufferNode);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -153,6 +173,7 @@ public class PacketReflection {
                     addNode.invoke(packetWriter, packetBufferNode, Short.parseShort(ObfuscatedNames.addNodeGarbageValue));
                 } else if (garbageValue < Integer.MAX_VALUE) {
                     addNode = packetWriter.getClass().getDeclaredMethod(ObfuscatedNames.addNodeMethodName, packetBufferNode.getClass(), int.class);
+                    //System.out.println("addnode: "+addNode);
                     addNode.setAccessible(true);
                     addNode.invoke(packetWriter, packetBufferNode, Integer.parseInt(ObfuscatedNames.addNodeGarbageValue));
                 }
@@ -185,9 +206,14 @@ public class PacketReflection {
         }
     }
 
-    @SneakyThrows
+
     static Field fetchPacketField(String name) {
-        return ClientPacket.getDeclaredField(name);
+        try {
+            return ClientPacket.getDeclaredField(name);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
