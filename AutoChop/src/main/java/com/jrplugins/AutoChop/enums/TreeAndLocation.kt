@@ -64,6 +64,17 @@ enum class TreeAndLocation(
         bankWalkLocation = Dimension(2727, 3493),
         bankAreaXY = Dimension(2721, 3490),
         bankAreaWH = Dimension(9, 6),
+    ),
+    MAGIC(
+        treeName = "Magic tree",
+        treeAction = "Chop down",
+        logName = "Magic logs",
+        treeAreaXY = Dimension(1744, 3562),
+        treeAreaWH = Dimension(16, 8),
+        treeWalkLocation = Dimension(1753, 3567),
+        bankWalkLocation = Dimension(1748, 3598),
+        bankAreaXY = Dimension(1745, 3594),
+        bankAreaWH = Dimension(8, 7),
     );
 
     fun treeName(): String = treeName

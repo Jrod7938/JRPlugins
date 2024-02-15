@@ -47,7 +47,7 @@ class AutoChop : Plugin() {
     private lateinit var client: Client
 
     @Inject
-    private lateinit var autoChopConfig: AutoChopConfig
+    private lateinit var config: AutoChopConfig
 
     @Inject
     private lateinit var breakHandler: ReflectBreakHandler
@@ -76,7 +76,7 @@ class AutoChop : Plugin() {
     private val distance = 15
 
     @Provides
-    private fun getConfig(configManager: ConfigManager): AutoChopConfig {
+    fun getConfig(configManager: ConfigManager): AutoChopConfig {
         return configManager.getConfig(AutoChopConfig::class.java)
     }
 
@@ -119,7 +119,7 @@ class AutoChop : Plugin() {
     @Subscribe
     fun onGameTick(e: GameTick) {
 
-        if (autoChopConfig.displayOverlay()) { // Toggle overlay
+        if (config.displayOverlay()) { // Toggle overlay
             overlayManager.add(autoChopOverlay)
         } else {
             overlayManager.remove(autoChopOverlay)
@@ -144,27 +144,27 @@ class AutoChop : Plugin() {
 
         // Set up areas and destinations
         bankingArea = WorldArea(
-            autoChopConfig.TREEANDLOCATION().bankAreaXY().width,
-            autoChopConfig.TREEANDLOCATION().bankAreaXY().height,
-            autoChopConfig.TREEANDLOCATION().bankAreaWH().width,
-            autoChopConfig.TREEANDLOCATION().bankAreaWH().height,
+            config.TREEANDLOCATION().bankAreaXY().width,
+            config.TREEANDLOCATION().bankAreaXY().height,
+            config.TREEANDLOCATION().bankAreaWH().width,
+            config.TREEANDLOCATION().bankAreaWH().height,
             client.plane
         )
         treeArea = WorldArea(
-            autoChopConfig.TREEANDLOCATION().treeAreaXY().width,
-            autoChopConfig.TREEANDLOCATION().treeAreaXY().height,
-            autoChopConfig.TREEANDLOCATION().treeAreaWH().width,
-            autoChopConfig.TREEANDLOCATION().treeAreaWH().height,
+            config.TREEANDLOCATION().treeAreaXY().width,
+            config.TREEANDLOCATION().treeAreaXY().height,
+            config.TREEANDLOCATION().treeAreaWH().width,
+            config.TREEANDLOCATION().treeAreaWH().height,
             client.plane
         )
         bankDestination = WorldPoint(
-            autoChopConfig.TREEANDLOCATION().bankWalkLocation().width,
-            autoChopConfig.TREEANDLOCATION().bankWalkLocation().height,
+            config.TREEANDLOCATION().bankWalkLocation().width,
+            config.TREEANDLOCATION().bankWalkLocation().height,
             0
         )
         treeDestination = WorldPoint(
-            autoChopConfig.TREEANDLOCATION().treeWalkLocation().width,
-            autoChopConfig.TREEANDLOCATION().treeWalkLocation().height,
+            config.TREEANDLOCATION().treeWalkLocation().width,
+            config.TREEANDLOCATION().treeWalkLocation().height,
             0
         )
 
@@ -308,7 +308,7 @@ class AutoChop : Plugin() {
                 sendKey(KeyEvent.VK_SPACE)
                 return
             }
-            if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isNotEmpty()) {
+            if (Inventory.search().nameContains(config.TREEANDLOCATION().logName()).result().isNotEmpty()) {
                 val campFire =
                     TileObjects.search().nameContains("Campfire").withAction("Tend-to").withinDistance(distance)
                         .nearestToPlayer()
@@ -319,7 +319,7 @@ class AutoChop : Plugin() {
                     changeStateTo(State.WALKING_TO_BANK)
                 }
             }
-            if (Inventory.search().nameContains(autoChopConfig.TREEANDLOCATION().logName()).result().isEmpty()) {
+            if (Inventory.search().nameContains(config.TREEANDLOCATION().logName()).result().isEmpty()) {
                 changeStateTo(State.IDLE)
             }
         }
@@ -377,7 +377,7 @@ class AutoChop : Plugin() {
         checkEvents() // Check for events
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                if (autoChopConfig.burnLogs()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists else walk to bank
+                if (config.burnLogs()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists else walk to bank
                 else changeStateTo(State.WALKING_TO_BANK)
             } else {
                 changeStateTo(State.IDLE) // Change state to idle if inventory is not full
@@ -386,11 +386,11 @@ class AutoChop : Plugin() {
     }
 
     private fun handleSearchingState() {
-        TileObjects.search().nameContains(autoChopConfig.TREEANDLOCATION().treeName())
-            .withAction(autoChopConfig.TREEANDLOCATION().treeAction())
+        TileObjects.search().nameContains(config.TREEANDLOCATION().treeName())
+            .withAction(config.TREEANDLOCATION().treeAction())
             .withinDistance(distance).nearestToPoint(getObjectWMostPlayers()).ifPresent { tree ->
                 useSpecial()
-                TileObjectInteraction.interact(tree, autoChopConfig.TREEANDLOCATION().treeAction())
+                TileObjectInteraction.interact(tree, config.TREEANDLOCATION().treeAction())
                 changeStateTo(State.CUTTING)
             }
     }
@@ -402,7 +402,7 @@ class AutoChop : Plugin() {
         }
 
         if (Inventory.full()) {
-            if (autoChopConfig.burnLogs()) {
+            if (config.burnLogs()) {
                 if (campFireExists()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists
                 else changeStateTo(State.WALKING_TO_BANK) // else walk to bank
             } else {
@@ -416,7 +416,7 @@ class AutoChop : Plugin() {
     }
 
     private fun getObjectWMostPlayers(): WorldPoint {
-        val objectName: String = autoChopConfig.TREEANDLOCATION().treeName()
+        val objectName: String = config.TREEANDLOCATION().treeName()
         val playerCounts: MutableMap<WorldPoint, Int> = HashMap()
         var mostPlayersTile: WorldPoint? = null
         var highestCount = 0
@@ -592,7 +592,7 @@ class AutoChop : Plugin() {
         // println("State : $stateName")
     }
 
-    private val toggle: HotkeyListener = object : HotkeyListener(Supplier<Keybind> { autoChopConfig.toggle() }) {
+    private val toggle: HotkeyListener = object : HotkeyListener(Supplier<Keybind> { config.toggle() }) {
         override fun hotkeyPressed() {
             toggle()
         }

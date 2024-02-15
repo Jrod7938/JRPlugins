@@ -14,6 +14,7 @@ https://discord.gg/PwRB5yt8KH
         - Willow: Draynor
         - Maple: Seers
         - Yew: Seers
+        - Magic: Hosidius
 
 **Supported Forestry Events**:
 
