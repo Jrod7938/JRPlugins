@@ -145,8 +145,19 @@ public class NPCQuery {
         npcs = npcs.stream().filter(npc -> !npc.isInteracting()).collect(Collectors.toList());
         return this;
     }
-    public NPCQuery noOneInteractingWith(){
+
+    public NPCQuery noOneInteractingWith() {
         npcs = npcs.stream().filter(npc -> Players.search().interactingWith(npc).isEmpty()).collect(Collectors.toList());
+        return this;
+    }
+
+    public NPCQuery playerInteractingWith() {
+        npcs = npcs.stream().filter(npc -> client.getLocalPlayer().isInteracting() && client.getLocalPlayer().getInteracting() == npc).collect(Collectors.toList());
+        return this;
+    }
+
+    public NPCQuery playerNotInteractingWith() {
+        npcs = npcs.stream().filter(npc -> !client.getLocalPlayer().isInteracting() || client.getLocalPlayer().getInteracting() != npc).collect(Collectors.toList());
         return this;
     }
 
