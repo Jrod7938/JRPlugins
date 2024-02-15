@@ -125,19 +125,19 @@ public class RooftopAgilityPlugin extends Plugin {
         }
 
         if (timeout > 0) {
-            if (!config.foodName().isEmpty()
-                    && client.getBoostedSkillLevel(Skill.HITPOINTS) < config.lowHP()) {
-                Optional<Widget> food = InventoryUtil.nameContainsNoCase(config.foodName()).first();
-                if (food.isPresent()) {
-                    return State.EAT_FOOD;
-                } else {
-                    return State.RESTOCK_ITEMS;
-                }
-            }
-            if (runIsOff() && client.getEnergy() >= config.enableRun() * 100) {
-                return State.ENABLE_RUN;
-            }
             return State.TIMEOUT;
+        }
+        if (!config.foodName().isEmpty()
+                && client.getBoostedSkillLevel(Skill.HITPOINTS) < config.lowHP()) {
+            Optional<Widget> food = InventoryUtil.nameContainsNoCase(config.foodName()).first();
+            if (food.isPresent()) {
+                return State.EAT_FOOD;
+            } else {
+                return State.RESTOCK_ITEMS;
+            }
+        }
+        if (runIsOff() && client.getEnergy() >= config.enableRun() * 100) {
+            return State.ENABLE_RUN;
         }
 
         if (shouldAlch()) {
@@ -408,6 +408,7 @@ public class RooftopAgilityPlugin extends Plugin {
                 break;
             case EAT_SUMMER_PIE:
                 eatSummerPie();
+                timeout = tickDelay();
                 break;
             case EAT_FOOD:
                 eatFood();
