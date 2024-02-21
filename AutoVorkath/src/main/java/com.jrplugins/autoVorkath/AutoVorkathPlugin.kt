@@ -477,7 +477,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun acidState() {
-        if (!runIsOff()) enableRun()
+        if (!runIsOff()) toggleRun()
         if (!inVorkathArea()) {
             acidPools.clear()
             changeStateTo(State.THINKING)
@@ -566,7 +566,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun fightingState() {
-        if (runIsOff()) enableRun()
+        if (runIsOff()) toggleRun()
         acidPools.clear()
         if (!inVorkathArea()) {
             changeStateTo(State.THINKING)
@@ -634,7 +634,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun walkingToVorkathState() {
-        if (runIsOff()) enableRun()
+        if (runIsOff()) toggleRun()
         activatePrayers(false)
         if (!isMoving()) {
             if (bankArea.contains(client.localPlayer.worldLocation)) {
@@ -700,7 +700,7 @@ class AutoVorkathPlugin : Plugin() {
     }
 
     private fun walkingToBankState() {
-        if (runIsOff()) enableRun()
+        if (runIsOff()) toggleRun()
         activatePrayers(false)
         if (breakHandler.shouldBreak(this)) { // Break handler
             breakHandler.startBreak(this)
@@ -970,7 +970,7 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun runIsOff(): Boolean = EthanApiPlugin.getClient().getVarpValue(173) == 0
 
-    private fun enableRun() {
+    private fun toggleRun() {
         MousePackets.queueClickPacket()
         WidgetPackets.queueWidgetActionPacket(1, 10485787, -1, -1)
     }
