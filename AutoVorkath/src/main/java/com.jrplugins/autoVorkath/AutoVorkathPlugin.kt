@@ -884,7 +884,7 @@ class AutoVorkathPlugin : Plugin() {
         Widgets.search().withTextContains("Grand Exchange").hiddenState(false).result().isNotEmpty()
 
     private fun isMoving(): Boolean = EthanApiPlugin.isMoving() || client.localPlayer.animation != -1
-    private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= 70
+    private fun needsToDrinkPrayer(): Boolean = client.getBoostedSkillLevel(Skill.PRAYER) <= config.DRINKPRAYERAT()
 
     private fun readyToFight(): Boolean =
         Inventory.search().nameContains(config.FOOD()).result().size >= config.FOODAMOUNT().height

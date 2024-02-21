@@ -9,6 +9,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Range;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -131,12 +132,22 @@ public interface AutoVorkathConfig extends Config {
     )
     @ConfigItem(
             keyName = "eatat",
-            name = "Eat at",
+            name = "Eat At?",
             description = "Eat at what health?",
             position = 11
     )
     default int EATAT() {
         return 75;
+    }
+
+    @ConfigItem(
+            keyName = "drinkAt",
+            name = "Drink Prayer At?",
+            description = "Drink at what prayer?",
+            position = 12
+    )
+    default int DRINKPRAYERAT() {
+        return 70;
     }
 
     @Range(
@@ -145,9 +156,9 @@ public interface AutoVorkathConfig extends Config {
     )
     @ConfigItem(
             keyName = "sellAt",
-            name = "Sell At",
+            name = "Sell At?",
             description = "Sell items at what kill?",
-            position = 12
+            position = 13
     )
     default int SELLAT() {
         return 15;
@@ -157,7 +168,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "mule",
             name = "Mule GP?",
             description = "Trade GP after selling? (TARGET MUST BE IN GE)",
-            position = 13
+            position = 14
     )
     default boolean MULE() {
         return false;
@@ -167,7 +178,7 @@ public interface AutoVorkathConfig extends Config {
             keyName = "muleName",
             name = "Mule Name",
             description = "Name of player in GE to trade.",
-            position = 14
+            position = 15
     )
     default String MULENAME() {
         return "";
@@ -177,10 +188,9 @@ public interface AutoVorkathConfig extends Config {
             keyName = "food",
             name = "Food",
             description = "What food to use? (NOT MANTA RAY!)",
-            position = 15
+            position = 16
     )
     default String FOOD() {
         return "Shark";
     }
-
 }
