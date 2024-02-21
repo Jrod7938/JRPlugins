@@ -25,3 +25,6 @@ https://discord.gg/PwRB5yt8KH
     - Poachers
     - Enchantment Ritual
     - Pheasant Control
+
+**Things To Know**:
+- PLUGIN PathingTester MUST BE TURNED ON
