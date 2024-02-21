@@ -478,19 +478,19 @@ class AutoVorkathPlugin : Plugin() {
 
     private fun acidState() {
         if (!runIsOff()) enableRun()
-        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
         if (!inVorkathArea()) {
             acidPools.clear()
             changeStateTo(State.THINKING)
             return
         }
 
+        PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MAGIC, false)
+
         val vorkath = NPCs.search().nameContains("Vorkath").first().get().worldLocation
         val swPoint = WorldPoint(vorkath.x + 1, vorkath.y - 8, 0)
 
         fun findSafeTiles(): WorldPoint? {
             val wooxWalkArea = WorldArea(swPoint, 5, 1)
-            //println("Woox Walk Area: ${wooxWalkArea.toWorldPointList()}")
 
             fun isTileSafe(tile: WorldPoint): Boolean = tile !in acidPools
                     && WorldPoint(tile.x, tile.y + 1, tile.plane) !in acidPools
@@ -517,31 +517,24 @@ class AutoVorkathPlugin : Plugin() {
         }
 
         val safeTile: WorldPoint? = findSafeTiles()
-        //println("Acid pools: $acidPools")
-        //println("Left Tile: $swPoint")
-        //println("Safe tile: $safeTile")
 
         val playerLocation = client.localPlayer.worldLocation
 
         safeTile?.let {
             if (playerLocation == safeTile) {
-                // Attack Vorkath if the player close to the safe tile
                 NPCs.search().nameContains("Vorkath").first().ifPresent { vorkath ->
                     NPCInteraction.interact(vorkath, "Attack")
-                    //println("Attacked Vorkath")
                 }
             } else {
                 eat(config.EATAT())
-                // Move to the safe tile if the player is not close enough
                 MousePackets.queueClickPacket()
-                //println("Moving to safe tile: $safeTile")
-                //println("Player location: $playerLocation")
                 MovementPackets.queueMovement(safeTile)
             }
         } ?: run {
             EthanApiPlugin.sendClientMessage("NO SAFE TILES! TELEPORTING TF OUT!")
             teleToHouse()
-            changeStateTo(State.WALKING_TO_BANK)
+            changeStateTo(State.WALKING_TO_BANK, 1)
+            return
         }
     }
 
