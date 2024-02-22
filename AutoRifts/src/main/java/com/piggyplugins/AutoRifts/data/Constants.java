@@ -35,7 +35,7 @@ public class Constants {
     public static final String GAME_STARTED = "Creatures from the Abyss will attack in 120 seconds.";
     public static final String ATTACK_STARTED = "Creatures from the Abyss begin their attack!";
     public static final String GAME_OVER = "The Great guardian was defeated";
-    public static final String GAME_WIN = "The Great guardian successfully closed the rift!";
+    public static final String GAME_WIN = "The Great Guardian successfully closed the rift!";
 
 
     // Game Objects

@@ -1,48 +1,71 @@
 package com.piggyplugins.AutoRifts;
 
-import com.google.inject.Inject;
+
+import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
+import javax.inject.Inject;
 import java.awt.*;
+
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 public class AutoRiftsOverlay extends OverlayPanel {
 
+    private final Client client;
     private final AutoRiftsPlugin plugin;
+    public String overlayState = "";
 
     @Inject
-    private AutoRiftsOverlay(AutoRiftsPlugin plugin) {
+    private AutoRiftsOverlay(Client client, AutoRiftsPlugin plugin) {
+        this.client = client;
         this.plugin = plugin;
+        setPosition(OverlayPosition.BOTTOM_LEFT);
     }
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        panelComponent.setPreferredSize(new Dimension(200, 320));
+        String timeFormat = (plugin.runningDuration.toHours() < 1) ? "mm:ss" : "HH:mm:ss";
         panelComponent.getChildren().add(TitleComponent.builder()
-                .text("Auto Rifts")
-                .color(Color.WHITE)
+                .text("AutoRifts")
+                .color(plugin.started ? Color.GREEN : Color.RED)
                 .build());
 
-        panelComponent.getChildren().add(TitleComponent.builder()
-                .text(plugin.isStarted() ? "Running" : "Paused")
-                .color(plugin.isStarted() ? Color.GREEN : Color.RED)
-                .build());
-
-        panelComponent.getChildren().add(LineComponent.builder()
-                .left("Elapsed Time: ")
-                .leftColor(Color.YELLOW)
-                .right(plugin.getElapsedTime())
-                .rightColor(Color.WHITE)
-                .build());
-
-        panelComponent.getChildren().add(LineComponent.builder()
-                .left("State")
-                .leftColor(Color.YELLOW)
-                .right(plugin.getState() == null ? "null" : plugin.getState().name())
-                .rightColor(Color.WHITE)
-                .build());
-
+        if (plugin.started) {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Time running:")
+                    .leftColor(Color.WHITE)
+                    .right(formatDuration(plugin.runningDuration.toMillis(), timeFormat))
+                    .rightColor(Color.WHITE)
+                    .build());
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Status:")
+                    .leftColor(Color.WHITE)
+                    .right(overlayState)
+                    .rightColor(Color.WHITE)
+                    .build());
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Game Started:")
+                    .leftColor(Color.WHITE)
+                    .right(String.valueOf(plugin.riftState.isGameStarted()))
+                    .rightColor(Color.WHITE)
+                    .build());
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Portal Spawned:")
+                    .leftColor(Color.WHITE)
+                    .right(String.valueOf(plugin.riftState.isPortalSpawned()))
+                    .rightColor(Color.WHITE)
+                    .build());
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("First Portal Spawned:")
+                    .leftColor(Color.WHITE)
+                    .right(String.valueOf(plugin.riftState.hasFirstPortalSpawned))
+                    .rightColor(Color.WHITE)
+                    .build());
+            panelComponent.setPreferredSize(new Dimension(250, 250));
+        }
         return super.render(graphics);
     }
 }

@@ -3,11 +3,11 @@ package com.piggyplugins.AutoRifts.data;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Pouch{
+public class Pouch {
 
-    public Pouch(int id,int maxEssence){
-        this.pouchID=id;
-        this.currentEssence=0;
+    public Pouch(int id, int maxEssence) {
+        this.pouchID = id;
+        this.currentEssence = 0;
         this.essenceTotal = maxEssence;
     }
 
