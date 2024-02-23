@@ -23,28 +23,27 @@ public class Utility {
         return 12;
     }
 
-    public static Set<Altar> getAccessibleAltars(int level, QuestState city, QuestState troll, QuestState mep, QuestState sotf) {
-        Set<Altar> accessibleAltars = new HashSet<>();
+    public static Set<Integer> getAccessibleAltars(int level, QuestState city, QuestState troll, QuestState mep, QuestState sotf) {
+        Set<Integer> accessibleAltars = new HashSet<>();
         for (int i = 0; i < getHighestLevelRuneIndex(level); i++) {
             Altar[] altars = Altar.values();
-            if (altars[i] == Altar.COSMIC && city!=QuestState.FINISHED) {
+            if (altars[i] == Altar.COSMIC && city != QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.LAW && troll!=QuestState.FINISHED) {
+            if (altars[i] == Altar.LAW && troll != QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.DEATH && mep!=QuestState.FINISHED) {
+            if (altars[i] == Altar.DEATH && mep != QuestState.FINISHED) {
                 continue;
             }
-            if (altars[i] == Altar.BLOOD && sotf!=QuestState.FINISHED) {
+            if (altars[i] == Altar.BLOOD && sotf != QuestState.FINISHED) {
                 continue;
             }
-            accessibleAltars.add(altars[i]);
+            accessibleAltars.add(altars[i].id);
         }
 
         return accessibleAltars;
     }
-
 
 
 }
