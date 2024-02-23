@@ -126,10 +126,7 @@ public interface AutoVorkathConfig extends Config {
         return new Dimension(90, 90);
     }
 
-    @Range(
-            min = 40,
-            max = 90
-    )
+    @Range(min = 40, max = 90)
     @ConfigItem(
             keyName = "eatat",
             name = "Eat At?",
@@ -140,6 +137,7 @@ public interface AutoVorkathConfig extends Config {
         return 75;
     }
 
+    @Range(min = 40, max = 90)
     @ConfigItem(
             keyName = "drinkAt",
             name = "Drink Prayer At?",
