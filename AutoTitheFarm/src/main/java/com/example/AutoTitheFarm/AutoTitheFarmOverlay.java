@@ -18,10 +18,13 @@ public class AutoTitheFarmOverlay extends Overlay {
 
     AutoTitheFarmConfig config;
 
-    AutoTitheFarmOverlay(Client client, AutoTitheFarmPlugin plugin, AutoTitheFarmConfig config) {
+    ActionDelayHandler actionDelayHandler;
+
+    AutoTitheFarmOverlay(Client client, AutoTitheFarmPlugin plugin, AutoTitheFarmConfig config, ActionDelayHandler actionDelayHandler) {
         this.plugin = plugin;
         this.client = client;
         this.config = config;
+        this.actionDelayHandler = actionDelayHandler;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
         setPriority(OverlayPriority.HIGHEST);
@@ -56,7 +59,7 @@ public class AutoTitheFarmOverlay extends Overlay {
                 renderTextLocation(graphics, String.valueOf(patches.indexOf(tileObject) + 1), tileObject.getWorldLocation(), Color.WHITE);
             }
 
-            renderTextOnActor(graphics, client.getLocalPlayer(), "Wait for action: " + plugin.isWaitForAction(), Color.RED, 40);
+            renderTextOnActor(graphics, client.getLocalPlayer(), "Wait for action: " + actionDelayHandler.isWaitForAction(), Color.RED, 40);
         }
 
         if (plugin.isNeedToRestoreRunEnergy() && plugin.startingNewRun()) {

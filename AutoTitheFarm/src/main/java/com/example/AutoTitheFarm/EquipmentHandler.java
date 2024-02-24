@@ -4,11 +4,14 @@ import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.InteractionApi.InventoryInteraction;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.util.Text;
 
 import java.util.List;
 
 @Slf4j
 public class EquipmentHandler {
+
+    ActionDelayHandler actionDelayHandler;
 
     AutoTitheFarmConfig config;
 
@@ -17,10 +20,11 @@ public class EquipmentHandler {
     private final String action;
 
 
-    public EquipmentHandler(String gearName, AutoTitheFarmConfig config) {
+    public EquipmentHandler(String gearName, AutoTitheFarmConfig config, ActionDelayHandler actionDelayHandler) {
         this.gearName = gearName;
         this.config = config;
         this.action = "Wear";
+        this.actionDelayHandler = actionDelayHandler;
     }
 
     private List<Widget> getGear() {
@@ -28,16 +32,16 @@ public class EquipmentHandler {
     }
 
     public boolean isInInventory() {
-        if (!config.switchGearDuringHarvestingPhase()) {
-            return false;
-        }
-        return !getGear().isEmpty();
+        return config.switchGearDuringHarvestingPhase() && !getGear().isEmpty();
     }
 
     public void gearSwitch() {
+        if (actionDelayHandler.isWaitForAction()) {
+            return;
+        }
         getGear().forEach(itm -> {
             InventoryInteraction.useItem(itm, this.action);
-            log.info("Switching to: " + this.gearName);
+            log.info("Equipping " + Text.removeTags(itm.getName()));
         });
     }
 }
