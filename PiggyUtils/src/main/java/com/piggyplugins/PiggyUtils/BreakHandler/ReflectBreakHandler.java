@@ -1,6 +1,8 @@
 package com.piggyplugins.PiggyUtils.BreakHandler;
 
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 
@@ -63,6 +65,24 @@ public class ReflectBreakHandler {
             return (boolean) o;
         }
         return false;
+    }
+
+    public boolean needsBankPin(Client c) {
+        Object o = performReflection("needsBankPin1", c);
+        if (o != null) {
+            return (boolean) o;
+        }
+
+        return false;
+    }
+
+    public String getBankPin(ConfigManager configManager) {
+        Object o = performReflection("getBankPin1", configManager);
+        if (o != null) {
+            return (String) o;
+        }
+
+        return null;
     }
 
     public void startBreak(Plugin p) {
