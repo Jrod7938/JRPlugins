@@ -27,6 +27,17 @@ public interface OptionsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "autoBankPin",
+            name = "Auto Bank Pin",
+            description = "Will automatically enter your bank pin",
+            position = 2,
+            section = misc
+    )
+    default boolean autoBankPin() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "autoLoginOnDisconnect",
             name = "Auto Login",
             description = "Will automatically log you in if you disconnect while a break is planned",
@@ -34,7 +45,7 @@ public interface OptionsConfig extends Config {
             section = misc
     )
     default boolean autoLoginOnDisconnect() {
-        return true;
+        return false;
     }
 
     @ConfigItem(

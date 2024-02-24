@@ -1,11 +1,15 @@
 package net.runelite.client.plugins.ChinBreakHandler;
 
-import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import net.runelite.api.Client;
+import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.plugins.ChinBreakHandler.ui.LoginMode;
+import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import net.runelite.client.plugins.Plugin;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -13,10 +17,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -160,7 +166,42 @@ public class ChinBreakHandler {
         return activeBreaks;
     }
 
+    public static boolean needsBankPin(Client client) {
+        Widget w = client.getWidget(WidgetInfo.BANK_PIN_CONTAINER);
+        return w != null && !w.isHidden();
+    }
+
     public static String getBankPin(ConfigManager configManager) {
+        LoginMode loginMode = LoginMode.parse(configManager.getConfiguration("chinBreakHandler", "accountselection"));
+        if (loginMode == null) {
+            return null;
+        }
+
+        if (loginMode == LoginMode.PROFILES) {
+            String account = configManager.getConfiguration("chinBreakHandler", "accountselection-profiles-account");
+
+            if (ChinBreakHandlerPlugin.data == null) {
+                return null;
+            }
+
+            Optional<String> accountData = Arrays.stream(ChinBreakHandlerPlugin.data.split("\\n"))
+                    .filter(s -> s.startsWith(account))
+                    .findFirst();
+
+            if (accountData.isPresent())
+            {
+                String[] parts = accountData.get().split(":");
+                if (parts.length == 4)
+                {
+                    return parts[3];
+                } else {
+                    return parts[2];
+                }
+            }
+
+            return null;
+        }
+
         String pin = configManager.getConfiguration("chinBreakHandler", "accountselection-manual-pin");
         if (pin == null || pin.length() != 4) {
             return null;

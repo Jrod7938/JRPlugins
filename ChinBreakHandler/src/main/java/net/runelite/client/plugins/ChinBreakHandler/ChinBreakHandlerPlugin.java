@@ -1,14 +1,11 @@
 package net.runelite.client.plugins.ChinBreakHandler;
 
 import com.example.EthanApiPlugin.Collections.Widgets;
-import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.PacketUtils.WidgetID;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
-import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.Getter;
@@ -33,6 +30,9 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.WorldService;
+import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
+import net.runelite.client.plugins.ChinBreakHandler.ui.LoginMode;
+import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -167,7 +167,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
                             if (!plugins.isEmpty())
                             {
                                 if (!navButton.getPanel().isVisible()) {
-                                    clientToolbar.openPanel(navButton);
+                                    //clientToolbar.openPanel(navButton);
                                 }
                             }
                         }
@@ -301,19 +301,19 @@ public class ChinBreakHandlerPlugin extends Plugin {
             }
         }
 
-        if (finished || login)
+        if (finished)
         {
-            boolean manual = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", "accountselection"));
+            LoginMode loginMode = LoginMode.parse(configManager.getConfiguration("chinBreakHandler", "accountselection"));
 
             String username = null;
             String password = null;
 
-            if (manual)
+            if (loginMode.equals(LoginMode.MANUAL))
             {
                 username = configManager.getConfiguration("chinBreakHandler", "accountselection-manual-username");
                 password = configManager.getConfiguration("chinBreakHandler", "accountselection-manual-password");
             }
-            else
+            else if (loginMode.equals(LoginMode.PROFILES))
             {
                 String account = configManager.getConfiguration("chinBreakHandler", "accountselection-profiles-account");
 
@@ -330,16 +330,12 @@ public class ChinBreakHandlerPlugin extends Plugin {
                 {
                     String[] parts = accountData.get().split(":");
                     username = parts[1];
-                    if (parts.length == 3)
+                    if (parts.length == 4)
                     {
                         password = parts[2];
                     }
                 }
-            }
-
-            boolean usingJagexLauncher = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", "jagexLauncher"));
-
-            if (usingJagexLauncher) {
+            } else if (loginMode.equals(LoginMode.LAUNCHER)) {
                 clientThread.invoke(() -> {
                     // this might not even work tbh
 //                    sendKey(KeyEvent.VK_ENTER); // do we need these? surely not
@@ -347,7 +343,6 @@ public class ChinBreakHandlerPlugin extends Plugin {
 //                    sendKey(KeyEvent.VK_ENTER);
                     client.setGameState(GameState.LOGGING_IN);
                 });
-
                 return;
             }
 
@@ -423,7 +418,8 @@ public class ChinBreakHandlerPlugin extends Plugin {
     @Subscribe
     public void onGameTick(GameTick gameTick)
     {
-        if (client.getGameState() == GameState.LOGGED_IN) {
+
+        if (client.getGameState() == GameState.LOGGED_IN && optionsConfig.autoBankPin()) {
             Widget bankPinWidget = client.getWidget(213, 0);
             if (bankPinWidget != null && !bankPinWidget.isHidden()){
                 String pin = ChinBreakHandler.getBankPin(configManager);
@@ -435,8 +431,6 @@ public class ChinBreakHandlerPlugin extends Plugin {
                         currentPinNumber = 0;
                     }
                     client.setVarcIntValue(VarClientInt.BLOCK_KEYPRESS, client.getGameCycle() + 1);
-                } else {
-                    EthanApiPlugin.sendClientMessage("Null bank pin");
                 }
             } else if (bankPinWidget == null && currentPinNumber != 0) {
                 currentPinNumber = 0;

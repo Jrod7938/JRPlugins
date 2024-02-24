@@ -1,12 +1,13 @@
 package net.runelite.client.plugins.ChinBreakHandler.ui;
+
 import com.google.inject.Inject;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.Disposable;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import net.runelite.client.plugins.ChinBreakHandler.util.ConfigPanel;
 import net.runelite.client.plugins.ChinBreakHandler.util.JMultilineLabel;
 import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.disposables.Disposable;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -203,11 +204,11 @@ public class ChinBreakHandlerPanel extends PluginPanel {
 
         Set<Plugin> activePlugins = chinBreakHandler.getActivePlugins();
 
-        boolean manual = Boolean.parseBoolean(chinBreakHandlerPluginPlugin.getConfigManager().getConfiguration("chinBreakHandler", "accountselection"));
+        LoginMode loginMode = LoginMode.parse(chinBreakHandlerPluginPlugin.getConfigManager().getConfiguration("chinBreakHandler", "accountselection"));
 
         String data = ChinBreakHandlerPlugin.data;
 
-        if (activePlugins.isEmpty() || manual || (data != null && !data.trim().isEmpty()))
+        if (activePlugins.isEmpty() || loginMode != LoginMode.PROFILES || (data != null && !data.trim().isEmpty()))
         {
             return false;
         }

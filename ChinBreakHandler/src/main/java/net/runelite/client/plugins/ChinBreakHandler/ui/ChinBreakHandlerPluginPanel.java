@@ -1,11 +1,11 @@
 package net.runelite.client.plugins.ChinBreakHandler.ui;
 
+import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.Units;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import net.runelite.client.plugins.ChinBreakHandler.util.JMultilineLabel;
 import net.runelite.client.plugins.ChinBreakHandler.util.OnOffToggleButton;
 import net.runelite.client.plugins.ChinBreakHandler.util.UnitFormatterFactory;
-import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.Units;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.PluginPanel;
 
