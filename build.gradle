@@ -71,6 +71,7 @@ dependencies {
     implementation project(path: ':UpkeepPlugin')
     implementation project(path: ':VardorvisHelper')
     implementation project(path: ':DropParty')
+    implementation project(path: ':BetterProfiles')
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
 }
 
@@ -86,7 +87,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.0.26'
+version = '1.1.0'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
