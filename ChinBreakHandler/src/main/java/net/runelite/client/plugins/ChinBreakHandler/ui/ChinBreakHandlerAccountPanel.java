@@ -2,11 +2,9 @@ package net.runelite.client.plugins.ChinBreakHandler.ui;
 
 import com.google.inject.Inject;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import net.runelite.client.plugins.ChinBreakHandler.OptionsConfig;
 import net.runelite.client.plugins.ChinBreakHandler.util.DeferredDocumentChangedListener;
 import net.runelite.client.plugins.ChinBreakHandler.util.ProfilesData;
 import net.runelite.client.ui.PluginPanel;

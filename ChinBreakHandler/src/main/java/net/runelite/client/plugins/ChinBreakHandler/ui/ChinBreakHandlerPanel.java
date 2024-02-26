@@ -200,8 +200,6 @@ public class ChinBreakHandlerPanel extends PluginPanel {
 
     private boolean unlockAccountsPanel()
     {
-        unlockAccountPanel.removeAll();
-
         Set<Plugin> activePlugins = chinBreakHandler.getActivePlugins();
 
         LoginMode loginMode = LoginMode.parse(chinBreakHandlerPluginPlugin.getConfigManager().getConfiguration("chinBreakHandler", "accountselection"));
@@ -212,40 +210,6 @@ public class ChinBreakHandlerPanel extends PluginPanel {
         {
             return false;
         }
-
-        JPanel titleWrapper = new JPanel(new BorderLayout());
-        titleWrapper.setBackground(new Color(125, 40, 40));
-        titleWrapper.setBorder(new CompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(115, 30, 30)),
-                BorderFactory.createLineBorder(new Color(125, 40, 40))
-        ));
-
-        JLabel title = new JLabel();
-        title.setText("Warning");
-        title.setFont(NORMAL_FONT);
-        title.setPreferredSize(new Dimension(0, 24));
-        title.setForeground(Color.WHITE);
-        title.setBorder(new EmptyBorder(0, 8, 0, 0));
-
-        titleWrapper.add(title, BorderLayout.CENTER);
-
-        unlockAccountPanel.add(titleWrapper, BorderLayout.NORTH);
-
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBackground(new Color(125, 40, 40));
-
-        JMultilineLabel description = new JMultilineLabel();
-
-        description.setText("Please make sure to unlock your profiles plugins data in the account tab!");
-        description.setFont(SMALL_FONT);
-        description.setDisabledTextColor(Color.WHITE);
-        description.setBackground(new Color(115, 30, 30));
-
-        description.setBorder(new EmptyBorder(5, 5, 10, 5));
-
-        contentPanel.add(description, BorderLayout.CENTER);
-
-        unlockAccountPanel.add(contentPanel, BorderLayout.CENTER);
 
         return true;
     }
@@ -314,12 +278,7 @@ public class ChinBreakHandlerPanel extends PluginPanel {
 
         if (unlockAccountsPanel())
         {
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0;
-            c.gridy += 1;
-            c.insets = new Insets(5, 10, 0, 10);
-
-            contentPanel.add(unlockAccountPanel, c);
+            JOptionPane.showMessageDialog(null, "Please enter your profiles password to allow break handling.");
         }
 
         if (breakTimingsPanel())
