@@ -288,6 +288,14 @@ public class AutoTitheFarmPlugin extends Plugin {
         log.info(getObjectAction(patch) + "ing");
     }
 
+    private void dropGricollersFertiliser() {
+        if (actionDelayHandler.isWaitForAction()) {
+            return;
+        }
+        Inventory.search().withId(ItemID.GRICOLLERS_FERTILISER).first().ifPresent(item -> InventoryInteraction.useItem(item, "Drop"));
+        actionDelayHandler.setWaitForAction(true);
+    }
+
     private void useItemOnObject(Widget widget, TileObject tileObject) {
         //log.info("Wait for action: " + waitForAction);
         Optional<Widget> optionalWidget = Optional.of(widget);
@@ -366,6 +374,11 @@ public class AutoTitheFarmPlugin extends Plugin {
         List<Widget> regularWateringCansToRefill = Inventory.search().idInList(List.of(ItemID.WATERING_CAN, ItemID.WATERING_CAN1,
                 ItemID.WATERING_CAN2, ItemID.WATERING_CAN3, ItemID.WATERING_CAN4, ItemID.WATERING_CAN5, ItemID.WATERING_CAN6,
                 ItemID.WATERING_CAN7)).result();
+
+        if (Inventory.search().withId(ItemID.GRICOLLERS_FERTILISER).first().isPresent()){
+            dropGricollersFertiliser();
+            return;
+        }
 
         setDefaultStartingPosition();
 
