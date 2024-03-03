@@ -6,12 +6,16 @@ public enum LoginMode {
     LAUNCHER;
 
     public static LoginMode parse(String s) {
+        if (s == null || s.isEmpty()) {
+            return LoginMode.MANUAL;
+        }
+
         for (LoginMode mode : LoginMode.values()) {
             if (s.equalsIgnoreCase(mode.name())) {
                 return mode;
             }
         }
 
-        return null;
+        return LoginMode.MANUAL;
     }
 }

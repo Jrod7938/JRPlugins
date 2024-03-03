@@ -69,9 +69,9 @@ public class ChinBreakHandlerPluginPanel extends JPanel
 
             JToggleButton onOffToggle = new OnOffToggleButton();
 
-            onOffToggle.setSelected(Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", pluginName + "-enabled")));
+            onOffToggle.setSelected(Boolean.parseBoolean(configManager.getConfiguration("piggyBreakHandler", pluginName + "-enabled")));
             onOffToggle.addItemListener(i ->
-                    configManager.setConfiguration("chinBreakHandler", pluginName + "-enabled", onOffToggle.isSelected()));
+                    configManager.setConfiguration("piggyBreakHandler", pluginName + "-enabled", onOffToggle.isSelected()));
 
             titleActions.add(onOffToggle, BorderLayout.EAST);
         }
@@ -133,32 +133,32 @@ public class ChinBreakHandlerPluginPanel extends JPanel
                 ), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
         JSpinner thresholdFrom = createSpinner(
-                parseInt(configManager.getConfiguration("chinBreakHandler", pluginName + "-thresholdfrom"), 60)
+                parseInt(configManager.getConfiguration("piggyBreakHandler", pluginName + "-thresholdfrom"), 60)
         );
 
         JSpinner thresholdTo = createSpinner(
-                parseInt(configManager.getConfiguration("chinBreakHandler", pluginName + "-thresholdto"), 120)
+                parseInt(configManager.getConfiguration("piggyBreakHandler", pluginName + "-thresholdto"), 120)
         );
 
         JSpinner breakFrom = createSpinner(
-                parseInt(configManager.getConfiguration("chinBreakHandler", pluginName + "-breakfrom"), 10)
+                parseInt(configManager.getConfiguration("piggyBreakHandler", pluginName + "-breakfrom"), 10)
         );
 
         JSpinner breakTo = createSpinner(
-                parseInt(configManager.getConfiguration("chinBreakHandler", pluginName + "-breakto"), 15)
+                parseInt(configManager.getConfiguration("piggyBreakHandler", pluginName + "-breakto"), 15)
         );
 
         thresholdFrom.addChangeListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-thresholdfrom", thresholdFrom.getValue()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-thresholdfrom", thresholdFrom.getValue()));
 
         thresholdTo.addChangeListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-thresholdto", thresholdTo.getValue()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-thresholdto", thresholdTo.getValue()));
 
         breakFrom.addChangeListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-breakfrom", breakFrom.getValue()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-breakfrom", breakFrom.getValue()));
 
         breakTo.addChangeListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-breakto", breakTo.getValue()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-breakto", breakTo.getValue()));
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -238,16 +238,16 @@ public class ChinBreakHandlerPluginPanel extends JPanel
         JCheckBox logoutButton = new JCheckBox("Logout");
         JCheckBox afkButton = new JCheckBox("AFK");
 
-        boolean logout = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", pluginName + "-logout"));
+        boolean logout = Boolean.parseBoolean(configManager.getConfiguration("piggyBreakHandler", pluginName + "-logout"));
 
         logoutButton.setSelected(logout);
         afkButton.setSelected(!logout);
 
         logoutButton.addActionListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-logout", logoutButton.isSelected()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-logout", logoutButton.isSelected()));
 
         afkButton.addActionListener(e ->
-                configManager.setConfiguration("chinBreakHandler", pluginName + "-logout", !afkButton.isSelected()));
+                configManager.setConfiguration("piggyBreakHandler", pluginName + "-logout", !afkButton.isSelected()));
 
         buttonGroup.add(logoutButton);
         buttonGroup.add(afkButton);
@@ -262,42 +262,42 @@ public class ChinBreakHandlerPluginPanel extends JPanel
     {
         String pluginName = ChinBreakHandlerPlugin.sanitizedName(plugin);
 
-        String enabled = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdfrom");
-        String logout = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-logout");
+        String enabled = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdfrom");
+        String logout = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-logout");
 
-        String thresholdfrom = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdfrom");
-        String thresholdto = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdto");
-        String breakfrom = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakfrom");
-        String breakto = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakto");
+        String thresholdfrom = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdfrom");
+        String thresholdto = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-thresholdto");
+        String breakfrom = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakfrom");
+        String breakto = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakto");
 
         if (enabled == null)
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-enabled", false);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-enabled", false);
         }
 
         if (logout == null)
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-logout", true);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-logout", true);
         }
 
         if (!ChinBreakHandlerPlugin.isNumeric(thresholdfrom) || (ChinBreakHandlerPlugin.isNumeric(thresholdfrom) && Integer.parseInt(thresholdfrom) < 0))
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-thresholdfrom", 60);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-thresholdfrom", 60);
         }
 
         if (!ChinBreakHandlerPlugin.isNumeric(thresholdto) || (ChinBreakHandlerPlugin.isNumeric(thresholdto) && Integer.parseInt(thresholdto) < 0))
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-thresholdto", 120);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-thresholdto", 120);
         }
 
         if (!ChinBreakHandlerPlugin.isNumeric(breakfrom) || (ChinBreakHandlerPlugin.isNumeric(breakfrom) && Integer.parseInt(breakfrom) < 0))
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-breakfrom", 10);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-breakfrom", 10);
         }
 
         if (!ChinBreakHandlerPlugin.isNumeric(breakto) || (ChinBreakHandlerPlugin.isNumeric(breakto) && Integer.parseInt(breakto) < 0))
         {
-            configManager.setConfiguration("chinBreakHandler", pluginName + "-breakto", 15);
+            configManager.setConfiguration("piggyBreakHandler", pluginName + "-breakto", 15);
         }
     }
 

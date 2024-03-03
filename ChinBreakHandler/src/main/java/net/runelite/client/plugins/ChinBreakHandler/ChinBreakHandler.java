@@ -172,13 +172,13 @@ public class ChinBreakHandler {
     }
 
     public static String getBankPin(ConfigManager configManager) {
-        LoginMode loginMode = LoginMode.parse(configManager.getConfiguration("chinBreakHandler", "accountselection"));
+        LoginMode loginMode = LoginMode.parse(configManager.getConfiguration("piggyBreakHandler", "accountselection"));
         if (loginMode == null) {
             return null;
         }
 
         if (loginMode == LoginMode.PROFILES) {
-            String account = configManager.getConfiguration("chinBreakHandler", "accountselection-profiles-account");
+            String account = configManager.getConfiguration("piggyBreakHandler", "accountselection-profiles-account");
 
             if (ChinBreakHandlerPlugin.data == null) {
                 return null;
@@ -202,7 +202,7 @@ public class ChinBreakHandler {
             return null;
         }
 
-        String pin = configManager.getConfiguration("chinBreakHandler", "accountselection-manual-pin");
+        String pin = configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-pin");
         if (pin == null || pin.length() != 4) {
             return null;
         }
@@ -210,14 +210,14 @@ public class ChinBreakHandler {
     }
 
     public static int getOrDefaultFrom(Plugin plugin, ConfigManager configManager) {
-        String s = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakfrom");
+        String s = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakfrom");
         if (s == null || s.isEmpty()) {
             return 60 * 60;
         }
         return Integer.parseInt(s) * 60;
     }
     public static int getOrDefaultTo(Plugin plugin, ConfigManager configManager) {
-        String s = configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakto");
+        String s = configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-breakto");
         if (s == null || s.isEmpty()) {
             return 60 * 60;
         }

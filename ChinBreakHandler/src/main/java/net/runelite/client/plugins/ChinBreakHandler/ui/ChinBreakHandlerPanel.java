@@ -202,7 +202,7 @@ public class ChinBreakHandlerPanel extends PluginPanel {
     {
         Set<Plugin> activePlugins = chinBreakHandler.getActivePlugins();
 
-        LoginMode loginMode = LoginMode.parse(chinBreakHandlerPluginPlugin.getConfigManager().getConfiguration("chinBreakHandler", "accountselection"));
+        LoginMode loginMode = LoginMode.parse(chinBreakHandlerPluginPlugin.getConfigManager().getConfiguration("piggyBreakHandler", "accountselection"));
 
         String data = ChinBreakHandlerPlugin.data;
 
@@ -278,7 +278,9 @@ public class ChinBreakHandlerPanel extends PluginPanel {
 
         if (unlockAccountsPanel())
         {
-            JOptionPane.showMessageDialog(null, "Please enter your profiles password to allow break handling.");
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(null, "Please enter your profiles password to allow break handling.");
+            });
         }
 
         if (breakTimingsPanel())

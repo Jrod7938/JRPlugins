@@ -54,7 +54,7 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
     private LoginMode getConfigValue()
     {
-        String accountselection = configManager.getConfiguration("chinBreakHandler", "accountselection");
+        String accountselection = configManager.getConfiguration("piggyBreakHandler", "accountselection");
 
         return LoginMode.parse(accountselection);
     }
@@ -73,40 +73,40 @@ public class ChinBreakHandlerAccountPanel extends JPanel
         String profilesSalt = configManager.getConfiguration("piggyProfiles", "salt");
         boolean profilesSavePasswords = Boolean.parseBoolean(configManager.getConfiguration("piggyProfiles", "rememberPassword"));
 
-        String jagexLauncherStr = configManager.getConfiguration("chinBreakHandler", "jagexLauncher");
+        String jagexLauncherStr = configManager.getConfiguration("piggyBreakHandler", "jagexLauncher");
         if (jagexLauncherStr == null || jagexLauncherStr.isEmpty()) {
-            configManager.setConfiguration("chinBreakHandler", "jagexLauncher", false);
+            configManager.setConfiguration("piggyBreakHandler", "jagexLauncher", false);
         }
 
-        String accountSelectionString = configManager.getConfiguration("chinBreakHandler", "accountselection");
-        boolean jagexLauncher = configManager.getConfiguration("chinBreakHandler", "jagexLauncher", Boolean.class);
+        String accountSelectionString = configManager.getConfiguration("piggyBreakHandler", "accountselection");
+        boolean jagexLauncher = configManager.getConfiguration("piggyBreakHandler", "jagexLauncher", Boolean.class);
 
         if (jagexLauncher && getConfigValue() == null) {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.LAUNCHER);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.LAUNCHER);
         } else if (accountSelectionString.equalsIgnoreCase("true")) {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.MANUAL);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.MANUAL);
         } else if (accountSelectionString.equalsIgnoreCase("false")) {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.PROFILES);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.PROFILES);
         }
 
         if (profilesSalt == null || profilesSalt.length() == 0 || !profilesSavePasswords)
         {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.MANUAL);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.MANUAL);
             profilesButton.setEnabled(false);
         }
 
         manualButton.addActionListener(e -> {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.MANUAL);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.MANUAL);
             contentPanel(LoginMode.MANUAL);
         });
 
         profilesButton.addActionListener(e -> {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.PROFILES);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.PROFILES);
             contentPanel(LoginMode.PROFILES);
         });
 
         jagexLauncherButton.addActionListener(e -> {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", LoginMode.PROFILES);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.PROFILES);
             contentPanel(LoginMode.LAUNCHER);
         });
 
@@ -147,10 +147,10 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
             final JTextField usernameField = new JTextField();
             usernameField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            usernameField.setText(configManager.getConfiguration("chinBreakHandler", "accountselection-manual-username"));
+            usernameField.setText(configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-username"));
             DeferredDocumentChangedListener usernameListener = new DeferredDocumentChangedListener();
             usernameListener.addChangeListener(e ->
-                    configManager.setConfiguration("chinBreakHandler", "accountselection-manual-username", usernameField.getText()));
+                    configManager.setConfiguration("piggyBreakHandler", "accountselection-manual-username", usernameField.getText()));
             usernameField.getDocument().addDocumentListener(usernameListener);
 
             contentPanel.add(usernameField);
@@ -159,10 +159,10 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
             final JPasswordField passwordField = new JPasswordField();
             passwordField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            passwordField.setText(configManager.getConfiguration("chinBreakHandler", "accountselection-manual-password"));
+            passwordField.setText(configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-password"));
             DeferredDocumentChangedListener passwordListener = new DeferredDocumentChangedListener();
             passwordListener.addChangeListener(e ->
-                    configManager.setConfiguration("chinBreakHandler", "accountselection-manual-password", String.valueOf(passwordField.getPassword())));
+                    configManager.setConfiguration("piggyBreakHandler", "accountselection-manual-password", String.valueOf(passwordField.getPassword())));
             passwordField.getDocument().addDocumentListener(passwordListener);
 
             contentPanel.add(passwordField);
@@ -171,7 +171,7 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
             final JPasswordField pinField = new JPasswordField();
             pinField.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-            pinField.setText(configManager.getConfiguration("chinBreakHandler", "accountselection-manual-pin"));
+            pinField.setText(configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-pin"));
             PlainDocument document = (PlainDocument) pinField.getDocument();
             document.setDocumentFilter(new DocumentFilter() {
                 @Override
@@ -186,7 +186,7 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
             DeferredDocumentChangedListener pinListener = new DeferredDocumentChangedListener();
             pinListener.addChangeListener(e -> {
-                configManager.setConfiguration("chinBreakHandler", "accountselection-manual-pin", String.valueOf(pinField.getPassword()));
+                configManager.setConfiguration("piggyBreakHandler", "accountselection-manual-pin", String.valueOf(pinField.getPassword()));
             });
             pinField.getDocument().addDocumentListener(pinListener);
 
@@ -247,11 +247,11 @@ public class ChinBreakHandlerAccountPanel extends JPanel
                 filterComboBox.addActionListener(e -> {
                     if (filterComboBox.getSelectedItem() != null)
                     {
-                        configManager.setConfiguration("chinBreakHandler", "accountselection-profiles-account", filterComboBox.getSelectedItem().toString());
+                        configManager.setConfiguration("piggyBreakHandler", "accountselection-profiles-account", filterComboBox.getSelectedItem().toString());
                     }
                 });
 
-                String config = configManager.getConfiguration("chinBreakHandler", "accountselection-profiles-account");
+                String config = configManager.getConfiguration("piggyBreakHandler", "accountselection-profiles-account");
 
                 if (config != null)
                 {
@@ -277,24 +277,25 @@ public class ChinBreakHandlerAccountPanel extends JPanel
 
     private void setupDefaults()
     {
-        if (configManager.getConfiguration("chinBreakHandler", "accountselection") == null)
+
+        if (configManager.getConfiguration("piggyBreakHandler", "accountselection") == null)
         {
-            configManager.setConfiguration("chinBreakHandler", "accountselection", true);
+            configManager.setConfiguration("piggyBreakHandler", "accountselection", LoginMode.MANUAL);
         }
 
-        if (configManager.getConfiguration("chinBreakHandler", "accountselection-manual-username") == null)
+        if (configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-username") == null)
         {
-            configManager.setConfiguration("chinBreakHandler", "accountselection-manual-username", "");
+            configManager.setConfiguration("piggyBreakHandler", "accountselection-manual-username", "");
         }
 
-        if (configManager.getConfiguration("chinBreakHandler", "accountselection-manual-password") == null)
+        if (configManager.getConfiguration("piggyBreakHandler", "accountselection-manual-password") == null)
         {
-            configManager.setConfiguration("chinBreakHandler", "accountselection-manual-password", "");
+            configManager.setConfiguration("piggyBreakHandler", "accountselection-manual-password", "");
         }
 
-        if (configManager.getConfiguration("chinBreakHandler", "accountselection-profiles-account") == null)
+        if (configManager.getConfiguration("piggyBreakHandler", "accountselection-profiles-account") == null)
         {
-            configManager.setConfiguration("chinBreakHandler", "accountselection-profiles-account", "");
+            configManager.setConfiguration("piggyBreakHandler", "accountselection-profiles-account", "");
         }
     }
 }
