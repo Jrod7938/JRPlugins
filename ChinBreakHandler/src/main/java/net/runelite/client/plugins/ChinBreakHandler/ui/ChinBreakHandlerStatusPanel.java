@@ -1,12 +1,13 @@
 package net.runelite.client.plugins.ChinBreakHandler.ui;
-import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
-import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
+
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.PluginPanel;
 
@@ -151,7 +152,7 @@ public class ChinBreakHandlerStatusPanel extends JPanel
             timeLabel.setText("-");
         }
 
-        boolean enabled = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-enabled"));
+        boolean enabled = Boolean.parseBoolean(configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-enabled"));
 
         if (enabled && chinBreakHandler.getPlugins().get(plugin) && chinBreakHandlerPluginPlugin.isValidBreak(plugin) && !chinBreakHandler.isBreakPlanned(plugin) && !chinBreakHandler.isBreakActive(plugin))
         {
@@ -245,7 +246,7 @@ public class ChinBreakHandlerStatusPanel extends JPanel
 
     private void onConfigChanged(ConfigChanged configChanged)
     {
-        if (configChanged == null || !configChanged.getGroup().equals("chinBreakHandler") || !configChanged.getKey().contains(ChinBreakHandlerPlugin.sanitizedName(plugin)))
+        if (configChanged == null || !configChanged.getGroup().equals("piggyBreakHandler") || !configChanged.getKey().contains(ChinBreakHandlerPlugin.sanitizedName(plugin)))
         {
             return;
         }
@@ -330,7 +331,7 @@ public class ChinBreakHandlerStatusPanel extends JPanel
 
         if (chinBreakHandler.getPlugins().get(plugin))
         {
-            boolean enabled = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-enabled"));
+            boolean enabled = Boolean.parseBoolean(configManager.getConfiguration("piggyBreakHandler", ChinBreakHandlerPlugin.sanitizedName(plugin) + "-enabled"));
 
             if (!enabled)
             {

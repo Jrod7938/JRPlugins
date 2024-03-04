@@ -1,8 +1,3 @@
-pluginManagement {
-    plugins {
-        id 'org.jetbrains.kotlin.jvm' version '1.9.21'
-    }
-}
 rootProject.name = 'example'
 include 'AoeWarn'
 include 'AutoJugHumidifier'
@@ -48,6 +43,7 @@ include 'AutoChompy'
 include 'AutoTrapper'
 include 'AutoRuneDragons'
 include 'AutoTitheFarm'
+include 'BetterProfiles'
 include 'AutoChop'
 include 'AutoVorkath'
 include 'RSNHider'

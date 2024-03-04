@@ -1,9 +1,8 @@
 package net.runelite.client.plugins.ChinBreakHandler.util;
 
-import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
-import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.primitives.Ints;
+import com.google.inject.Inject;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.config.Alpha;
@@ -18,13 +17,14 @@ import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.ConfigSectionDescriptor;
 import net.runelite.client.config.Range;
 import net.runelite.client.config.Units;
+import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
+import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.TitleCaseListCellRenderer;
 import net.runelite.client.util.Text;
 
-import com.google.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
