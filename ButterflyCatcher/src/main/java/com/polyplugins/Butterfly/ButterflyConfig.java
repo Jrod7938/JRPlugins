@@ -17,12 +17,12 @@ public interface ButterflyConfig extends Config {
 
     @ConfigItem(
             keyName = "butterflyName",
-            name = "Butterfly name",
+            name = "Butterfly",
             description = "",
             position = 1
     )
-    default String butterfly() {
-        return "Ruby harvest";
+    default ButterflyType butterfly() {
+        return ButterflyType.RUBY_HARVEST;
     }
 
     @ConfigItem(

@@ -66,7 +66,7 @@ public class SuppliesUtil {
      */
     public Widget findCombatPotion() {
         Optional<Widget> potion = Inventory.search().onlyUnnoted().withAction("Drink").nameContains("ombat potion").first();
-        return potion.orElse(null);
+        return potion.orElse(findStrengthPotion());
     }
 
     /**

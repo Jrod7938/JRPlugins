@@ -11,6 +11,7 @@ import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
 import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
+import com.piggyplugins.strategyexample.StrategySmithPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
 import com.polyplugins.Butterfly.ButterflyPlugin;
@@ -27,7 +28,8 @@ public class PluginTester {
         ExternalPluginManager.loadBuiltin(EthanApiPlugin.class, PacketUtilsPlugin.class,
                 PiggyUtilsPlugin.class// Don't remove these
         /* Add your plugins in this method when running from the IDE.
-           Make sure to include them as a dependency in the build.gradle via `testImplementation` */);
+           Make sure to include them as a dependency in the build.gradle via `testImplementation` */,
+                StrategySmithPlugin.class, AutoBonerPlugin.class);
         RuneLite.main(args);
     }
 }

@@ -6,16 +6,26 @@ import java.awt.*;
 
 @ConfigGroup("CannonReloader")
 public interface CannonReloaderConfig extends Config {
-//    @ConfigItem(
-//            keyName = "cannonInstructions",
-//            name = "",
-//            description = "Cannon Instructions.",
-//            position = 40,
-//            section = "cannonConfig"
-//    )
-//    default String cannonConfigInstructions() {
-//        return "Right click the cannon and the safe spot to set your desired locations.";
-//    }
+    @ConfigItem(
+            keyName = "cannonInstructions",
+            name = "",
+            description = "Cannon Instructions.",
+            position = 40,
+            section = "cannonConfig"
+    )
+    default String cannonConfigInstructions() {
+        return "Right click the cannon and the safe spot to set your desired locations.";
+    }
+
+    @ConfigItem(
+            keyName = "Toggle",
+            name = "Toggle",
+            description = "",
+            position = 0
+    )
+    default Keybind toggle() {
+        return Keybind.NOT_SET;
+    }
 
     @ConfigItem(
             keyName = "UseSafespot",
@@ -27,28 +37,6 @@ public interface CannonReloaderConfig extends Config {
     default boolean useSafespot() {
         return false;
     }
-
-//    @ConfigItem(
-//            keyName = "SafespotCoords",
-//            name = "Safespot X,Y Coords",
-//            description = "Set your safespot coords X,Y. Example: 3024,1028",
-//            position = 46,
-//            section = "cannonConfig"
-//    )
-//    default String SafespotCoords() {
-//        return "1234,1234";
-//    }
-//
-//    @ConfigItem(
-//            keyName = "CannonCoords",
-//            name = "Cannon X,Y Coords",
-//            description = "Set your cannon coords X,Y. Example: 3024,1028",
-//            position = 100,
-//            section = "cannonConfig"
-//    )
-//    default String CannonCoords() {
-//        return "1234,1234";
-//    }
 
     @Range(
             min = 1,
@@ -62,6 +50,22 @@ public interface CannonReloaderConfig extends Config {
             description = "Will reload cannon at set amount."
     )
     default int cannonLowAmount()
+    {
+        return 5;
+    }
+
+    @Range(
+            min = 1,
+            max = 30
+    )
+    @ConfigItem(
+            keyName = "CannonLowRandomAmount",
+            name = "Reload random #:",
+            position = 105,
+            section = "cannonConfig",
+            description = "Random for cannon low amount."
+    )
+    default int cannonLowRandom()
     {
         return 5;
     }

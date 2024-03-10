@@ -17,6 +17,7 @@ import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -31,14 +32,13 @@ import net.runelite.client.util.HotkeyListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @PluginDescriptor(name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoSmith</html>",
         description = "",
         enabledByDefault = false,
         tags = {"poly", "plugin"})
 @Slf4j
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
 public class AutoSmith extends Plugin {
     public int timeout = 0;
     public int idleTicks = 0;
@@ -85,12 +85,12 @@ public class AutoSmith extends Plugin {
         return configManager.getConfig(AutoSmithConfig.class);
     }
 
+
     @Subscribe
     public void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN || !started) {
             return;
         }
-
         if (playerUtil.isInteracting() || client.getLocalPlayer().getAnimation() == -1) idleTicks++;
         else idleTicks = 0;
 

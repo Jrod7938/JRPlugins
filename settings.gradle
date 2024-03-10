@@ -43,5 +43,6 @@ include 'AutoChompy'
 include 'AutoTrapper'
 include 'AutoRuneDragons'
 include 'AutoTitheFarm'
+include 'StrategyExample'
 include 'BetterProfiles'
 
