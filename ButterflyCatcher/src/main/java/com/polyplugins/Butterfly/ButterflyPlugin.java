@@ -75,8 +75,8 @@ public class ButterflyPlugin extends Plugin {
     }
 
     private void doButterfly() {
-        Optional<NPC> butterfly = NPCs.search().withName(config.butterfly()).withAction("Catch").nearestToPlayer();
-        List<Widget> filledJars = Inventory.search().withAction("Release").withName(config.butterfly()).result();
+        Optional<NPC> butterfly = NPCs.search().withName(config.butterfly().getName()).withAction("Catch").nearestToPlayer();
+        List<Widget> filledJars = Inventory.search().withAction("Release").withName(config.butterfly().getName()).result();
         Optional<Widget> emptyJar = Inventory.search().withName("Butterfly jar").first();
 
         checkRunEnergy();
@@ -88,6 +88,8 @@ public class ButterflyPlugin extends Plugin {
                 WidgetPackets.queueWidgetAction(jar, "Release");
             });
         }
+
+        if (EthanApiPlugin.isMoving()) return;
 
         if (client.getLocalPlayer().getInteracting() == null && emptyJar.isPresent()) {
             if (butterfly.isPresent()) {

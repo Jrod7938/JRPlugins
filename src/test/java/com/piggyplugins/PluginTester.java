@@ -26,6 +26,7 @@ import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import com.piggyplugins.VardorvisHelper.VardorvisHelperPlugin;
 import com.piggyplugins.autoLeviathanPrayers.AutoLeviathanPrayer;
 import com.piggyplugins.autoWhispererPrayers.AutoWhispererPrayer;
+import com.piggyplugins.strategyexample.StrategySmithPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
 import com.polyplugins.AutoCombat.AutoCombatPlugin;
 import com.polyplugins.AutoRuneDragon.RuneDragonsPlugin;

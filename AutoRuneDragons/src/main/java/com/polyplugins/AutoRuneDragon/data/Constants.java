@@ -10,7 +10,8 @@ import java.util.Set;
 
 public class Constants {
     //Locations
-    public static final List<Integer> HOME_REGIONS = Arrays.asList(7513, 7514, 7769, 7770);
+    public static final List<Integer> HOME_REGIONS = Arrays.asList(7513, 7514, 7769, 7770, 8025, 8026,
+            13986, 13987, 13988, 14242, 14243, 14244, 14498, 14499, 14500);
     public static final List<Integer> LITH_REGIONS = Arrays.asList(14242, 6223);
     public static final WorldArea EDGEVILLE_TELE = new WorldArea(3083, 3487, 17, 14, 0);
     public static final WorldArea LITH_TELE = new WorldArea(3540, 10443, 21, 26, 0);

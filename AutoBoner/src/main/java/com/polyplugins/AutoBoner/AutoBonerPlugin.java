@@ -74,7 +74,7 @@ public class AutoBonerPlugin extends Plugin {
             return;
         }
         Inventory.search().onlyUnnoted().nameContains(config.boneName()).first().ifPresent(bone -> {
-            TileObjects.search().nameContains(config.altarName()).first().ifPresent(altar -> {
+            TileObjects.search().nameContains(config.altarName()).nearestToPlayer().ifPresent(altar -> {
                 MousePackets.queueClickPacket();
                 MousePackets.queueClickPacket();
                 ObjectPackets.queueWidgetOnTileObject(bone, altar);

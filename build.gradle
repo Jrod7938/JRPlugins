@@ -68,6 +68,7 @@ dependencies {
     implementation project(path: ':SixHourLog')
     implementation project(path: ':SpeedDartMaker')
     implementation project(path: ':SuperglassMake')
+    implementation project(path: ':StrategyExample')
     implementation project(path: ':UpkeepPlugin')
     implementation project(path: ':VardorvisHelper')
     implementation project(path: ':DropParty')

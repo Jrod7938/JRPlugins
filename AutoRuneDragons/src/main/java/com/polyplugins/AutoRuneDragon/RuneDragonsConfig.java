@@ -144,13 +144,13 @@ public interface RuneDragonsConfig extends Config
 	@ConfigItem(keyName = "useVengeance", name = "Use Vengeance", description = "Enable to use Vengeance on purple hitsplat.", position = 85, section = "damageConfig")
 	default boolean useVengeance()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(keyName = "useSpec", name = "Use Spec Weapon", description = "Enable to use Spec Weapon", position = 90, section = "damageConfig")
 	default boolean useSpec()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigItem(keyName = "specId", name = "Spec Weapon ID", description = "Spec weapon ID to use.", position = 91, section = "damageConfig")

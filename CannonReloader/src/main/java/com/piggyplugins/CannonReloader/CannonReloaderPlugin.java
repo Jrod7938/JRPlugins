@@ -14,6 +14,7 @@ import com.example.Packets.MovementPackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Provides;
 import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.PiggyUtils.API.MathUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
@@ -26,11 +27,13 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import com.google.inject.Inject;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +60,10 @@ public class CannonReloaderPlugin extends Plugin {
     private OverlayManager overlayManager;
 
     CannonReloaderTileOverlay tileOverlay;
+
+    @Inject
+    private KeyManager keyManager;
+    private boolean started = false;
 
     WorldPoint playerLocation;
     int timeout = 0;
@@ -91,17 +98,24 @@ public class CannonReloaderPlugin extends Plugin {
     @Override
     protected void shutDown() throws Exception {
         overlayManager.remove(tileOverlay);
+        resetFields();
+    }
+
+    private void resetFields() {
         remainingCannonballs = 0;
         timeout = 0;
         cannonSpot = null;
         safespotTile = null;
-
+        started = false;
+        cannonFired = false;
     }
 
     @Subscribe
     public void onMenuEntryAdded(MenuEntryAdded event) {
         if (client.getGameState() != GameState.LOGGED_IN)
             return;
+        boolean hotKeyPressed = client.isKeyPressed(KeyCode.KC_SHIFT);
+        if (!hotKeyPressed) return;
         if (event.getOption().equals("Fire")) {
             MenuEntry cannonEntry = client.createMenuEntry(-1).setOption("Set Cannon Location")
                     .setTarget("").setType(MenuAction.RUNELITE)
@@ -208,7 +222,7 @@ public class CannonReloaderPlugin extends Plugin {
 
     private boolean needsToRepairOrReloadCannon() {
         return TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().isPresent() ||
-                remainingCannonballs <= config.cannonLowAmount();
+                remainingCannonballs <= MathUtil.random(config.cannonLowAmount(), config.cannonLowAmount() + config.cannonLowRandom());
     }
 
     private boolean isCannonSetUp() {
@@ -228,6 +242,23 @@ public class CannonReloaderPlugin extends Plugin {
     public void onVarbitChanged(VarbitChanged varbitChanged) {
         if (varbitChanged.getVarpId() == VarPlayer.CANNON_AMMO) {
             remainingCannonballs = varbitChanged.getValue();
+        }
+    }
+
+    private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {
+        @Override
+        public void hotkeyPressed() {
+            toggle();
+        }
+    };
+
+    public void toggle() {
+        if (client.getGameState() != GameState.LOGGED_IN) {
+            return;
+        }
+        started = !started;
+        if (!started) {
+            resetFields();
         }
     }
 }
