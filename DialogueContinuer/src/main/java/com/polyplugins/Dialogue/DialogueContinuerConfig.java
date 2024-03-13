@@ -2,7 +2,6 @@ package com.polyplugins.Dialogue;
 
 
 import net.runelite.client.config.*;
-import com.polyplugins.Dialogue.DialogueContinuerPlugin.RunMode;
 
 @ConfigGroup("DialogueContinuerConfig")
 public interface DialogueContinuerConfig extends Config {
