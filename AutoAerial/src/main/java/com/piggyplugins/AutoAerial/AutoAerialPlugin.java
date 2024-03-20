@@ -33,9 +33,6 @@ import java.util.Optional;
         enabledByDefault = false,
         tags = {"poly","plugin"})
 @Slf4j
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
-
 public class AutoAerialPlugin extends Plugin {
 
     public int timeout = 0;
@@ -56,7 +53,6 @@ public class AutoAerialPlugin extends Plugin {
 
 
     @Override
-    @SneakyThrows
     public void startUp() {
         timeout = 0;
         keyManager.registerKeyListener(toggle);

@@ -9,8 +9,4 @@ import net.runelite.client.plugins.PluginDescriptor;
                 tags = {"piggy","ethan"})
 @Slf4j
 public class PiggyUtilsPlugin extends Plugin {
-    @Override
-    protected void startUp() throws Exception {
-        log.info("[PiggyUtils] Piggy Utils started");
-    }
 }
