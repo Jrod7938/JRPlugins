@@ -245,7 +245,7 @@ public class LavaRunecrafterPlugin extends Plugin {
             if (getEssenceSlots(WidgetInfo.INVENTORY) > 0 && client.getVarbitValue(Varbits.MAGIC_IMBUE) == 0) {
                 //System.out.println("using spell");
                 MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetActionPacket(1, 14286973, -1, -1);
+                WidgetPackets.queueWidgetActionPacket(1, WidgetInfoExtended.SPELL_MAGIC_IMBUE.getPackedId(), -1, -1);
                 //System.out.println("initial craft");
                 MousePackets.queueClickPacket();
                 ObjectPackets.queueWidgetOnTileObject(earthRunes, altar);
