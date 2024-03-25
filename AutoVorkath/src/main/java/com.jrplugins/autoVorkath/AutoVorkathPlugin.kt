@@ -846,8 +846,8 @@ class AutoVorkathPlugin : Plugin() {
         if (BankInventory.search().nameContains(config.RANGEPOTION().toString()).result().size <= 1) {
             withdraw(config.RANGEPOTION().toString(), 1)
         }
-        if (!hasItem("Rune pouch")) {
-            withdraw("Rune pouch", 1)
+        if (!hasItem(config.RUNEPOUCH().toString())) {
+            withdraw(config.RUNEPOUCH().toString(), 1)
         }
         if (BankInventory.search().nameContains(config.ANTIFIRE().toString()).result().size <= 1) {
             withdraw(config.ANTIFIRE().toString(), 1)
@@ -892,7 +892,7 @@ class AutoVorkathPlugin : Plugin() {
                 && Inventory.search().nameContains(config.RANGEPOTION().toString()).result().isNotEmpty()
                 && Inventory.search().nameContains(config.SLAYERSTAFF().toString()).result().isNotEmpty()
                 && Inventory.search().nameContains(config.TELEPORT().toString()).result().isNotEmpty()
-                && Inventory.search().nameContains("Rune pouch").result().isNotEmpty()
+                && Inventory.search().nameContains(config.RUNEPOUCH().toString()).result().isNotEmpty()
                 && Inventory.search().nameContains(config.PRAYERPOTION().toString()).result().isNotEmpty()
                 && !inventoryHasLoot()
 
