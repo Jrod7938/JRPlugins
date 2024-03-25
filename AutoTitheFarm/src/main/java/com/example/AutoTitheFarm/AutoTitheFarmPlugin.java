@@ -42,10 +42,7 @@ import static com.example.EthanApiPlugin.EthanApiPlugin.stopPlugin;
 import static com.example.PacketUtils.PacketReflection.client;
 
 @Slf4j
-@PluginDependency(PacketUtilsPlugin.class)
-@PluginDependency(EthanApiPlugin.class)
-@PluginDescriptor(name =
-        "AutoTitheFarm",
+@PluginDescriptor(name = "<html><font color=\"#00cbf2\">[L]</font> AutoTitheFarm<html>",
         description = "Will do Tithe Farm for you",
         enabledByDefault = false,
         tags = {""})

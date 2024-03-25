@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PvpHelperPlugin extends Plugin {
 
-    private static final int SPEC_BAR = 38862884;
+    private static final int SPEC_BAR = 38862885;
 
     @Inject
     private Client client;

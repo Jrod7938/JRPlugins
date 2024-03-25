@@ -4,6 +4,7 @@ import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.EquipmentItemWidget;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -48,6 +49,26 @@ public class EquipmentUtil {
     public static boolean hasItems(String... names) {
         for (String name : names) {
             if (!hasItem(name)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean hasItems(int... ids) {
+        for (int id : ids) {
+            if (!hasItem(id)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean hasItems(List<Integer> ids) {
+        for (int id : ids) {
+            if (!hasItem(id)) {
                 return false;
             }
         }

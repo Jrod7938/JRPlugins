@@ -25,6 +25,7 @@
 package net.runelite.client.plugins.betterprofiles;
 
 import com.google.inject.Provides;
+
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ScheduledExecutorService;
 import java.security.GeneralSecurityException;
@@ -45,94 +46,81 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
 
 @PluginDescriptor(
-	name = "<html><font color=\"#FF9DF9\">[PP]</font> Better Profiles</html>",
-	enabledByDefault = false,
-	description = "Allow for a allows you to easily switch between multiple OSRS Accounts - Ported by Piggy",
-	tags = {"profile", "account", "login", "log in", "pklite"}
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Better Profiles</html>",
+        enabledByDefault = false,
+        description = "Allow for a allows you to easily switch between multiple OSRS Accounts - Ported by Piggy",
+        tags = {"profile", "account", "login", "log in", "pklite"}
 )
 @Slf4j
-public class BetterProfilesPlugin extends Plugin
-{
-	@Inject
-	private ClientToolbar clientToolbar;
+public class BetterProfilesPlugin extends Plugin {
+    @Inject
+    private ClientToolbar clientToolbar;
 
-	@Inject
-	private BetterProfilesConfig config;
+    @Inject
+    private BetterProfilesConfig config;
 
-	@Inject
-	private ClientThread clientThread;
+    @Inject
+    private ClientThread clientThread;
 
-	@Inject
-	private ScheduledExecutorService executorService;
+    @Inject
+    private ScheduledExecutorService executorService;
 
-	private BetterProfilesPanel panel;
-	private NavigationButton navButton;
+    private BetterProfilesPanel panel;
+    private NavigationButton navButton;
 
-	@Provides
-	BetterProfilesConfig getConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(BetterProfilesConfig.class);
-	}
+    @Provides
+    BetterProfilesConfig getConfig(ConfigManager configManager) {
+        return configManager.getConfig(BetterProfilesConfig.class);
+    }
 
-	@Override
-	protected void startUp()
-	{
-		panel = injector.getInstance(BetterProfilesPanel.class);
-		panel.init();
+    @Override
+    protected void startUp() {
+        panel = injector.getInstance(BetterProfilesPanel.class);
+        panel.init();
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "profiles_icon.png");
+        final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "profiles_icon.png");
 
-		navButton = NavigationButton.builder()
-				.tooltip("Profiles")
-				.icon(icon)
-				.priority(8)
-				.panel(panel)
-				.build();
+        navButton = NavigationButton.builder()
+                .tooltip("Profiles")
+                .icon(icon)
+                .priority(8)
+                .panel(panel)
+                .build();
 
-		clientToolbar.addNavigation(navButton);
-	}
+        clientToolbar.addNavigation(navButton);
+    }
 
-	@Override
-	protected void shutDown()
-	{
-		clientToolbar.removeNavigation(navButton);
-	}
+    @Override
+    protected void shutDown() {
+        clientToolbar.removeNavigation(navButton);
+    }
 
-	@Subscribe
-	private void onGameStateChanged(GameStateChanged event)
-	{
+    @Subscribe
+    private void onGameStateChanged(GameStateChanged event) {
 
-	}
+    }
 
-	@Subscribe
-	private void onConfigChanged(ConfigChanged event)
-	{
-		if (event.getGroup().equals("piggyProfiles"))
-		{
-			if (event.getKey().equals("rememberPassword"))
-			{
-				panel = injector.getInstance(BetterProfilesPanel.class);
-				this.shutDown();
-				this.startUp();
-			}
-			if (!event.getKey().equals("rememberPassword"))
-			{
-				panel = injector.getInstance(BetterProfilesPanel.class);
-				try
-				{
-					panel.redrawProfiles();
-				}
-				catch (GeneralSecurityException gse)
-				{
-					log.error("Error redrawing profiles panel", gse);
-				}
-			}
-		}
-	}
+    @Subscribe
+    private void onConfigChanged(ConfigChanged event) {
+        if (event.getGroup().equals("piggyProfiles")) {
+            if (event.getKey().equals("rememberPassword")) {
+                panel = injector.getInstance(BetterProfilesPanel.class);
+                this.shutDown();
+                this.startUp();
+            }
+            if (!event.getKey().equals("rememberPassword")) {
+                panel = injector.getInstance(BetterProfilesPanel.class);
+                try {
+                    panel.redrawProfiles();
+                } catch (GeneralSecurityException gse) {
+                    log.error("Error redrawing profiles panel", gse);
+                }
+            }
+        }
+    }
 
-	private void openPanel()
-	{
+    private void openPanel() {
 
-	}
+    }
 
 }

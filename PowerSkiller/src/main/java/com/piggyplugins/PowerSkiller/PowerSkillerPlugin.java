@@ -9,6 +9,7 @@ import com.example.InteractionApi.NPCInteraction;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
@@ -39,6 +40,8 @@ public class PowerSkillerPlugin extends Plugin {
     @Inject
     private KeyManager keyManager;
     @Inject
+    private ReflectBreakHandler breakHandler;
+    @Inject
     private OverlayManager overlayManager;
     @Inject
     private PowerSkillerOverlay overlay;
@@ -52,6 +55,7 @@ public class PowerSkillerPlugin extends Plugin {
     @Override
     protected void startUp() throws Exception {
         bankPin = false;
+        breakHandler.registerPlugin(this);
         keyManager.registerKeyListener(toggle);
         this.overlayManager.add(overlay);
     }
@@ -59,6 +63,7 @@ public class PowerSkillerPlugin extends Plugin {
     @Override
     protected void shutDown() throws Exception {
         bankPin = false;
+        breakHandler.unregisterPlugin(this);
         keyManager.unregisterKeyListener(toggle);
         this.overlayManager.remove(overlay);
     }
@@ -70,7 +75,7 @@ public class PowerSkillerPlugin extends Plugin {
 
     @Subscribe
     private void onGameTick(GameTick event) {
-        if (!EthanApiPlugin.loggedIn() || !started) {
+        if (!EthanApiPlugin.loggedIn() || !started || breakHandler.isBreakActive(this)) {
             // We do an early return if the user isn't logged in
             return;
         }
@@ -295,9 +300,14 @@ public class PowerSkillerPlugin extends Plugin {
     }
 
     public void toggle() {
-        if (client.getGameState() != GameState.LOGGED_IN) {
+        if (!EthanApiPlugin.loggedIn()) {
             return;
         }
         started = !started;
+        if(started){
+            breakHandler.stopPlugin(this);
+        }else{
+            breakHandler.startPlugin(this);
+        }
     }
 }

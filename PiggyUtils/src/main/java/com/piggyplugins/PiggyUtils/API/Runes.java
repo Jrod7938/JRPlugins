@@ -48,12 +48,12 @@ public enum Runes {
         runes = builder.build();
     }
 
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final int id;
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final int itemId;
-    @Getter(AccessLevel.PACKAGE)
-    @Setter(AccessLevel.PACKAGE)
+    @Getter
+    @Setter
     private BufferedImage image;
 
     Runes(final int id, final int itemId) {
