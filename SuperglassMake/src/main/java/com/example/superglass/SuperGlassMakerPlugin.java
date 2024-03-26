@@ -84,7 +84,7 @@ public class SuperGlassMakerPlugin extends Plugin {
         Optional<Widget> glass = BankInventory.search().withId(ItemID.MOLTEN_GLASS).first();
         Optional<Widget> astral = BankInventory.search().withId(ItemID.ASTRAL_RUNE).first();
         Optional<Widget> secondary = Bank.search().withId(config.secondary().getId()).first();
-        Widget make_glass = client.getWidget(14286966);
+        Widget make_glass = client.getWidget(14286969);
         if (sand.isEmpty() || astral.isEmpty() || secondary.isEmpty() || make_glass == null) {
             if (sand.isEmpty()) {
                 client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "no sand", null);
