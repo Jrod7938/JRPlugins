@@ -444,7 +444,7 @@ public class EthanApiPlugin extends Plugin {
             }
         }
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, (byte) -1);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, Integer.MAX_VALUE);
         doAction.setAccessible(false);
     }
 
