@@ -309,7 +309,7 @@ public class PowerSkillerPlugin extends Plugin {
             return;
         }
         started = !started;
-        if(started){
+        if(!started){
             breakHandler.stopPlugin(this);
         }else{
             breakHandler.startPlugin(this);
