@@ -89,7 +89,7 @@ public class et34g extends Plugin {
         if (client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000) {
             if (!Equipment.search().matchesWildCardNoCase("*Dragon pickaxe*").empty()||!Equipment.search().matchesWildCardNoCase("*infernal pickaxe*").empty()) {
                 MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1);
+                WidgetPackets.queueWidgetActionPacket(1, 38862885, -1, -1);
             }
         }
         int sizeEmpty = Inventory.search().withId(ItemID.WATERSKIN0).result().size();
