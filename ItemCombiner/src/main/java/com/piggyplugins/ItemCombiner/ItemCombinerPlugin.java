@@ -130,6 +130,7 @@ public class ItemCombinerPlugin extends Plugin {
     private void findBank() {
         Optional<TileObject> chest1 = TileObjects.search().withName("Bank chest").nearestToPlayer();
         Optional<TileObject> chest2 = TileObjects.search().withName("Bank Chest").nearestToPlayer();
+        Optional<TileObject> chest3 = TileObjects.search().withName("Bank Chest-wreck").nearestToPlayer();
         Optional<NPC> banker = NPCs.search().withAction("Bank").nearestToPlayer();
         Optional<TileObject> booth = TileObjects.search().withAction("Bank").nearestToPlayer();
         if (chest1.isPresent()){
@@ -138,6 +139,10 @@ public class ItemCombinerPlugin extends Plugin {
         }
         if (chest2.isPresent()){
             TileObjectInteraction.interact(chest2.get(), "Use");
+            return;
+        }
+        if (chest3.isPresent()){
+            TileObjectInteraction.interact(chest3.get(), "Use");
             return;
         }
         if (booth.isPresent()){
