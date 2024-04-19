@@ -63,7 +63,6 @@ public class ItemCombinerPlugin extends Plugin {
     @Getter
     private boolean started;
     private int afkTicks;
-    private boolean deposit;
     private boolean isMaking;
     private boolean debug = true;
 
@@ -144,14 +143,8 @@ public class ItemCombinerPlugin extends Plugin {
             NPCInteraction.interact(banker.get(), "Bank");
             return;
         }
-        if (!chest.isPresent() && !booth.isPresent() && !banker.isPresent()){
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
-            EthanApiPlugin.stopPlugin(this);
-        }
-
-        if (!deposit) {
-            deposit = true;
-        }
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
+        EthanApiPlugin.stopPlugin(this);
     }
 
     private boolean hasItems(boolean bank) {
