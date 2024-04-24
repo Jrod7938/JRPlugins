@@ -90,7 +90,7 @@ public class et34g extends Plugin {
                     || !Equipment.search().matchesWildCardNoCase("*crystal pickaxe*").empty()
             ) {
                 MousePackets.queueClickPacket();
-                WidgetPackets.queueWidgetActionPacket(1, 38862884, -1, -1);
+                WidgetPackets.queueWidgetActionPacket(1, 38862885, -1, -1);
             }
         }
         int sizeEmpty = Inventory.search().withId(ItemID.WATERSKIN0).result().size();

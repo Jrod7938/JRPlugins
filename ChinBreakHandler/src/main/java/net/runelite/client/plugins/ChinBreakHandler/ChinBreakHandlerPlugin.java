@@ -74,6 +74,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
     private static final int DISPLAY_SWITCHER_MAX_ATTEMPTS = 3;
     private static final int MAX_WORLD = 580;
+    private static final BufferedImage icon = ImageUtil.loadImageResource(ChinBreakHandlerPlugin.class, "chin_special.png");
 
     @Inject
     private Client client;
@@ -138,7 +139,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
         panel = injector.getInstance(ChinBreakHandlerPanel.class);
 
-        final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "chin_special.png");
+
 
         navButton = NavigationButton.builder()
                 .tooltip("Chin break handler")
@@ -715,6 +716,14 @@ public class ChinBreakHandlerPlugin extends Plugin {
             currentWorldTypes.remove(WorldType.BOUNTY);
             currentWorldTypes.remove(WorldType.SKILL_TOTAL);
             currentWorldTypes.remove(WorldType.LAST_MAN_STANDING);
+            currentWorldTypes.remove(WorldType.QUEST_SPEEDRUNNING);
+            currentWorldTypes.remove(WorldType.FRESH_START_WORLD);
+            currentWorldTypes.remove(WorldType.DEADMAN);
+            currentWorldTypes.remove(WorldType.BETA_WORLD);
+            currentWorldTypes.remove(WorldType.NOSAVE_MODE);
+            currentWorldTypes.remove(WorldType.TOURNAMENT);
+            currentWorldTypes.remove(WorldType.SEASONAL);
+            currentWorldTypes.remove(WorldType.PVP_ARENA);
 
             List<World> worlds = worldResult.getWorlds();
 
