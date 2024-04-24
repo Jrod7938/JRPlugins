@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 04/01/2024 18:52 EST*
+*Updated 04/24/2024 17:01 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
@@ -16,7 +16,7 @@ https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e8
 
 ## Plugins:
 
-- AutoVorkath WOOX WALK
+- Auto Vorkath
 - Auto Whisperer Prayers
 - Auto Leviathan Prayers
 - AutoChop (Supports Some Forestry Events)
