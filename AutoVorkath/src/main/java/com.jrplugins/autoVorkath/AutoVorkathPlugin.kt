@@ -82,8 +82,6 @@ class AutoVorkathPlugin : Plugin() {
     private var lootNames: MutableSet<String> = mutableSetOf()
     private var acidPools: HashSet<WorldPoint> = hashSetOf()
 
-    private var initialAcidMove = false
-
     private var redBallLocation: WorldPoint = WorldPoint(0, 0, 0)
 
     private val bankArea: WorldArea = WorldArea(2096, 3911, 20, 11, 0)
@@ -908,7 +906,6 @@ class AutoVorkathPlugin : Plugin() {
                 isPrepared = false
                 drankRangePotion = false
                 drankAntiFire = false
-                initialAcidMove = false
                 teleToHouse()
                 changeStateTo(State.WALKING_TO_BANK)
                 return
