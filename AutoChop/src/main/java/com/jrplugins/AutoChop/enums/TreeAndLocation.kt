@@ -43,6 +43,17 @@ enum class TreeAndLocation(
         bankAreaXY = Dimension(3089, 3240),
         bankAreaWH = Dimension(6, 6),
     ),
+    Teak(
+        treeName = "Teak tree",
+        treeAction = "Chop down",
+        logName = "Teak logs",
+        treeAreaXY = Dimension(2180, 2981),
+        treeAreaWH = Dimension(17,17),
+        treeWalkLocation = Dimension(2188,2988),
+        bankWalkLocation = Dimension(2211,2858),
+        bankAreaXY = Dimension(2207,2855),
+        bankAreaWH = Dimension(10,10)
+    ),
     Maple(
         treeName = "Maple tree",
         treeAction = "Chop down",

@@ -14,9 +14,9 @@ import net.runelite.client.config.Keybind;
 @ConfigGroup("AutoChop")
 public interface AutoChopConfig extends Config {
     @ConfigItem(
-            keyName = "Toggle",
+            keyName = "toggle",
             name = "Toggle",
-            description = "",
+            description = "Start/Stop Toggle",
             position = 0
     )
     default Keybind toggle() { return Keybind.NOT_SET; }

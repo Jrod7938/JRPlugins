@@ -12,6 +12,7 @@ https://discord.gg/PwRB5yt8KH
     - Be at tree location:
         - Tree: GE
         - Willow: Draynor
+        - Teak: Soul Wars
         - Maple: Seers
         - Yew: Seers
         - Magic: Hosidius
