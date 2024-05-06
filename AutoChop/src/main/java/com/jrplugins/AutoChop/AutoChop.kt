@@ -16,6 +16,7 @@ import com.example.Packets.WidgetPackets
 import com.example.PathingTesting.PathingTesting
 import com.google.inject.Inject
 import com.google.inject.Provides
+import com.jrplugins.AutoChop.enums.LogAction
 import com.jrplugins.AutoChop.enums.State
 import com.piggyplugins.PiggyUtils.BreakHandler.ReflectBreakHandler
 import net.runelite.api.*
@@ -32,6 +33,7 @@ import net.runelite.client.plugins.Plugin
 import net.runelite.client.plugins.PluginDescriptor
 import net.runelite.client.ui.overlay.OverlayManager
 import net.runelite.client.util.HotkeyListener
+import org.lwjgl.system.linux.Stat
 import java.awt.event.KeyEvent
 import java.util.*
 import java.util.function.Supplier
@@ -184,7 +186,21 @@ class AutoChop : Plugin() {
             State.PHEASANT -> handlePheasantState()
             State.RITUAL_CIRCLES -> handleRitualCirclesState()
             State.ENTLING -> handleEntlingState()
+            State.DROP_LOGS -> handleDropLogsState()
         }
+    }
+
+    private fun handleDropLogsState() {
+        if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
+            if (Inventory.search().nameContains(config.TREEANDLOCATION().logName()).result().isEmpty()) {
+                changeStateTo(State.IDLE)
+            } else {
+                Inventory.search().nameContains(config.TREEANDLOCATION().logName()).result().forEach { log ->
+                    InventoryInteraction.useItem(log, "Drop")
+                }
+            }
+        }
+        checkEvents() // Check for events
     }
 
     private fun handleEntlingState() {
@@ -377,8 +393,11 @@ class AutoChop : Plugin() {
         checkEvents() // Check for events
         if (!EthanApiPlugin.isMoving() && client.localPlayer.animation == -1) {
             if (Inventory.full()) {
-                if (config.burnLogs()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists else walk to bank
-                else changeStateTo(State.WALKING_TO_BANK)
+                when (config.LOGACTION()) {
+                    LogAction.Drop -> changeStateTo(State.DROP_LOGS)
+                    LogAction.Burn -> changeStateTo(State.BURN_LOGS)
+                    LogAction.Bank -> changeStateTo(State.WALKING_TO_BANK)
+                }
             } else {
                 changeStateTo(State.IDLE) // Change state to idle if inventory is not full
             }
@@ -402,12 +421,10 @@ class AutoChop : Plugin() {
         }
 
         if (Inventory.full()) {
-            if (config.burnLogs()) {
-                if (campFireExists()) changeStateTo(State.BURN_LOGS) // Burn logs if campfire exists
-                else changeStateTo(State.WALKING_TO_BANK) // else walk to bank
-            } else {
-                if (bankingArea.contains(client.localPlayer.worldLocation)) changeStateTo(State.BANKING) // Bank if inventory is full
-                else changeStateTo(State.WALKING_TO_BANK) // Walk to bank if inventory is full
+            when (config.LOGACTION()) {
+                LogAction.Burn -> if (campFireExists()) changeStateTo(State.BURN_LOGS) else changeStateTo(State.WALKING_TO_BANK)
+                LogAction.Drop -> changeStateTo(State.DROP_LOGS)
+                LogAction.Bank -> if (bankingArea.contains(client.localPlayer.worldLocation)) changeStateTo(State.BANKING) else changeStateTo(State.WALKING_TO_BANK)
             }
         } else {
             if (!treeArea.contains(client.localPlayer.worldLocation)) changeStateTo(State.WALKING_TO_TREES) // Walk to trees if not in tree area

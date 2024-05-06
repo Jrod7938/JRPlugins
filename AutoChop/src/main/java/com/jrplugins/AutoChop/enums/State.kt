@@ -18,5 +18,6 @@ enum class State {
     BEE_HIVE,
     PHEASANT,
     RITUAL_CIRCLES,
-    ENTLING
+    ENTLING,
+    DROP_LOGS
 }

@@ -5,6 +5,7 @@
 
 package com.jrplugins.AutoChop;
 
+import com.jrplugins.AutoChop.enums.LogAction;
 import com.jrplugins.AutoChop.enums.TreeAndLocation;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -30,12 +31,12 @@ public interface AutoChopConfig extends Config {
     default Boolean displayOverlay() { return true; }
 
     @ConfigItem(
-            keyName = "burnLogs",
-            name = "Burn Logs?",
-            description = "Burn Logs?",
+            keyName = "logsAction",
+            name = "Log Action",
+            description = "What action to perform on logs?",
             position = 2
     )
-    default Boolean burnLogs() { return false; }
+    default LogAction LOGACTION() { return LogAction.Drop; }
 
     @ConfigItem(
             keyName = "treeName",
