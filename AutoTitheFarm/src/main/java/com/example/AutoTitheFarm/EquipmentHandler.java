@@ -2,29 +2,32 @@ package com.example.AutoTitheFarm;
 
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.InteractionApi.InventoryInteraction;
+import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.util.Text;
 
+import javax.inject.Inject;
 import java.util.List;
 
 @Slf4j
 public class EquipmentHandler {
 
-    ActionDelayHandler actionDelayHandler;
+    private final AutoTitheFarmPlugin plugin;
 
-    AutoTitheFarmConfig config;
+    private final AutoTitheFarmConfig config;
 
-    private final String gearName;
+    @Setter(AccessLevel.PACKAGE)
+    private String gearName;
 
     private final String action;
 
-
-    public EquipmentHandler(String gearName, AutoTitheFarmConfig config, ActionDelayHandler actionDelayHandler) {
-        this.gearName = gearName;
+    @Inject
+    private EquipmentHandler(AutoTitheFarmPlugin plugin, AutoTitheFarmConfig config) {
+        this.plugin = plugin;
         this.config = config;
         this.action = "Wear";
-        this.actionDelayHandler = actionDelayHandler;
     }
 
     private List<Widget> getGear() {
@@ -36,7 +39,7 @@ public class EquipmentHandler {
     }
 
     public void gearSwitch() {
-        if (actionDelayHandler.isWaitForAction()) {
+        if (plugin.actionDelayHandler.isWaitForAction()) {
             return;
         }
         getGear().forEach(itm -> {

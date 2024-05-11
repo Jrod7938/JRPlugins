@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
+@Singleton
 public class ActionDelayHandler {
 
     private boolean waitForAction;
