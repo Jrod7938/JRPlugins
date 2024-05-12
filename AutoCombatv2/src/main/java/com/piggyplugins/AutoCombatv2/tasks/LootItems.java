@@ -1,15 +1,23 @@
 package com.piggyplugins.AutoCombatv2.tasks;
 
 import com.example.EthanApiPlugin.Collections.Bank;
+import com.example.EthanApiPlugin.Collections.ETileItem;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
 import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.Packets.MousePackets;
+import com.example.Packets.TileItemPackets;
 import com.piggyplugins.AutoCombatv2.AutoCombatv2Config;
 import com.piggyplugins.PiggyUtils.strategy.AbstractTask;
 import com.piggyplugins.AutoCombatv2.AutoCombatv2Plugin;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.NPC;
-import net.runelite.api.TileObject;
+import net.runelite.api.*;
+import net.runelite.client.game.ItemManager;
+import net.runelite.client.game.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import java.util.Optional;
 
@@ -22,31 +30,19 @@ public class LootItems extends AbstractTask<AutoCombatv2Plugin, AutoCombatv2Conf
 
     @Override
     public boolean validate() {
-        return !Bank.isOpen();
+        return !plugin.getLootQueue().isEmpty();
     }
 
     @Override
     public void execute() {
-        log.info("Open Bank");
-        findBank();
-    }
+        Pair<TileItem, Tile> lootPair = plugin.getLootQueue().poll();
+        if (lootPair != null) {
+            TileItem loot = lootPair.getLeft();
+            Tile lootTile = lootPair.getRight();
+            log.info("Processing loot: {} at {}", plugin.getItemManager().getItemComposition(loot.getId()).getName(), lootTile.getWorldLocation());
 
-    private void findBank() {
-        Optional<NPC> banker = NPCs.search().withAction("Bank").withId(2897).nearestToPlayer();
-        Optional<TileObject> bank = TileObjects.search().withAction("Bank").nearestToPlayer();
-        if (!Bank.isOpen()) {
-            if (banker.isPresent()) {
-//                NPCInteraction.interact(banker.get(), "Bank");
-                interactNpc(banker.get(), "Bank");
-                plugin.timeout = config.tickDelay() == 0 ? 1 : config.tickDelay();
-            } else if (bank.isPresent()) {
-//                TileObjectInteraction.interact(bank.get(), "Bank");
-                interactObject(bank.get(), "Bank");
-                plugin.timeout = config.tickDelay() == 0 ? 1 : config.tickDelay();
-            } else {
-                EthanApiPlugin.sendClientMessage("Couldn't find bank or banker");
-                EthanApiPlugin.stopPlugin(plugin);
+                MousePackets.queueClickPacket();
+                TileItemPackets.queueTileItemAction(new ETileItem(lootTile.getWorldLocation(), loot), false);
             }
         }
     }
-}
