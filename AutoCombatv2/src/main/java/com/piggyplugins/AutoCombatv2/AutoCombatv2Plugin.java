@@ -29,6 +29,7 @@ import net.runelite.client.util.HotkeyListener;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @PluginDescriptor(
         name = "<html><font color=\"#ff4d00\">[BS]</font> Auto Combat</html>",
@@ -65,7 +66,7 @@ public class AutoCombatv2Plugin extends Plugin {
     @Getter
     private Set<String> lootItems = new HashSet<>();
     @Getter
-    private Queue<Pair<TileItem, Tile>> lootQueue = new LinkedList<>();
+    private Queue<Pair<TileItem, Tile>> lootQueue = new ConcurrentLinkedQueue<>();
 
     @Provides
     private AutoCombatv2Config getConfig(ConfigManager configManager) {
@@ -106,18 +107,22 @@ public class AutoCombatv2Plugin extends Plugin {
 
         if (timeout > 0) {
             timeout--;
+            log.info("Timeout: {}", timeout);
             return;
         }
 
+        log.info("Game tick observed. Queue size before any operation: {}", lootQueue.size());
+        // Existing logic here
         checkRunEnergy();
         if (taskManager.hasTasks()) {
             for (AbstractTask t : taskManager.getTasks()) {
                 if (t.validate()) {
                     t.execute();
-//                    return;
+                    break;
                 }
             }
         }
+        log.info("Game tick processing completed. Queue size after operations: {}", lootQueue.size());
     }
 
     @Subscribe
@@ -162,10 +167,11 @@ public class AutoCombatv2Plugin extends Plugin {
         }
         started = !started;
         if (started) {
+            taskManager.addTask(new attackNPC(this, config));
             taskManager.addTask(new LootItems(this, config));
             taskManager.addTask(new CheckCombatStatus(this, config));
             taskManager.addTask(new checkStats(this, config));
-            taskManager.addTask(new attackNPC(this, config));
+
         } else {
             taskManager.clearTasks();
         }

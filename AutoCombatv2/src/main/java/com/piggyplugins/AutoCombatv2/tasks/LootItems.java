@@ -44,5 +44,8 @@ public class LootItems extends AbstractTask<AutoCombatv2Plugin, AutoCombatv2Conf
                 MousePackets.queueClickPacket();
                 TileItemPackets.queueTileItemAction(new ETileItem(lootTile.getWorldLocation(), loot), false);
             }
+        plugin.timeout = 3;
         }
+
+
     }

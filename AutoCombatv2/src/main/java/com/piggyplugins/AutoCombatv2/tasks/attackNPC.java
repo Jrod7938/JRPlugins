@@ -20,7 +20,7 @@ public class attackNPC extends AbstractTask<AutoCombatv2Plugin, AutoCombatv2Conf
 
     @Override
     public boolean validate() {
-        return !plugin.inCombat;
+        return !plugin.inCombat && plugin.getLootQueue().isEmpty();
     }
 
     @Override
