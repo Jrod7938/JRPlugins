@@ -1,9 +1,6 @@
 package com.piggyplugins.AutoCombatv2.tasks;
 
-import com.example.EthanApiPlugin.Collections.Bank;
-import com.example.EthanApiPlugin.Collections.ETileItem;
-import com.example.EthanApiPlugin.Collections.NPCs;
-import com.example.EthanApiPlugin.Collections.TileObjects;
+import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.MousePackets;
 import com.example.Packets.TileItemPackets;
@@ -40,11 +37,14 @@ public class LootItems extends AbstractTask<AutoCombatv2Plugin, AutoCombatv2Conf
             TileItem loot = lootPair.getLeft();
             Tile lootTile = lootPair.getRight();
             log.info("Processing loot: {} at {}", plugin.getItemManager().getItemComposition(loot.getId()).getName(), lootTile.getWorldLocation());
+                if(!Inventory.full()) {
+                    MousePackets.queueClickPacket();
+                    TileItemPackets.queueTileItemAction(new ETileItem(lootTile.getWorldLocation(), loot), false);
+                    plugin.timeout = 3;
+                }
 
-                MousePackets.queueClickPacket();
-                TileItemPackets.queueTileItemAction(new ETileItem(lootTile.getWorldLocation(), loot), false);
             }
-        plugin.timeout = 3;
+
         }
 
 
