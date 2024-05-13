@@ -1,83 +1,93 @@
-package com.piggyplugins.strategyexample;
+package com.piggyplugins.AutoCombatv2;
 
 
-import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.piggyplugins.PiggyUtils.API.InventoryUtil;
+import com.piggyplugins.AutoCombatv2.tasks.CheckCombatStatus;
+import com.piggyplugins.AutoCombatv2.tasks.LootItems;
+import com.piggyplugins.AutoCombatv2.tasks.attackNPC;
+import com.piggyplugins.AutoCombatv2.tasks.checkStats;
 import com.piggyplugins.PiggyUtils.API.PlayerUtil;
 import com.piggyplugins.PiggyUtils.strategy.AbstractTask;
 import com.piggyplugins.PiggyUtils.strategy.TaskManager;
-import com.piggyplugins.strategyexample.tasks.Banking;
-import com.piggyplugins.strategyexample.tasks.DoSmithing;
-import com.piggyplugins.strategyexample.tasks.OpenAnvil;
-import com.piggyplugins.strategyexample.tasks.OpenBank;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.events.ItemSpawned;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font>StrategySmith</html>",
+        name = "<html><font color=\"#ff4d00\">[BS]</font> Auto Combat v2</html>",
         description = "",
         enabledByDefault = false,
-        tags = {"piggy", "plugin"}
+        tags = {"BS", "piggy", "PP", "plugin"}
 )
 @Slf4j
-public class StrategySmithPlugin extends Plugin {
+public class AutoCombatv2Plugin extends Plugin {
     @Inject
     @Getter
     private Client client;
     @Inject
-    private StrategySmithConfig config;
+    private AutoCombatv2Config config;
     @Inject
-    private StrategySmithOverlay overlay;
+    private AutoCombatv2Overlay overlay;
     @Inject
     private KeyManager keyManager;
     @Inject
     private OverlayManager overlayManager;
     @Inject
     @Getter
+    private ItemManager itemManager;
+    @Inject
+    @Getter
     private ClientThread clientThread;
     public boolean started = false;
     public int timeout = 0;
     public TaskManager taskManager = new TaskManager();
-    public boolean isSmithing;
+    public boolean inCombat;
     public int idleTicks = 0;
     @Inject
     PlayerUtil playerUtil;
+    @Getter
+    private Set<String> lootItems = new HashSet<>();
+    @Getter
+    private Queue<Pair<TileItem, Tile>> lootQueue = new ConcurrentLinkedQueue<>();
 
     @Provides
-    private StrategySmithConfig getConfig(ConfigManager configManager) {
-        return configManager.getConfig(StrategySmithConfig.class);
+    private AutoCombatv2Config getConfig(ConfigManager configManager) {
+        return configManager.getConfig(AutoCombatv2Config.class);
     }
 
     @Override
     protected void startUp() throws Exception {
         overlayManager.add(overlay);
         timeout = 0;
-        isSmithing = false;
+        inCombat = false;
         keyManager.registerKeyListener(toggle);
-        log.info(config.bar().getName() + " - " + config.item().toString());
     }
 
     @Override
     protected void shutDown() throws Exception {
-        isSmithing = false;
+        inCombat = false;
         timeout = 0;
         idleTicks = 0;
         started = false;
+        lootQueue.clear();
         keyManager.unregisterKeyListener(toggle);
         overlayManager.remove(overlay);
     }
@@ -97,44 +107,40 @@ public class StrategySmithPlugin extends Plugin {
 
         if (timeout > 0) {
             timeout--;
-            if (idleTicks > 10 || !hasEnoughBars()) {
-                timeout = 0;
-                isSmithing = false;
-            }
+            log.info("Timeout: {}", timeout);
             return;
         }
 
-
-        if (isSmithing) {
-            if (!hasEnoughBars()) {
-                isSmithing = false;
-            }
-            if (hasEnoughBars())
-                return;
-        }
-
+        log.info("Game tick observed. Queue size before any operation: {}", lootQueue.size());
+        // Existing logic here
         checkRunEnergy();
         if (taskManager.hasTasks()) {
             for (AbstractTask t : taskManager.getTasks()) {
                 if (t.validate()) {
                     t.execute();
-                    return;
+                    break;
                 }
             }
         }
-
+        log.info("Game tick processing completed. Queue size after operations: {}", lootQueue.size());
     }
 
-    public boolean hasHammer() {
-        return !Inventory.search().nameContains("Hammer").empty();
+    @Subscribe
+    private void onItemSpawned(ItemSpawned event) {
+        TileItem tileItem = event.getItem();
+        Tile tile = event.getTile(); // This is how you get the Tile from the event
+
+        if (tileItem != null) {
+            ItemComposition composition = itemManager.getItemComposition(tileItem.getId());
+            if (isLootable(composition.getName())) {
+                lootQueue.add(Pair.of(tileItem, tile)); // Store both the TileItem and the Tile
+                log.info("Loot added: {} at {}", composition.getName(), tile.getWorldLocation());
+            }
+        }
     }
 
-    public boolean hasBarsButNotEnough() {
-        return InventoryUtil.hasItem(config.bar().getName()) && !hasEnoughBars();
-    }
-
-    public boolean hasEnoughBars() {
-        return (Inventory.getItemAmount(config.bar().getName()) >= config.item().getBarsRequired());
+    private boolean isLootable(String itemName) {
+        return config.loot().contains(itemName);
     }
 
     private void checkRunEnergy() {
@@ -161,13 +167,13 @@ public class StrategySmithPlugin extends Plugin {
         }
         started = !started;
         if (started) {
-            taskManager.addTask(new OpenBank(this, config));
-            taskManager.addTask(new Banking(this, config));
-            taskManager.addTask(new OpenAnvil(this, config));
-            taskManager.addTask(new DoSmithing(this, config));
+            taskManager.addTask(new attackNPC(this, config));
+            taskManager.addTask(new LootItems(this, config));
+            taskManager.addTask(new CheckCombatStatus(this, config));
+            taskManager.addTask(new checkStats(this, config));
+
         } else {
             taskManager.clearTasks();
         }
     }
 }
-//Strategy Abstract tasks written by poly j

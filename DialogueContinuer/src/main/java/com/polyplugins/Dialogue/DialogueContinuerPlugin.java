@@ -23,10 +23,10 @@ import net.runelite.client.plugins.PluginDescriptor;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>Misc Handler</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font>Auto Dialoguer</html>",
         description = "Handles miscellaneous stuff in the game",
         enabledByDefault = false,
-        tags = {"poly", "plugin"}
+        tags = {"piggy", "plugin"}
 )
 @Slf4j
 public class DialogueContinuerPlugin extends Plugin {

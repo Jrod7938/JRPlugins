@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoChompy</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font>AutoChompy</html>",
         description = "Kills chompys",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

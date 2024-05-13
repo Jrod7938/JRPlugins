@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoTrapper</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font>AutoTrapper</html>",
         description = "Traps shit",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

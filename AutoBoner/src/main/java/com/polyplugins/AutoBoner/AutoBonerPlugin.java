@@ -23,7 +23,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoBoner</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font>AutoBoner</html>",
         description = "Its an automated boner, it does shit",
         enabledByDefault = false,
         tags = {"poly", "plugin"}
