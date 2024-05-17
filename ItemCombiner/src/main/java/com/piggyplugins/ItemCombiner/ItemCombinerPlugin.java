@@ -157,7 +157,7 @@ public class ItemCombinerPlugin extends Plugin {
     private boolean hasItems(boolean bank) {
         return bank
                 ? !BankInventory.search().withName(config.itemOneName()).empty() && !BankInventory.search().withName(config.itemTwoName()).empty()
-                : InventoryUtil.hasItem(config.itemOneName()) && InventoryUtil.hasItems(config.itemTwoName());
+                : Inventory.search().withName(config.itemOneName()).first().isPresent() && Inventory.search().withName(config.itemTwoName()).first().isPresent();
     }
 
     private void doBanking() {
