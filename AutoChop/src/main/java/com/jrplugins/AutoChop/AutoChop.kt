@@ -297,7 +297,7 @@ class AutoChop : Plugin() {
                     NPCInteraction.interact(foxTrap, "Disarm")
                 }
                 return
-            } else {
+            } else if (!foxPoacherExists()) {
                 changeStateTo(State.IDLE, 4)
             }
         }
@@ -507,6 +507,7 @@ class AutoChop : Plugin() {
 
     private fun ritualCircleExists(): Boolean = circles.isNotEmpty()
     private fun entlingExists(): Boolean = NPCs.search().nameContains("Entling").result().isNotEmpty()
+    private fun foxPoacherExists(): Boolean = NPCs.search().nameContains("Poacher").result().isNotEmpty()
     private fun hasAxe(): Boolean = !Equipment.search().nameContains("axe").empty()
             || !Inventory.search().nameContains("axe").empty()
 
