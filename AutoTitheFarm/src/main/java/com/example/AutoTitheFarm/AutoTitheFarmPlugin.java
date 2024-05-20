@@ -42,7 +42,8 @@ import static com.example.EthanApiPlugin.EthanApiPlugin.stopPlugin;
 import static com.example.PacketUtils.PacketReflection.client;
 
 @Slf4j
-@PluginDescriptor(name = "<html><font color=\"#00cbf2\">[L]</font> AutoTitheFarm<html>",
+@PluginDescriptor(name =
+        "<html><font color=\"#00cbf2\">[L]</font> AutoTitheFarm<html>",
         description = "Will do Tithe Farm for you",
         enabledByDefault = false,
         tags = {""})
@@ -58,9 +59,10 @@ public class AutoTitheFarmPlugin extends Plugin {
     private ClientThread clientThread;
 
     @Inject
-    private ActionDelayHandler actionDelayHandler;
+    ActionDelayHandler actionDelayHandler;
 
-    AutoTitheFarmOverlay overlay;
+    @Inject
+    private AutoTitheFarmOverlay overlay;
 
     private static final int EMPTY_PATCH = 27383;
 
@@ -111,14 +113,15 @@ public class AutoTitheFarmPlugin extends Plugin {
 
     private final IntegerRandomizer randomCanCount = new IntegerRandomizer(2, 9);
 
+    @Inject
     private EquipmentHandler farmers;
 
+    @Inject
     private EquipmentHandler graceful;
 
     @Override
     public void startUp() {
         log.info("Plugin started");
-        overlay = new AutoTitheFarmOverlay(client, this, config, actionDelayHandler);
         overlayManager.add(overlay);
         initValues();
     }
@@ -138,14 +141,15 @@ public class AutoTitheFarmPlugin extends Plugin {
     private void initValues() {
         setFarmingLevel(getGetPlayerFarmingLevel());
         patchLayout = config.patchLayout().getLayout();
+        totalAmountOfPatches = patchLayout.length;
         defaultStartingPos = isInsideTitheFarm() ? config.patchLayout().getStartingPoint() : null;
         randomCount = randomCanCount.getRandomInteger();
         clientThread.invoke(() -> Inventory.search().withId(ItemID.GRICOLLERS_CAN).first().ifPresent(itm -> InventoryInteraction.useItem(itm, "Check")));
         pluginJustEnabled = true;
         // IntegerRandomizer is only useful when a random integer is looked for more frequently. In this case it isnt, but is still used.
         runEnergyDeviation = new IntegerRandomizer(config.minRunEnergyToIdleUnder(), config.minRunEnergyToIdleUnder() + 10).getRandomInteger();
-        farmers = new EquipmentHandler("Farmer's", config, actionDelayHandler);
-        graceful = new EquipmentHandler("Graceful", config, actionDelayHandler);
+        farmers.setGearName("Farmer's");
+        graceful.setGearName("Graceful");
     }
 
     private void resetValues() {
@@ -223,7 +227,7 @@ public class AutoTitheFarmPlugin extends Plugin {
         if (!isGricollersCanFound()) {
             return false;
         }
-        return randomCount == gricollersChargesUsed || gricollersChargesUsed > randomCount;
+        return gricollersChargesUsed >= randomCount;
     }
 
     public boolean startingNewRun() {
@@ -285,14 +289,6 @@ public class AutoTitheFarmPlugin extends Plugin {
         log.info(getObjectAction(patch) + "ing");
     }
 
-    private void dropGricollersFertiliser() {
-        if (actionDelayHandler.isWaitForAction()) {
-            return;
-        }
-        Inventory.search().withId(ItemID.GRICOLLERS_FERTILISER).first().ifPresent(item -> InventoryInteraction.useItem(item, "Drop"));
-        actionDelayHandler.setWaitForAction(true);
-    }
-
     private void useItemOnObject(Widget widget, TileObject tileObject) {
         //log.info("Wait for action: " + waitForAction);
         Optional<Widget> optionalWidget = Optional.of(widget);
@@ -307,8 +303,6 @@ public class AutoTitheFarmPlugin extends Plugin {
     }
 
     private void captureEmptyPatches() {
-        totalAmountOfPatches = patchLayout.length;
-
         if (!emptyPatches.isEmpty()) {
             emptyPatches.clear();
         }
@@ -364,6 +358,7 @@ public class AutoTitheFarmPlugin extends Plugin {
     }
 
     private void handleMinigame() {
+        Optional<Widget> staminaPot = Inventory.search().nameContains("Stamina").first();
         Optional<TileObject> waterBarrel = TileObjects.search().nameContains("Water Barrel").nearestToPlayer();
         int runEnergy = client.getEnergy() / 100;
         final boolean isRunEnabled = client.getVarpValue(173) == 1;
@@ -371,11 +366,7 @@ public class AutoTitheFarmPlugin extends Plugin {
         List<Widget> regularWateringCansToRefill = Inventory.search().idInList(List.of(ItemID.WATERING_CAN, ItemID.WATERING_CAN1,
                 ItemID.WATERING_CAN2, ItemID.WATERING_CAN3, ItemID.WATERING_CAN4, ItemID.WATERING_CAN5, ItemID.WATERING_CAN6,
                 ItemID.WATERING_CAN7)).result();
-
-        if (Inventory.search().withId(ItemID.GRICOLLERS_FERTILISER).first().isPresent()){
-            dropGricollersFertiliser();
-            return;
-        }
+        Optional<Widget> gricollersFertiliser = Inventory.search().withId(ItemID.GRICOLLERS_FERTILISER).first();
 
         setDefaultStartingPosition();
 
@@ -393,9 +384,16 @@ public class AutoTitheFarmPlugin extends Plugin {
         dePopulateList(thirdPhaseObjectsToFocus);
         dePopulateList(fourthPhaseObjectsToFocus);
 
-        // if 10 ticks have passed and no actions have been made within time limit then something went horribly wrong.
-        if (actionDelayHandler.getLastActionTimer() > (startingNewRun() ? 2 : 10) && !EthanApiPlugin.isMoving() && actionDelayHandler.isWaitForAction()) {
+        // if 5 ticks have passed and no any actions have been made within time limit then something went horribly wrong.
+        final boolean isPlayerMoving = EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() != -1;
+        if (actionDelayHandler.getLastActionTimer() > (startingNewRun() ? 2 : 5) && !isPlayerMoving && actionDelayHandler.isWaitForAction()) {
             actionDelayHandler.setWaitForAction(false);
+            log.info("Setting action delay to false");
+        }
+
+        if (gricollersFertiliser.isPresent()) {
+            InventoryInteraction.useItem(gricollersFertiliser.get(), "Drop");
+            return;
         }
 
         if (runEnergy > 0 && !isRunEnabled) {
@@ -418,13 +416,8 @@ public class AutoTitheFarmPlugin extends Plugin {
                 return;
             }
 
-            // in case we've for whatever reason used almost all seeds. We shouldn't be close to the smallest amount either way... >_>
-            if (getSeed().getItemQuantity() < 100) {
-                stopPlugin(this);
-                return;
-            }
-
-            if (fruit.isPresent() && config.stopIfReachedFruitAmountFarmed() && fruit.get().getItemQuantity() >= config.maxFruitToFarm()) {
+            if ((getSeed().getItemQuantity() < 100) ||
+                    (fruit.isPresent() && config.stopIfReachedFruitAmountFarmed() && fruit.get().getItemQuantity() >= config.maxFruitToFarm())) {
                 stopPlugin(this);
                 return;
             }
@@ -462,6 +455,12 @@ public class AutoTitheFarmPlugin extends Plugin {
                 }
                 return;
             }
+
+            if (config.useStaminaPot() && staminaPot.isPresent() && runEnergy < 70 && client.getVarbitValue(Varbits.RUN_SLOWED_DEPLETION_ACTIVE) == 0) {
+                InventoryInteraction.useItem(staminaPot.get(), "Drink");
+                log.info("Drinking stamina potion");
+                return;
+            }
         }
 
         if (!firstPhaseObjectsToFocus.isEmpty()) {
@@ -490,10 +489,6 @@ public class AutoTitheFarmPlugin extends Plugin {
             }
 
             doAction(phase);
-
-            if (phase != lastPhase) {
-                return;
-            }
         }
     }
 
@@ -535,6 +530,7 @@ public class AutoTitheFarmPlugin extends Plugin {
                 TileObjects.search().withId(ObjectID.SEED_TABLE).first().ifPresent(obj -> TileObjectInteraction.interact(obj, "Search"));
                 return;
             }
+            MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(14352385, firstChatOptionId);
             return;
         }

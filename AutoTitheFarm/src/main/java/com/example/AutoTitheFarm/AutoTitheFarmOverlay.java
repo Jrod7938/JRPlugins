@@ -6,25 +6,25 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.*;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AutoTitheFarmOverlay extends Overlay {
-    AutoTitheFarmPlugin plugin;
 
-    Client client;
+    private final AutoTitheFarmPlugin plugin;
 
-    AutoTitheFarmConfig config;
+    private final Client client;
 
-    ActionDelayHandler actionDelayHandler;
+    private final AutoTitheFarmConfig config;
 
-    AutoTitheFarmOverlay(Client client, AutoTitheFarmPlugin plugin, AutoTitheFarmConfig config, ActionDelayHandler actionDelayHandler) {
+    @Inject
+    AutoTitheFarmOverlay(Client client, AutoTitheFarmPlugin plugin, AutoTitheFarmConfig config) {
         this.plugin = plugin;
         this.client = client;
         this.config = config;
-        this.actionDelayHandler = actionDelayHandler;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
         setPriority(OverlayPriority.HIGHEST);
@@ -59,7 +59,7 @@ public class AutoTitheFarmOverlay extends Overlay {
                 renderTextLocation(graphics, String.valueOf(patches.indexOf(tileObject) + 1), tileObject.getWorldLocation(), Color.WHITE);
             }
 
-            renderTextOnActor(graphics, client.getLocalPlayer(), "Wait for action: " + actionDelayHandler.isWaitForAction(), Color.RED, 40);
+            renderTextOnActor(graphics, client.getLocalPlayer(), "Wait for action: " + plugin.actionDelayHandler.isWaitForAction(), Color.RED, 40);
         }
 
         if (plugin.isNeedToRestoreRunEnergy() && plugin.startingNewRun()) {

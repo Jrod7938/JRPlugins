@@ -52,10 +52,21 @@ public interface AutoTitheFarmConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "useStaminaPot",
+            name = "Use Stamina Potion",
+            description = "Will use stamina potion to restore energy.",
+            position = 2,
+            section = SETUP
+    )
+    default boolean useStaminaPot() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "oneTickBankAllHerbBoxes",
             name = "One tick bank-all Herb boxes",
             description = "Will mass bank-all herb boxes rather than just banking them one tick at a time",
-            position = 2,
+            position = 3,
             section = SETUP
     )
     default boolean oneTickBankAllHerbBoxes() {
@@ -66,7 +77,7 @@ public interface AutoTitheFarmConfig extends Config {
             keyName = "switchGearDuringHarvestingPhase",
             name = "Switch gear for xp",
             description = "Will switch gear to farmer's equipment (if available) during harvesting phase.",
-            position = 3,
+            position = 4,
             section = SETUP
     )
     default boolean switchGearDuringHarvestingPhase() {

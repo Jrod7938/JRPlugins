@@ -1,5 +1,8 @@
 package com.example.AutoTitheFarm;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 import static com.example.AutoTitheFarm.AutoTitheFarmPlugin.*;
 
 public enum Plants {
@@ -14,12 +17,16 @@ public enum Plants {
     private final int maxLevelRequirement;
 
     // unwatered IDs
+    @Getter(AccessLevel.PACKAGE)
     private final int firstStageId;
 
+    @Getter(AccessLevel.PACKAGE)
     private final int secondStageId;
 
+    @Getter(AccessLevel.PACKAGE)
     private final int thirdStageId;
 
+    @Getter(AccessLevel.PACKAGE)
     private final int fourthStageId;
 
     Plants(int minLevelRequirement, int maxLevelRequirement, int firstStageId, int secondStageId, int thirdStageId, int fourthStageId) {
@@ -37,26 +44,6 @@ public enum Plants {
 
     private Plants getPlant() {
         return farmingLevelIsInRange() ? this : null;
-    }
-
-    private int getStageId(int stageId) {
-        return farmingLevelIsInRange() ? stageId : -1;
-    }
-
-    public int getFirstStageId() {
-        return getStageId(firstStageId);
-    }
-
-    public int getSecondStageId() {
-        return getStageId(secondStageId);
-    }
-
-    public int getThirdStageId() {
-        return getStageId(thirdStageId);
-    }
-
-    public int getFourthStageId() {
-        return getStageId(fourthStageId);
     }
 
     public static Plants getNeededPlant() {
