@@ -17,6 +17,7 @@ https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e8
 ## Plugins:
 
 - Auto Vorkath
+- Auto Combat v2
 - Auto Whisperer Prayers
 - Auto Leviathan Prayers
 - AutoChop (Supports Some Forestry Events)

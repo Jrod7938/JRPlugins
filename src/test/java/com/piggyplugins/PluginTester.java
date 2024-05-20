@@ -77,7 +77,8 @@ public class PluginTester {
                 VardorvisHelperPlugin.class,
                 AutoLeviathanPrayer.class,
                 AutoWhispererPrayer.class,
-                StrategySmithPlugin.class
+                StrategySmithPlugin.class,
+                AutoCombatPlugin.class
         );
         RuneLite.main(args);
     }
