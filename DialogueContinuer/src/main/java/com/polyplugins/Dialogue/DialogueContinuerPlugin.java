@@ -23,7 +23,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font>Auto Dialoguer</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Auto Dialoguer</html>",
         description = "Handles miscellaneous stuff in the game",
         enabledByDefault = false,
         tags = {"piggy", "plugin"}

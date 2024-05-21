@@ -34,7 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font>AutoSmith</html>",
+@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font> AutoSmith</html>",
         description = "",
         enabledByDefault = false,
         tags = {"poly", "plugin"})

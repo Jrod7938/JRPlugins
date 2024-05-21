@@ -29,7 +29,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#FF9DF9\">[PP]</font>StrategySmith</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> StrategySmith</html>",
         description = "",
         enabledByDefault = false,
         tags = {"piggy", "plugin"}

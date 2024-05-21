@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font>AutoAerial</html>",
+@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font> AutoAerial</html>",
         description = "",
         enabledByDefault = false,
         tags = {"piggy","plugin"})
