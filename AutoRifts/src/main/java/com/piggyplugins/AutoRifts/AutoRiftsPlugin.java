@@ -814,7 +814,7 @@ public class AutoRiftsPlugin extends Plugin {
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(14221317, -1);
             MousePackets.queueClickPacket();
-            EthanApiPlugin.invoke(-1, -1, 26, -1, -1, "", "", -1, -1);
+            EthanApiPlugin.invoke(-1, -1, 26, -1, -1, -1, "", "", -1, -1);
             timeout = 0;
             if (config.usePouches()) {
                 clientThread.invokeLater(() -> pouchManager.refreshPouches());
