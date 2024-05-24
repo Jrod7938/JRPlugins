@@ -107,6 +107,7 @@ public class AutoRiftsPlugin extends Plugin {
             ItemID.INFERNAL_PICKAXE,
             ItemID._3RD_AGE_PICKAXE,
             ItemID.CRYSTAL_PICKAXE,
+            ItemID.CRYSTAL_PICKAXE_INACTIVE,
             ItemID.INFERNAL_PICKAXE_OR);
     private final List<Integer> PoweredCellList = ImmutableList.of(ItemID.WEAK_CELL, ItemID.OVERCHARGED_CELL, ItemID.STRONG_CELL, ItemID.MEDIUM_CELL);
     public boolean started = false;
