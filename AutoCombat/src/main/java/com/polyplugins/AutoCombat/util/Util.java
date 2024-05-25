@@ -58,7 +58,6 @@ public class Util {
         }
         log.info("NPC: " + npcOp.get().getName());
         NPC npc = npcOp.get();
-        log.info("LOS: " + client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, npc.getWorldLocation()));
         return npcOp.orElse(null);
     }
 

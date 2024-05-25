@@ -39,15 +39,19 @@ import java.util.regex.Pattern;
 import static com.example.EthanApiPlugin.Collections.query.TileObjectQuery.getObjectComposition;
 import static com.example.EthanApiPlugin.EthanApiPlugin.sendClientMessage;
 import static com.example.EthanApiPlugin.EthanApiPlugin.stopPlugin;
-import static com.example.PacketUtils.PacketReflection.client;
 
 @Slf4j
-@PluginDescriptor(name =
-        "<html><font color=\"#00cbf2\">[L]</font> AutoTitheFarm<html>",
+@PluginDependency(PacketUtilsPlugin.class)
+@PluginDependency(EthanApiPlugin.class)
+@PluginDescriptor(
+        name = "<html><font color=\"#00cbf2\">[L]</font> AutoTitheFarm<html>",
         description = "Will do Tithe Farm for you",
         enabledByDefault = false,
         tags = {""})
 public class AutoTitheFarmPlugin extends Plugin {
+
+    @Inject
+    private Client client;
 
     @Inject
     private OverlayManager overlayManager;
@@ -216,7 +220,7 @@ public class AutoTitheFarmPlugin extends Plugin {
     }
 
     private Widget getSeed() {
-        return Inventory.search().nameContains("seed").first().orElse(null);
+        return Inventory.search().withName(Plants.getNeededPlant().getPlantName() + " seed").first().orElse(null);
     }
 
     private boolean isGricollersCanFound() {
@@ -252,15 +256,32 @@ public class AutoTitheFarmPlugin extends Plugin {
         WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
 
         switch (playerOrientation) {
-            case 151: worldPoint = playerLocation.dx(-1).dy(-2); break;
-            case 360: worldPoint = playerLocation.dx(-2).dy(-1); break;
-            case 663: worldPoint = playerLocation.dx(-2).dy(1); break;
-            case 872: worldPoint = playerLocation.dx(-1).dy(2); break;
-            case 1176: worldPoint = playerLocation.dx(1).dy(2); break;
-            case 1385: worldPoint = playerLocation.dx(2).dy(1); break;
-            case 1688: worldPoint = playerLocation.dx(2).dy(-1); break;
-            case 1897: worldPoint = playerLocation.dx(1).dy(-2); break;
-            default: worldPoint = null;
+            case 151:
+                worldPoint = playerLocation.dx(-1).dy(-2);
+                break;
+            case 360:
+                worldPoint = playerLocation.dx(-2).dy(-1);
+                break;
+            case 663:
+                worldPoint = playerLocation.dx(-2).dy(1);
+                break;
+            case 872:
+                worldPoint = playerLocation.dx(-1).dy(2);
+                break;
+            case 1176:
+                worldPoint = playerLocation.dx(1).dy(2);
+                break;
+            case 1385:
+                worldPoint = playerLocation.dx(2).dy(1);
+                break;
+            case 1688:
+                worldPoint = playerLocation.dx(2).dy(-1);
+                break;
+            case 1897:
+                worldPoint = playerLocation.dx(1).dy(-2);
+                break;
+            default:
+                worldPoint = null;
         }
 
         return worldPoint;
@@ -271,7 +292,7 @@ public class AutoTitheFarmPlugin extends Plugin {
     }
 
     private boolean isInsideTitheFarm() {
-        if (client.isInInstancedRegion()) {
+        if (client.getTopLevelWorldView().getScene().isInstance()) {
             return true;
         }
         resetValues();
@@ -307,7 +328,7 @@ public class AutoTitheFarmPlugin extends Plugin {
             emptyPatches.clear();
         }
         for (int[] point : patchLayout) {
-            WorldPoint worldPoint = WorldPoint.fromScene(client, point[0], point[1], 0);
+            WorldPoint worldPoint = WorldPoint.fromScene(client.getTopLevelWorldView(), point[0], point[1], 0);
             TileObjects.search().withId(EMPTY_PATCH).atLocation(worldPoint).first().ifPresent(emptyPatches::add);
         }
     }
@@ -341,9 +362,15 @@ public class AutoTitheFarmPlugin extends Plugin {
 
         String compareString = null;
         switch (Objects.requireNonNull(Plants.getNeededPlant())) {
-            case BOLOGANO: compareString = "Bologano"; break;
-            case GOLOVANOVA: compareString = "Golovanova"; break;
-            case LOGAVANO: compareString = "Logavano"; break;
+            case BOLOGANO:
+                compareString = "Bologano";
+                break;
+            case GOLOVANOVA:
+                compareString = "Golovanova";
+                break;
+            case LOGAVANO:
+                compareString = "Logavano";
+                break;
         }
 
         // current seed in the inventory should never be null either way
@@ -509,9 +536,15 @@ public class AutoTitheFarmPlugin extends Plugin {
         Optional<Widget> secondChatWindowId = Widgets.search().withTextContains("How many seeds").hiddenState(false).first();
 
         switch (Objects.requireNonNull(Plants.getNeededPlant())) {
-            case GOLOVANOVA: firstChatOptionId = 1; break;
-            case BOLOGANO: firstChatOptionId = 2; break;
-            case LOGAVANO: firstChatOptionId = 3; break;
+            case GOLOVANOVA:
+                firstChatOptionId = 1;
+                break;
+            case BOLOGANO:
+                firstChatOptionId = 2;
+                break;
+            case LOGAVANO:
+                firstChatOptionId = 3;
+                break;
         }
 
         if (getSeed() == null) {
@@ -537,11 +570,19 @@ public class AutoTitheFarmPlugin extends Plugin {
         openFarmDoor();
     }
 
+    private boolean firstTimeEnteringTitheFarm() {
+        if (Widgets.search().withTextContains("Hey, young sir").first().isPresent()) {
+            sendClientMessage("You're entering the tithe farm for the first time. Please talk to the old man yourself.");
+            return true;
+        }
+        return false;
+    }
+
     @Subscribe
     private void onGameTick(GameTick event) {
         actionDelayHandler.handleLastActionTimer();
 
-        if (!gotRequiredItems()) {
+        if (!gotRequiredItems() || firstTimeEnteringTitheFarm()) {
             stopPlugin(this);
             return;
         }
@@ -650,17 +691,28 @@ public class AutoTitheFarmPlugin extends Plugin {
         int intValue = matcher.find() ? (Integer.parseInt(matcher.group()) / 10) : -1;
 
         switch (intValue) {
-            case 1: return 9;
-            case 2: return 8;
-            case 3: return 7;
-            case 4: return 6;
-            case 5: return 5;
-            case 6: return 4;
-            case 7: return 3;
-            case 8: return 2;
-            case 9: return 1;
-            case 10: return 0;
-            default: return -1;
+            case 1:
+                return 9;
+            case 2:
+                return 8;
+            case 3:
+                return 7;
+            case 4:
+                return 6;
+            case 5:
+                return 5;
+            case 6:
+                return 4;
+            case 7:
+                return 3;
+            case 8:
+                return 2;
+            case 9:
+                return 1;
+            case 10:
+                return 0;
+            default:
+                return -1;
         }
     }
 
@@ -693,7 +745,9 @@ public class AutoTitheFarmPlugin extends Plugin {
         switch (gameState) {
             case CONNECTION_LOST:
             case LOGIN_SCREEN:
-            case LOGIN_SCREEN_AUTHENTICATOR: stopPlugin(this); break;
+            case LOGIN_SCREEN_AUTHENTICATOR:
+                stopPlugin(this);
+                break;
             default: //
         }
     }
