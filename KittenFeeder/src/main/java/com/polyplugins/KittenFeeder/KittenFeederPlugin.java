@@ -31,10 +31,10 @@ import java.util.Optional;
 
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>Kitten Feeder</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> Kitten Feeder</html>",
         description = "Feeds your kitten every few minutes",
         enabledByDefault = false,
-        tags = {"poly", "plugin"}
+        tags = {"piggy", "plugin", "kitten"}
 )
 @Slf4j
 public class KittenFeederPlugin extends Plugin {

@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#ff4d00\">[BS]</font> Auto Combat</html>",
+        name = "<html><font color=\"#ff4d00\">[BS]</font> Auto Combat v2</html>",
         description = "",
         enabledByDefault = false,
         tags = {"BS", "piggy", "PP", "plugin"}

@@ -18,8 +18,8 @@ sourceSets {
     }
 }
 
-group 'com.piggyplugins'
-version '1.0.0'
+group 'com.example'
+version '0.0.2'
 
 test {
     useJUnitPlatform()
@@ -28,7 +28,7 @@ test {
 task PiggyJar(type: Jar) {
     manifest {
     }
-    baseName = 'aoe-warn'
+    baseName = 'Clue-Puzzle-Solver'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

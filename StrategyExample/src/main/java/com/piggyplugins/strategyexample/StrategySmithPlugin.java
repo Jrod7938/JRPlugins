@@ -29,10 +29,10 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>StrategySmith</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> StrategySmith</html>",
         description = "",
         enabledByDefault = false,
-        tags = {"poly", "plugin"}
+        tags = {"piggy", "plugin"}
 )
 @Slf4j
 public class StrategySmithPlugin extends Plugin {
@@ -170,3 +170,4 @@ public class StrategySmithPlugin extends Plugin {
         }
     }
 }
+//Strategy Abstract tasks written by poly j

@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = 'latest.release'
+    def runeLiteVersion = '1.10.30'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -74,19 +74,9 @@ dependencies {
     implementation project(path: ':DropParty')
     implementation project(path: ':BetterProfiles')
     implementation project(path: ':PathingTesting')
+    implementation project(path: ':PiggyAutoCombat')
+    implementation project(path: ':CluePuzzleSolver')
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
-    compileOnly project(path: ':AutoChop')
-    testImplementation project(path: ':AutoChop')
-    compileOnly project(path: ':PathingTesting')
-    testImplementation project(path: ':PathingTesting')
-    compileOnly project(path: ':AutoVorkath')
-    testImplementation project(path: ':AutoVorkath')
-    compileOnly project(path: ':RSNHider')
-    testImplementation project(path: ':RSNHider')
-    compileOnly project(path: ':AutoLeviathanPrayers')
-    testImplementation project(path: ':AutoLeviathanPrayers')
-    compileOnly project(path: ':AutoWhispererPrayers')
-    testImplementation project(path: ':AutoWhispererPrayers')
 }
 
 sourceSets {
@@ -101,7 +91,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.1.8'
+version = '1.2.4'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {

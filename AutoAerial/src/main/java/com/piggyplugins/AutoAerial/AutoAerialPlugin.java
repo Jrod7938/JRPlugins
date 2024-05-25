@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@PluginDescriptor(name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoAerial</html>",
+@PluginDescriptor(name = "<html><font color=\"#FF9DF9\">[PP]</font> AutoAerial</html>",
         description = "",
         enabledByDefault = false,
-        tags = {"poly","plugin"})
+        tags = {"piggy","plugin"})
 @Slf4j
 public class AutoAerialPlugin extends Plugin {
 

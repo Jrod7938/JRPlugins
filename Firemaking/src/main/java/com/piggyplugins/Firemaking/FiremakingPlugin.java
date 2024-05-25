@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#7ecbf2\">[PJ]</font>AutoFiremaking</html>",
+        name = "<html><font color=\"#FF9DF9\">[PP]</font> AutoFiremaking</html>",
         description = "",
         enabledByDefault = false,
         tags = {"poly", "plugin"}

@@ -107,6 +107,7 @@ public class AutoRiftsPlugin extends Plugin {
             ItemID.INFERNAL_PICKAXE,
             ItemID._3RD_AGE_PICKAXE,
             ItemID.CRYSTAL_PICKAXE,
+            ItemID.CRYSTAL_PICKAXE_INACTIVE,
             ItemID.INFERNAL_PICKAXE_OR);
     private final List<Integer> PoweredCellList = ImmutableList.of(ItemID.WEAK_CELL, ItemID.OVERCHARGED_CELL, ItemID.STRONG_CELL, ItemID.MEDIUM_CELL);
     public boolean started = false;
@@ -814,7 +815,7 @@ public class AutoRiftsPlugin extends Plugin {
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(14221317, -1);
             MousePackets.queueClickPacket();
-            EthanApiPlugin.invoke(-1, -1, 26, -1, -1, "", "", -1, -1);
+            EthanApiPlugin.invoke(-1, -1, 26, -1, -1, -1, "", "", -1, -1);
             timeout = 0;
             if (config.usePouches()) {
                 clientThread.invokeLater(() -> pouchManager.refreshPouches());
