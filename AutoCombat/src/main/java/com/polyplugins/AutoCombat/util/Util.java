@@ -53,12 +53,12 @@ public class Util {
     public NPC getBeingInteracted() {
         Optional<NPC> npcOp = NPCs.search().interactingWithLocal().first();
         if (npcOp.isEmpty()) {
-            log.info("getBeingInteracted NULL");
+            //log.info("getBeingInteracted NULL");
             return null;
         }
-        log.info("NPC: " + npcOp.get().getName());
+        //log.info("NPC: " + npcOp.get().getName());
         NPC npc = npcOp.get();
-        log.info("LOS: " + client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, npc.getWorldLocation()));
+        //log.info("LOS: " + client.getLocalPlayer().getWorldArea().hasLineOfSightTo(client, npc.getWorldLocation()));
         return npcOp.orElse(null);
     }
 

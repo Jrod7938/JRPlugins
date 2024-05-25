@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.30'
+    def runeLiteVersion = 'latest.release'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -77,6 +77,7 @@ dependencies {
     implementation project(path: ':PiggyAutoCombat')
     implementation project(path: ':CluePuzzleSolver')
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20" // Add Kotlin standard library
     testImplementation project(':AutoChop')
     testImplementation project(':AutoVorkath')
     testImplementation project(':RSNHider')
@@ -85,13 +86,15 @@ dependencies {
 }
 
 sourceSets {
-
     main {
-
         java {
-            srcDir "src"
+            srcDirs = ["src/main/java", "src/main/kotlin"] // Include Kotlin source directory
         }
-
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java", "src/test/kotlin"] // Include Kotlin test directory
+        }
     }
 }
 
