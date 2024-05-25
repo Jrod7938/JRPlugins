@@ -77,6 +77,11 @@ dependencies {
     implementation project(path: ':PiggyAutoCombat')
     implementation project(path: ':CluePuzzleSolver')
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    testImplementation project(':AutoChop')
+    testImplementation project(':AutoVorkath')
+    testImplementation project(':RSNHider')
+    testImplementation project(':AutoLeviathanPrayers')
+    testImplementation project(':AutoWhispererPrayers')
 }
 
 sourceSets {
