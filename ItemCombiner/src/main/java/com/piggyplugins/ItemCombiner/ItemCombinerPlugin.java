@@ -63,7 +63,6 @@ public class ItemCombinerPlugin extends Plugin {
     @Getter
     private boolean started;
     private int afkTicks;
-    private boolean deposit;
     private boolean isMaking;
     private boolean debug = true;
 
@@ -129,11 +128,21 @@ public class ItemCombinerPlugin extends Plugin {
     }
 
     private void findBank() {
-        Optional<TileObject> chest = TileObjects.search().withName("Bank chest").nearestToPlayer();
+        Optional<TileObject> chest1 = TileObjects.search().withName("Bank chest").nearestToPlayer();
+        Optional<TileObject> chest2 = TileObjects.search().withName("Bank Chest").nearestToPlayer();
+        Optional<TileObject> chest3 = TileObjects.search().withName("Bank Chest-wreck").nearestToPlayer();
         Optional<NPC> banker = NPCs.search().withAction("Bank").nearestToPlayer();
         Optional<TileObject> booth = TileObjects.search().withAction("Bank").nearestToPlayer();
-        if (chest.isPresent()){
-            TileObjectInteraction.interact(chest.get(), "Use");
+        if (chest1.isPresent()){
+            TileObjectInteraction.interact(chest1.get(), "Use");
+            return;
+        }
+        if (chest2.isPresent()){
+            TileObjectInteraction.interact(chest2.get(), "Use");
+            return;
+        }
+        if (chest3.isPresent()){
+            TileObjectInteraction.interact(chest3.get(), "Use");
             return;
         }
         if (booth.isPresent()){
@@ -144,14 +153,8 @@ public class ItemCombinerPlugin extends Plugin {
             NPCInteraction.interact(banker.get(), "Bank");
             return;
         }
-        if (!chest.isPresent() && !booth.isPresent() && !banker.isPresent()){
-            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
-            EthanApiPlugin.stopPlugin(this);
-        }
-
-        if (!deposit) {
-            deposit = true;
-        }
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "couldn't find bank or banker", null);
+        EthanApiPlugin.stopPlugin(this);
     }
 
     private boolean hasItems(boolean bank) {
