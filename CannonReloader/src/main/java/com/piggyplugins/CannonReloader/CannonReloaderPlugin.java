@@ -204,7 +204,7 @@ public class CannonReloaderPlugin extends Plugin {
             return;
         }
 
-        TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().ifPresent(x -> {
+        TileObjects.search().atLocation(cannonSpot).withName("Broken multicannon").withAction("Repair").first().ifPresent(x -> {
             TileObjectInteraction.interact(x, "Repair");
             timeout = 3;
         });
@@ -221,12 +221,12 @@ public class CannonReloaderPlugin extends Plugin {
 
 
     private boolean needsToRepairOrReloadCannon() {
-        return TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().isPresent() ||
+        return TileObjects.search().atLocation(cannonSpot).withName("Broken multicannon").withAction("Repair").first().isPresent() ||
                 remainingCannonballs <= MathUtil.random(config.cannonLowAmount(), config.cannonLowAmount() + config.cannonLowRandom());
     }
 
     private boolean isCannonSetUp() {
-        return TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Repair").first().isPresent() ||
+        return TileObjects.search().atLocation(cannonSpot).withName("Broken multicannon").withAction("Repair").first().isPresent() ||
                 TileObjects.search().atLocation(cannonSpot).withName("Dwarf multicannon").withAction("Fire").first().isPresent();
     }
 
