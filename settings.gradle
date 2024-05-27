@@ -47,4 +47,5 @@ include 'StrategyExample'
 include 'BetterProfiles'
 include 'PiggyAutoCombat'
 include 'CluePuzzleSolver'
+include 'LeftClickBlackJack'
 

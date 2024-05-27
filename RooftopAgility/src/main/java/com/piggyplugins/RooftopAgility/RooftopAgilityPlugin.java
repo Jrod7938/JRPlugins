@@ -47,7 +47,7 @@ import java.util.concurrent.ThreadLocalRandom;
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Rooftop Agility</html>",
         description = "Partially ported iRooftops (by illumine), example of how ReflectBreakHandler can be used for chinbreakhandler",
         enabledByDefault = false,
-        tags = {"ethan", "piggy"}
+        tags = {"ethan", "piggy", "rooftops", "agility"}
 )
 @Slf4j
 public class RooftopAgilityPlugin extends Plugin {
