@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.31.1'
+    def runeLiteVersion = '1.10.31.2'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -45,7 +45,6 @@ dependencies {
     implementation project(path: ':AutoRifts')
     implementation project(path: ':AutoTele')
     implementation project(path: ':CalvarionHelper')
-    implementation project(path: ':CannonReloader')
     implementation project(path: ':E3T4G')
     implementation project(path: ':EthansApi')
     implementation project(path: ':ChinBreakHandler')
@@ -90,7 +89,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.2.5'
+version = '1.2.6'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
