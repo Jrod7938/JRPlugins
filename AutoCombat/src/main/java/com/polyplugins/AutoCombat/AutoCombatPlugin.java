@@ -17,7 +17,10 @@ import com.polyplugins.AutoCombat.util.SuppliesUtil;
 import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import static net.runelite.api.TileItem.OWNERSHIP_SELF;
+import static net.runelite.api.TileItem.OWNERSHIP_OTHER;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.*;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -79,6 +82,7 @@ public class AutoCombatPlugin extends Plugin {
     @Inject
     public SlayerHelper slayerHelper;
     public Queue<ItemStack> lootQueue = new LinkedList<>();
+    public Queue<LocalPoint> lootLocation = new LinkedList<>();
 
     private boolean hasFood = false;
     private boolean hasPrayerPot = false;
@@ -221,8 +225,9 @@ public class AutoCombatPlugin extends Plugin {
         if (!lootQueue.isEmpty()) {
             looting = true;
             ItemStack itemStack = lootQueue.peek();
-            WorldPoint stackLocation = WorldPoint.fromLocal(client, itemStack.getLocation());
-            TileItems.search().withId(itemStack.getId()).withinDistanceToPoint(1, stackLocation).first().ifPresent(item -> {
+            LocalPoint localStackLocation = lootLocation.peek();
+            WorldPoint worldStackLocation = WorldPoint.fromLocal(client, localStackLocation);
+            TileItems.search().withId(itemStack.getId()).withinDistanceToPoint(1, worldStackLocation).first().ifPresent(item -> {
                 ItemComposition comp = itemManager.getItemComposition(item.getTileItem().getId());
                 log.info("Looting: " + comp.getName());
                 if (comp.isStackable() || comp.getNote() != -1) {
@@ -241,6 +246,7 @@ public class AutoCombatPlugin extends Plugin {
             });
             timeout = 3;
             lootQueue.remove();
+            lootLocation.remove();
             return;
         }
 //        if (lootTile != null) lootTile = null;
@@ -315,6 +321,20 @@ public class AutoCombatPlugin extends Plugin {
             lootQueue.add(it);
         });
     }
+
+    /** To keep track of location of loot. */
+    @Subscribe
+	public void onItemSpawned(ItemSpawned itemSpawned) { 
+        if (!started || !config.lootEnabled()) return;
+		final TileItem item = itemSpawned.getItem();
+		final Tile tile = itemSpawned.getTile();
+		final LocalPoint location = tile.getLocalLocation();
+        // Should keep it in sync with lootQueue
+        if (item.getOwnership() == OWNERSHIP_SELF || 
+                item.getOwnership() == OWNERSHIP_OTHER) {
+            lootLocation.add(location);
+        }
+	}
 
     @Subscribe
     public void onStatChanged(StatChanged event) {
