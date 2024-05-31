@@ -18,7 +18,7 @@ import com.polyplugins.AutoCombat.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import static net.runelite.api.TileItem.OWNERSHIP_SELF;
-import static net.runelite.api.TileItem.OWNERSHIP_OTHER;
+import static net.runelite.api.TileItem.OWNERSHIP_GROUP;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.*;
@@ -331,7 +331,7 @@ public class AutoCombatPlugin extends Plugin {
 		final LocalPoint location = tile.getLocalLocation();
         // Should keep it in sync with lootQueue
         if (item.getOwnership() == OWNERSHIP_SELF || 
-                item.getOwnership() == OWNERSHIP_OTHER) {
+                item.getOwnership() == OWNERSHIP_GROUP) {
             lootLocation.add(location);
         }
 	}
