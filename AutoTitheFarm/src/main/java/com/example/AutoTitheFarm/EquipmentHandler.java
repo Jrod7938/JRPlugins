@@ -44,7 +44,7 @@ public class EquipmentHandler {
         }
         getGear().forEach(itm -> {
             InventoryInteraction.useItem(itm, this.action);
-            log.info("Equipping " + Text.removeTags(itm.getName()));
+            log.info("Equipping {}", Text.removeTags(itm.getName()));
         });
     }
 }

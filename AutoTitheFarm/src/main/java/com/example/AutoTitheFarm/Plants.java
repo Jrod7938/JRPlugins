@@ -1,16 +1,21 @@
 package com.example.AutoTitheFarm;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static com.example.AutoTitheFarm.AutoTitheFarmPlugin.*;
 
+@AllArgsConstructor
 public enum Plants {
-    GOLOVANOVA(34, 53, 27384, 27387, 27390, 27393),
+    GOLOVANOVA("Golovanova", 34, 53, 27384, 27387, 27390, 27393),
 
-    BOLOGANO(54, 73, 27395, 27398, 27401, 27404),
+    BOLOGANO("Bologano", 54, 73, 27395, 27398, 27401, 27404),
 
-    LOGAVANO(74, 99, 27406, 27409, 27412, 27415);
+    LOGAVANO("Logavano", 74, 99, 27406, 27409, 27412, 27415);
+
+    @Getter(AccessLevel.PACKAGE)
+    private final String plantName;
 
     private final int minLevelRequirement;
 
@@ -28,15 +33,6 @@ public enum Plants {
 
     @Getter(AccessLevel.PACKAGE)
     private final int fourthStageId;
-
-    Plants(int minLevelRequirement, int maxLevelRequirement, int firstStageId, int secondStageId, int thirdStageId, int fourthStageId) {
-        this.minLevelRequirement = minLevelRequirement;
-        this.maxLevelRequirement = maxLevelRequirement;
-        this.firstStageId = firstStageId;
-        this.secondStageId = secondStageId;
-        this.thirdStageId = thirdStageId;
-        this.fourthStageId = fourthStageId;
-    }
 
     private boolean farmingLevelIsInRange() {
         return getFarmingLevel() >= minLevelRequirement && getFarmingLevel() <= maxLevelRequirement;
