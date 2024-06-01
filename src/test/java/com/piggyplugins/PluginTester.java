@@ -18,6 +18,7 @@ import com.piggyplugins.AutoSmith.AutoSmith;
 import com.piggyplugins.Firemaking.FiremakingPlugin;
 import com.piggyplugins.HerbCleaner.HerbCleanerPlugin;
 import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
+import com.piggyplugins.LeftClickBlackJack.LeftClickBlackJackPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.piggyplugins.PowerSkiller.PowerSkillerPlugin;
 import com.piggyplugins.RooftopAgility.RooftopAgilityPlugin;
@@ -37,6 +38,7 @@ import com.polyplugins.KittenFeeder.KittenFeederPlugin;
 import com.polyplugins.Trapper.AutoTrapperPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
+import net.runelite.client.plugins.cannon.CannonPlugin;
 import rsnhider.RsnHiderPlugin;
 
 public class PluginTester {
@@ -78,7 +80,10 @@ public class PluginTester {
                 AutoLeviathanPrayer.class,
                 AutoWhispererPrayer.class,
                 StrategySmithPlugin.class,
-                AutoCombatPlugin.class
+                AutoCombatPlugin.class,
+                CannonPlugin.class,
+                LeftClickBlackJackPlugin.class
+
         );
         RuneLite.main(args);
     }
