@@ -195,6 +195,7 @@ public class LavaRunecrafterPlugin extends Plugin {
                 timeout = 1;
                 return;
             }
+            //System.out.println("doing item operations");
 
             try {
                 binding = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.AMULET.getSlotIdx());
@@ -271,6 +272,7 @@ public class LavaRunecrafterPlugin extends Plugin {
                 //System.out.println("using spell");
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetActionPacket(1, WidgetInfoExtended.SPELL_MAGIC_IMBUE.getPackedId(), -1, -1);
+                //System.out.println("initial craft");
                 MousePackets.queueClickPacket();
                 ObjectPackets.queueWidgetOnTileObject(earthRunes, altar);
                 //objectPackets.queueObjectAction(altar, false, "Craft-rune");
