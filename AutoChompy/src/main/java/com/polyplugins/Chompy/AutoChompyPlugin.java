@@ -5,9 +5,9 @@ import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.example.EthanApiPlugin.Collections.query.EquipmentItemQuery;
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
 import com.example.EthanApiPlugin.Collections.query.NPCQuery;
+import com.example.EthanApiPlugin.Collections.query.TileObjectQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.*;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -32,10 +31,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> AutoChompy</html>",
-        description = "Kills chompys",
+        description = "Auto Chompy Killer",
         enabledByDefault = false,
         tags = {"poly", "plugin"}
 )
@@ -65,6 +65,10 @@ public class AutoChompyPlugin extends Plugin {
     @Provides
     private AutoChompyConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(AutoChompyConfig.class);
+    }
+
+    private int tickDelay() {
+        return config.tickDelay() ? ThreadLocalRandom.current().nextInt(config.tickDelayMin(), config.tickDelayMax()) : 3;
     }
 
     @Override
@@ -128,7 +132,7 @@ public class AutoChompyPlugin extends Plugin {
     private void doChompy() {
         checkRunEnergy();
         log.info(state.toString());
-        log.info("Ammo id: " + ammoId);
+//        log.info("Ammo id: {}", ammoId);
 //        log.info(getNearestFreeTile().toString());
         if (Equipment.search().withId(ammoId).empty()) {
             EthanApiPlugin.sendClientMessage("No Ogre arrows or Brutal arrows left");
@@ -147,6 +151,9 @@ public class AutoChompyPlugin extends Plugin {
             case INFLATE_TOAD:
                 handleInflateToad();
                 break;
+            case WAITING:
+                timeout = tickDelay();
+                break;
             default:
                 determineNextState();
                 break;
@@ -162,6 +169,8 @@ public class AutoChompyPlugin extends Plugin {
             state = State.DROP_TOAD;
         } else if (bloatedToadsItem.empty() && hasFilledBellows()) {
             state = State.INFLATE_TOAD;
+        } else {
+            state = State.WAITING;
         }
     }
 
@@ -172,13 +181,39 @@ public class AutoChompyPlugin extends Plugin {
         });
     }
 
+    private Bubbles lastVisitedBubble = null;
+
     private void handleFillBellows() {
-        TileObjects.search().nameContains("wamp bubble").nearestToPlayer().ifPresent(tileObject -> {
-            MousePackets.queueClickPacket();
-            TileObjectInteraction.interact(tileObject, "Suck");
-            timeout = Inventory.search().nameContains("bellows").result().size() * 4;
-        });
+        WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
+        log.info("Player Location: " + playerLocation);
+
+        Bubbles bubble = Bubbles.getNearestBubble(playerLocation, 10, lastVisitedBubble);
+        if (bubble != null) {
+            log.info("Found bubble within radius at location: " + bubble.getLocation());
+
+            TileObjectQuery query = new TileObjectQuery(TileObjects.search().result());
+            Optional<TileObject> tileObject = query.nameContains("Swamp bubble").nearestToPoint(bubble.getLocation());
+
+            if (tileObject.isPresent()) {
+                log.info("Found TileObject: " + tileObject.get().getId());
+
+                if (!client.getLocalPlayer().isInteracting()) {
+                    log.info("Player is not interacting. Interacting with TileObject.");
+                    MousePackets.queueClickPacket();
+                    TileObjectInteraction.interact(tileObject.get(), "Suck");
+                    timeout = tickDelay();
+                    lastVisitedBubble = bubble; // Update last visited bubble
+                } else {
+                    log.info("Player is already interacting.");
+                }
+            } else {
+                log.info("TileObject not found.");
+            }
+        } else {
+            log.info("No bubble found within radius.");
+        }
     }
+
 
     public boolean hasFilledBellows() {
         return Inventory.search().nameContains("bellows (").first().isPresent();
@@ -194,11 +229,11 @@ public class AutoChompyPlugin extends Plugin {
         if (isStandingOnToad()) {
             MousePackets.queueClickPacket();
             MovementPackets.queueMovement(getNearestFreeTile().get());
-            timeout = 3;
+            timeout = tickDelay();
         } else {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetAction(bloatedToadsItem.first().get(), "Drop");
-            timeout = 2;
+            timeout = tickDelay();
         }
     }
 
@@ -223,7 +258,9 @@ public class AutoChompyPlugin extends Plugin {
         swampToads.nearestToPlayer().ifPresent(npc -> {
             MousePackets.queueClickPacket();
             NPCPackets.queueNPCAction(npc, "Inflate");
-            timeout = 1;
+            log.info("Inflating Toad");
+            timeout = tickDelay();
+            log.info(String.valueOf(timeout));
         });
     }
 
@@ -234,17 +271,12 @@ public class AutoChompyPlugin extends Plugin {
         }
     }
 
-    private enum State {
-        FILL_BELLOWS, INFLATE_TOAD, DROP_TOAD, WAITING, KILL_BIRD
+    public enum State {
+        FILL_BELLOWS, INFLATE_TOAD, DROP_TOAD, WAITING, KILL_BIRD, STOPPED
     }
 
     private boolean runIsOff() {
         return EthanApiPlugin.getClient().getVarpValue(173) == 0;
-    }
-
-    private boolean isMovingOrInteracting() {
-        //a-1026 fill toad & bellow
-        return EthanApiPlugin.isMoving() || client.getLocalPlayer().getAnimation() == 1026 || client.getLocalPlayer().getInteracting() != null;
     }
 
     private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {
@@ -254,8 +286,10 @@ public class AutoChompyPlugin extends Plugin {
         }
     };
 
+
     public void toggle() {
         if (client.getGameState() != GameState.LOGGED_IN) {
+            state = State.STOPPED;
             return;
         }
         started = !started;

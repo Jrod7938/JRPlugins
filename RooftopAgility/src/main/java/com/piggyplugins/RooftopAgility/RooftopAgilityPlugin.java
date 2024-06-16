@@ -92,7 +92,7 @@ public class RooftopAgilityPlugin extends Plugin {
     public long getMarksPH() {
         Duration timeSinceStart = Duration.between(timer, Instant.now());
         if (!timeSinceStart.isZero()) {
-            return (int) ((double) mogCollectCount * (double) Duration.ofHours(1).toMillis() / (double) timeSinceStart.toMillis());
+            return (int) ((double) mogSpawnCount * (double) Duration.ofHours(1).toMillis() / (double) timeSinceStart.toMillis());
         }
         return 0;
     }
@@ -171,7 +171,9 @@ public class RooftopAgilityPlugin extends Plugin {
         if (markOfGrace != null && markOfGraceTile != null && config.mogPickup() && (!Inventory.full() || Inventory.getItemAmount(ItemID.MARK_OF_GRACE) > 0)) {
             if (currentObstacle.getLocation().distanceTo(markOfGraceTile.getWorldLocation()) == 0) {
                 if (markOfGraceTile.getGroundItems().contains(markOfGrace)) {
-                    return State.MARK_OF_GRACE;
+                    if (config.course() != Course.ARDOUGNE || (config.course() == Course.ARDOUGNE && markOfGrace.getQuantity() >= config.mogStack())) {
+                        return State.MARK_OF_GRACE;
+                    }
                 } else {
                     markOfGrace = null;
                 }
@@ -480,8 +482,9 @@ public class RooftopAgilityPlugin extends Plugin {
         if (!startAgility || event.getContainerId() != 93 || mogInventoryCount == -1) {
             return;
         }
-        if (event.getItemContainer().count(ItemID.MARK_OF_GRACE) > mogInventoryCount) {
-            mogCollectCount++;
+        int newMarksTotal = event.getItemContainer().count(ItemID.MARK_OF_GRACE);
+        if (newMarksTotal > mogInventoryCount) {
+            mogCollectCount += (newMarksTotal - mogInventoryCount);
             mogInventoryCount = -1;
         }
     }

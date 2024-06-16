@@ -1,80 +1,82 @@
 package com.polyplugins.Chompy;
 
-
-import com.example.EthanApiPlugin.Collections.TileObjects;
-import com.google.common.base.Strings;
 import net.runelite.api.*;
-import net.runelite.api.Point;
-import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.*;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.PanelComponent;
+import net.runelite.client.ui.overlay.components.TitleComponent;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.awt.*;
-import java.util.Optional;
 
-public class AutoChompyOverlay extends Overlay {
-    private final PanelComponent panelComponent = new PanelComponent();
-    private final Client client;
+
+public class AutoChompyOverlay extends OverlayPanel {
     private final AutoChompyPlugin plugin;
 
     @Inject
-    private AutoChompyOverlay(Client client, AutoChompyPlugin plugin) {
-        this.client = client;
+    private AutoChompyOverlay(AutoChompyPlugin plugin) {
+        super(plugin);
         this.plugin = plugin;
-        setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
-        setLayer(OverlayLayer.ABOVE_SCENE);
+        setPosition(OverlayPosition.BOTTOM_LEFT);
         setDragTargetable(true);
+        panelComponent.setPreferredSize(new Dimension(160, 160));
+        panelComponent.setBorder(new Rectangle(10, 10, 10, 10));
 
     }
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        panelComponent.getChildren().clear();
 
-        LineComponent timeout = buildLine("Timeout: ", String.valueOf(plugin.timeout));
-        LineComponent state = buildLine("State: ", String.valueOf(plugin.state));
-        panelComponent.getChildren().add(timeout);
-        panelComponent.getChildren().add(state);
+        // Improved state mapping and display
+        String stateText = "STOPPED"; // Default if not started or state is null
 
-
-        return panelComponent.render(graphics);
-    }
-
-    /**
-     * Builds a line component with the given left and right text
-     *
-     * @param left
-     * @param right
-     * @return Returns a built line component with White left text and Yellow right text
-     */
-    private LineComponent buildLine(String left, String right) {
-        return LineComponent.builder()
-                .left(left)
-                .right(right)
-                .leftColor(Color.WHITE)
-                .rightColor(Color.YELLOW)
-                .build();
-    }
-
-    private void renderTile(final Graphics2D graphics, final LocalPoint dest, final Color color, final Color fillColor, @Nullable String label) {
-        if (dest == null) {
-            return;
-        }
-        final Polygon poly = Perspective.getCanvasTilePoly(client, dest);
-        if (poly == null) {
-            return;
-        }
-        OverlayUtil.renderPolygon(graphics, poly, color, fillColor, new BasicStroke((float) 1.5));
-        if (!Strings.isNullOrEmpty(label)) {
-            Point canvasTextLocation = Perspective.getCanvasTextLocation(client, graphics, dest, label, 0);
-            if (canvasTextLocation != null) {
-                OverlayUtil.renderTextLocation(graphics, canvasTextLocation, label, color);
+        if (plugin.started) {
+            switch (plugin.state) {
+                case FILL_BELLOWS:
+                    stateText = "Filling Bellows";
+                    break;
+                case DROP_TOAD:
+                    stateText = "Dropping Toad";
+                    break;
+                case KILL_BIRD:
+                    stateText = "Killing Chompy";
+                    break;
+                case STOPPED:
+                    stateText = "Stopped";
+                    break;
+                case INFLATE_TOAD:
+                    stateText = "Inflating Toad";
+                    break;
+                case WAITING:
+                    stateText = "Waiting...";
+                    break;
             }
         }
+
+        panelComponent.setPreferredSize(new Dimension(200, 320));
+        panelComponent.getChildren().add(TitleComponent.builder()
+                .text("[PP] Auto Chompy")
+                .color(new Color(255, 157, 249))
+                .build());
+        panelComponent.getChildren().add(TitleComponent.builder()
+                .text(plugin.started ? "Running" : "Paused")
+                .color(plugin.started ? Color.GREEN : Color.RED)
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Timeout: ")
+                .leftColor(new Color(255, 157, 249))
+                .right(String.valueOf(plugin.timeout))
+                .rightColor(Color.WHITE)
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("State: ")
+                .leftColor(new Color(255, 157, 249))
+                .right(stateText)
+                .rightColor(Color.WHITE)
+                .build());
+
+        return super.render(graphics);
     }
+
 
 }
