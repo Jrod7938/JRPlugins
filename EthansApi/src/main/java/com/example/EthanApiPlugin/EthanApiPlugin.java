@@ -10,10 +10,12 @@ import lombok.SneakyThrows;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.EventBus;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -104,7 +106,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("aj");
+            skullField = player.getClass().getDeclaredField("ag");
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -112,7 +114,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * 1181672555;
+            var1 = skullField.getInt(player) * -227316761;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
@@ -174,7 +176,7 @@ public class EthanApiPlugin extends Plugin {
                 }
                 int value = declaredField.getInt(npc);
                 declaredField.setInt(npc, 4795789);
-                if (npc.getAnimation() == 2002995319 * 4795789) {
+                if (npc.getAnimation() == -614178723 * 4795789) {
                     animationField = declaredField.getName();
                     declaredField.setInt(npc, value);
                     declaredField.setAccessible(false);
@@ -189,7 +191,7 @@ public class EthanApiPlugin extends Plugin {
         }
         Field animation = npc.getClass().getSuperclass().getDeclaredField(animationField);
         animation.setAccessible(true);
-        int anim = animation.getInt(npc) * 2002995319;
+        int anim = animation.getInt(npc) * -614178723;
         animation.setAccessible(false);
         return anim;
     }
@@ -447,6 +449,15 @@ public class EthanApiPlugin extends Plugin {
         doAction.setAccessible(true);
         doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MAX_VALUE);
         doAction.setAccessible(false);
+    }
+
+
+    // BACKUP FOR OTHER PLUGINS I HAVE NOT UDPDATED/CBA
+    // REMOVE LATER
+    @SneakyThrows
+    public static void invoke(int var0, int var1, int var2, int var3, int var4, String var6, String var7, int var8,
+                              int var9) {
+        invoke(var0, var1, var2, var3, var4, -1, var6, var7, var8, var9);
     }
 
     @Deprecated

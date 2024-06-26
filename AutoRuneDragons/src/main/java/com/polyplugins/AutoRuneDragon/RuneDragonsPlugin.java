@@ -891,7 +891,7 @@ public class RuneDragonsPlugin extends Plugin {
     }
 
     private void walkDownstairs() {
-        Optional<TileObject> stairs = ObjectUtil.getNearest(32113);
+        Optional<TileObject> stairs = TileObjects.search().withId(32113).first();
         stairs.ifPresent(tileObject -> {
             TileObjectInteraction.interact(tileObject, "Climb");
         });

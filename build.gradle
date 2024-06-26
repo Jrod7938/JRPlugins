@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.32'
+    def runeLiteVersion = '1.10.34-SNAPSHOT'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -31,7 +31,6 @@ allprojects {
 dependencies {
     implementation project(path: ':AutoTitheFarm')
     implementation project(path: ':AutoAerial')
-    implementation project(path: ":AutoRuneDragons")
     implementation project(path: ':AutoBoner')
     implementation project(path: ':AutoChompy')
     implementation project(path: ':AutoCombat')
