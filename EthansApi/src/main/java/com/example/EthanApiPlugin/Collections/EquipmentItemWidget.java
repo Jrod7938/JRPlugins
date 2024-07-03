@@ -473,6 +473,11 @@ public class EquipmentItemWidget implements Widget {
     }
 
     @Override
+    public void clearActions() {
+
+    }
+
+    @Override
     public void setOnOpListener(Object... args) {
 
     }
