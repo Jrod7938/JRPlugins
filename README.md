@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 06/01/2024 02:20 EST*
+*Updated 07/02/2024 20:07 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
