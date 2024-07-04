@@ -61,11 +61,8 @@ If it shows up as installed and you do not have a sideloaded-plugins or external
 
 [<kbd>Free Plugins Help</kbd>](https://discord.com/channels/1124614852187533322/1124636010349871134)
 
-[![Free Plugins Help]][Link]
-<!----------------------------------------------------------------------------->
-[Link]: https://discord.com/channels/1124614852187533322/1124636010349871134 'Link with example title.'
-<!---------------------------------[ Buttons ]--------------------------------->
-[Free Plugins Help]: https://img.shields.io/badge/Free%20Plugins%20Help-EF2D5E?style=for-the-badge&logoColor=white&logo=DocuSign
+[![Free Plugins Help](https://img.shields.io/badge/Free%20Plugins%20Help-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1124636010349871134)
+
 
 
 
