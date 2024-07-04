@@ -5,7 +5,8 @@ Automation plugins for RuneLite
 # Discord
 https://discord.gg/kwYBYEg4uu
 
-[![Join our Discord](https://img.shields.io/discord/1124614852187533322?style=flat-square&logo=discord&logoColor=white&label=Join%20our%20Server&color=7289DA)](https://discord.gg/piggyplugins)
+<iframe src="https://discord.com/widget?id=1124614852187533322&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+
 
 
 <style>
