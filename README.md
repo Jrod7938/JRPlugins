@@ -11,29 +11,6 @@ https://discord.gg/kwYBYEg4uu
 
 
 
-<style>
-.discord-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #5865F2; /* Discord blue color */
-  color: #FFFFFF;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.discord-button:hover {
-  background-color: #677BC4; /* Darker shade of Discord blue on hover */
-}
-
-.discord-button img {
-  vertical-align: middle;
-  margin-right: 8px; /* Adjust spacing between icon and text */
-}
-</style>
 
 
 # Release 3.3
