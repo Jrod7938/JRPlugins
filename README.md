@@ -61,9 +61,8 @@ If it shows up as installed and you do not have a sideloaded-plugins or external
 
 [<kbd>Free Plugins Help</kbd>](https://discord.com/channels/1124614852187533322/1124636010349871134)
 
-<a href="https://discord.com/channels/1124614852187533322/1124636010349871134" style="font-size: 20px; padding: 16px 32px; background-color: pink; color: white; text-decoration: none; border-radius: 8px; display: inline-block;">
-<kbd style="background-color: transparent; color: inherit; padding: 0;">Free Plugins Help</kbd>
-</a>
+[![Free Plugins Help](https://via.placeholder.com/150x50.png?text=Free+Plugins+Help)](https://discord.com/channels/1124614852187533322/1124636010349871134)
+
 
 
 [![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
