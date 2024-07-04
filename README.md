@@ -1,6 +1,6 @@
 Fork of EthanVann's EthanApiPlugin
 
-Automation plugins for RuneLite
+RuneLite Automation Plugins
 
 # Discord
 
@@ -60,6 +60,7 @@ You will be prompted by Piggy Plugins Installer then click Install Sideloader.
 If you already have Piggy Plugins/EthanInstaller on your RuneLite and the Piggy Installer shows as installed go into .runelite and drag the plugins in externalplugins or sideloaded-plugins make sure all outdated versions are removed from your client.
 
 If it shows up as installed and you do not have a sideloaded-plugins or externalplugins folder you can use the plugin guide below 
+[![Download Guide](https://img.shields.io/badge/Download%20Guide-FF0000?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1125186871224447057)
 
 # Links
 [![Download Guide](https://img.shields.io/badge/Download%20Guide-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1125186871224447057)
@@ -67,5 +68,6 @@ If it shows up as installed and you do not have a sideloaded-plugins or external
 [![Free Plugins Help](https://img.shields.io/badge/Free%20Plugins%20Help-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1124636010349871134)
 
 [![FAQ](https://img.shields.io/badge/FAQ-FF0000?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1253908554616934521)
+
 
 [![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
