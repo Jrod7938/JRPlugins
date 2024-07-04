@@ -5,6 +5,36 @@ Automation plugins for RuneLite
 # Discord
 https://discord.gg/kwYBYEg4uu
 
+<a href="https://discord.gg/piggyplugins" class="discord-button">
+  <img src="https://discord.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg" alt="Discord Icon" width="20" height="20">
+  Join Our Discord
+</a>
+
+<style>
+.discord-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #5865F2; /* Discord blue color */
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.discord-button:hover {
+  background-color: #677BC4; /* Darker shade of Discord blue on hover */
+}
+
+.discord-button img {
+  vertical-align: middle;
+  margin-right: 8px; /* Adjust spacing between icon and text */
+}
+</style>
+
+
 # Release 3.3
 *Updated 7/4/2024 7:32 AM EST*
 
@@ -56,7 +86,7 @@ You will be prompted by Piggy Plugins Installer then click Install Sideloader.
 
 If you already have Piggy Plugins/EthanInstaller on your RuneLite and the Piggy Installer shows as installed go into .runelite and drag the plugins in externalplugins or sideloaded-plugins make sure all outdated versions are removed from your client.
 
-If it shows up as installed and you do not have a sideloaded-plugins or externalplugins folder please use the button below
+If it shows up as installed and you do not have a sideloaded-plugins or externalplugins folder you can use the plugin guide below 
 
 
 [![Download Guide](https://img.shields.io/badge/Download%20Guide-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1125186871224447057)
