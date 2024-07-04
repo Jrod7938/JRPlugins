@@ -57,6 +57,7 @@ You will be prompted by Piggy Plugins Installer then click Install Sideloader.
 If you already have Piggy Plugins/EthanInstaller on your RuneLite and the Piggy Installer shows as installed go into .runelite and drag the plugins in externalplugins or sideloaded-plugins make sure all outdated versions are removed from your client.
 
 If it shows up as installed and you do not have a sideloaded-plugins or externalplugins folder please use the button below
-[<kbd> <br> Free Plugins Help <br> </kbd>][https://discord.com/channels/1124614852187533322/1124636010349871134]
+
+[![Free Plugins Help]][[Link](https://discord.com/channels/1124614852187533322/1124636010349871134)]
 
 [![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
