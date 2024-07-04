@@ -59,9 +59,14 @@ If you already have Piggy Plugins/EthanInstaller on your RuneLite and the Piggy 
 If it shows up as installed and you do not have a sideloaded-plugins or externalplugins folder please use the button below
 
 
-[<kbd>Free Plugins Help</kbd>](https://discord.com/channels/1124614852187533322/1124636010349871134)
+[![Download Guide](https://img.shields.io/badge/Download%20Guide-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1125186871224447057)
 
 [![Free Plugins Help](https://img.shields.io/badge/Free%20Plugins%20Help-FF69B4?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1124636010349871134)
+
+[![FAQ](https://img.shields.io/badge/FAQ-FF0000?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1253908554616934521)
+
+
+
 
 
 
