@@ -61,7 +61,11 @@ If it shows up as installed and you do not have a sideloaded-plugins or external
 
 [<kbd>Free Plugins Help</kbd>](https://discord.com/channels/1124614852187533322/1124636010349871134)
 
-[![Free Plugins Help](https://via.placeholder.com/150x50.png?text=Free+Plugins+Help)](https://discord.com/channels/1124614852187533322/1124636010349871134)
+<a href="https://discord.com/channels/1124614852187533322/1124636010349871134" style="display: inline-block; text-decoration: none;">
+    <div style="font-size: 24px; color: pink; background-color: white; padding: 10px 20px; border: 2px solid pink; border-radius: 5px; display: inline-block;">
+        Free Plugins Help
+    </div>
+</a>
 
 
 
