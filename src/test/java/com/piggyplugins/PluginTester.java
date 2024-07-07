@@ -3,6 +3,7 @@ package com.piggyplugins;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.PrayerFlicker.EthanPrayerFlickerPlugin;
+import com.piggyplugins.ItemCombiner.ItemCombinerPlugin;
 import com.piggyplugins.LeftClickBlackJack.LeftClickBlackJackPlugin;
 import com.piggyplugins.PiggyUtils.PiggyUtilsPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
@@ -17,7 +18,7 @@ public class PluginTester {
                 PiggyUtilsPlugin.class// Don't remove these
         /* Add your plugins in this method when running from the IDE.
            Make sure to include them as a dependency in the build.gradle via `testImplementation` */,
-                 AutoBonerPlugin.class, EthanPrayerFlickerPlugin.class, LeftClickBlackJackPlugin.class);
+                 AutoBonerPlugin.class, EthanPrayerFlickerPlugin.class, LeftClickBlackJackPlugin.class, ItemCombinerPlugin.class);
         RuneLite.main(args);
     }
 }
