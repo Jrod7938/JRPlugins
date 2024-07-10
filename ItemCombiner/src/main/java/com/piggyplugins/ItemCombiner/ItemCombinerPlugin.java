@@ -39,6 +39,7 @@ import net.runelite.client.util.HotkeyListener;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Item Combiner</html>",
@@ -65,6 +66,7 @@ public class ItemCombinerPlugin extends Plugin {
     private int afkTicks;
     private boolean isMaking;
     private boolean debug = true;
+    int tickDelay = 0;
 
     @Provides
     private ItemCombinerConfig getConfig(ConfigManager configManager) {
@@ -98,6 +100,10 @@ public class ItemCombinerPlugin extends Plugin {
             afkTicks = 0;
             return;
         }
+        if (tickDelay > 0) {
+            tickDelay--;
+            return;
+        }
 
         if (!hasItems(Bank.isOpen())) {
             isMaking = false;
@@ -125,6 +131,7 @@ public class ItemCombinerPlugin extends Plugin {
         } else {
             doBanking();
         }
+      tickDelay = tickDelayBanking();
     }
 
     private void findBank() {
@@ -196,6 +203,9 @@ public class ItemCombinerPlugin extends Plugin {
         MousePackets.queueClickPacket();
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetOnWidget(itemOne, itemTwo);
+    }
+    private int tickDelayBanking() {
+        return config.tickDelayBanking() ? ThreadLocalRandom.current().nextInt(config.tickDelayBankingMin(), config.tickDelayBankingMax()) : 0;
     }
 
     private final HotkeyListener toggle = new HotkeyListener(() -> config.toggle()) {

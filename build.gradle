@@ -14,7 +14,7 @@ allprojects {
         jcenter()
     }
 
-    def runeLiteVersion = '1.10.34-SNAPSHOT'
+    def runeLiteVersion = '1.10.33.1'
 
     plugins.withType(JavaPlugin) {
         dependencies {
@@ -31,10 +31,8 @@ allprojects {
 dependencies {
     implementation project(path: ':AutoTitheFarm')
     implementation project(path: ':AutoAerial')
-    implementation project(path: ":AutoRuneDragons")
     implementation project(path: ':AutoBoner')
     implementation project(path: ':AutoChompy')
-    implementation project(path: ':AutoCombat')
     implementation project(path: ':AutoTrapper')
     implementation project(path: ':AutoSmith')
     implementation project(path: ':ButterflyCatcher')
@@ -68,7 +66,6 @@ dependencies {
     implementation project(path: ':SixHourLog')
     implementation project(path: ':SpeedDartMaker')
     implementation project(path: ':SuperglassMake')
-    implementation project(path: ':StrategyExample')
     implementation project(path: ':UpkeepPlugin')
     implementation project(path: ':VardorvisHelper')
     implementation project(path: ':DropParty')
@@ -98,7 +95,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.2.7'
+version = '1.3.4'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
