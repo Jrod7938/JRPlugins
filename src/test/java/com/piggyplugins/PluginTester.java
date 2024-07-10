@@ -27,10 +27,7 @@ import com.piggyplugins.SpeedDartMaker.SpeedDartMakerPlugin;
 import com.piggyplugins.VardorvisHelper.VardorvisHelperPlugin;
 import com.piggyplugins.autoLeviathanPrayers.AutoLeviathanPrayer;
 import com.piggyplugins.autoWhispererPrayers.AutoWhispererPrayer;
-import com.piggyplugins.strategyexample.StrategySmithPlugin;
 import com.polyplugins.AutoBoner.AutoBonerPlugin;
-import com.polyplugins.AutoCombat.AutoCombatPlugin;
-import com.polyplugins.AutoRuneDragon.RuneDragonsPlugin;
 import com.polyplugins.Butterfly.ButterflyPlugin;
 import com.polyplugins.Chompy.AutoChompyPlugin;
 import com.polyplugins.Dialogue.DialogueContinuerPlugin;
@@ -46,7 +43,6 @@ public class PluginTester {
         ExternalPluginManager.loadBuiltin(
                 EthanApiPlugin.class,
                 PacketUtilsPlugin.class,
-                AutoCombatPlugin.class,
                 AutoAerialPlugin.class,
                 AutoBonerPlugin.class,
                 ButterflyPlugin.class,
@@ -74,16 +70,12 @@ public class PluginTester {
                 RunEnabler.class,
                 AutoVorkathPlugin.class,
                 RsnHiderPlugin.class,
-                RuneDragonsPlugin.class,
                 AutoTitheFarmPlugin.class,
                 VardorvisHelperPlugin.class,
                 AutoLeviathanPrayer.class,
                 AutoWhispererPrayer.class,
-                StrategySmithPlugin.class,
-                AutoCombatPlugin.class,
                 CannonPlugin.class,
                 LeftClickBlackJackPlugin.class
-
         );
         RuneLite.main(args);
     }
