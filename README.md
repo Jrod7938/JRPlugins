@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 07/10/2024 15:20 EST*
+*Updated 07/17/2024 01:59 EST*
 
 ## Instructions
 Run PluginTester.java within src/test/java/com/piggyplugins folder
@@ -16,11 +16,14 @@ https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e8
 
 ## Plugins:
 
+### JR
 - Auto Vorkath
 - Auto Whisperer Prayers
 - Auto Leviathan Prayers
 - AutoChop (Supports Some Forestry Events)
 - RSNHider
+
+### Piggy
 - Piggy Guardians Of The Rift
 - Piggy Auto Tithe Farm
 - Piggy PVP Helper
@@ -61,5 +64,4 @@ https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e8
 
 ### Thanks To
 
-- Fork of EthanVann's EthanApiPlugin
-- Fork of 0Hutch PiggyPlugins
+- EthanVann & 0Hutch 
