@@ -197,7 +197,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
 
-//    @SneakyThrows
+    //    @SneakyThrows
 //    public static int pathLength(NPC npc) {
 //        Field pathLength = npc.getClass().getSuperclass().getDeclaredField("dk");
 //        pathLength.setAccessible(true);
@@ -214,21 +214,51 @@ public class EthanApiPlugin extends Plugin {
 //        pathLength.setAccessible(false);
 //        return path;
 //    }
-
     @SneakyThrows
     public static HeadIcon getHeadIcon(NPC npc) {
+        Field vi = npc.getClass().getDeclaredField("ap");
+        vi.setAccessible(true);
+        Object viObj = vi.get(npc);
+        if (viObj == null) {
+            vi.setAccessible(false);
+            return getOldHeadIcon(npc);
+        }
+        Field adField = viObj.getClass().getDeclaredField("ad");
+        adField.setAccessible(true);
+        short[] ad = (short[]) adField.get(viObj);
+        adField.setAccessible(false);
+        vi.setAccessible(false);
+        if (ad == null) {
+            return getOldHeadIcon(npc);
+        }
+        if (ad.length == 0) {
+            return getOldHeadIcon(npc);
+        }
+        short headIcon = ad[0];
+        if (headIcon == -1) {
+            return getOldHeadIcon(npc);
+        }
+        return HeadIcon.values()[headIcon];
+    }
+
+    @SneakyThrows
+    public static HeadIcon getOldHeadIcon(NPC npc) {
         Method getHeadIconMethod = null;
         for (Method declaredMethod : npc.getComposition().getClass().getDeclaredMethods()) {
             if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short.class && declaredMethod.getParameterCount() == 1) {
                 getHeadIconMethod = declaredMethod;
                 getHeadIconMethod.setAccessible(true);
-                short headIcon = (short) getHeadIconMethod.invoke(npc.getComposition(), 0);
+                short headIcon = -1;
+                try {
+                    headIcon = (short) getHeadIconMethod.invoke(npc.getComposition(), 0);
+                } catch (Exception e) {
+                    //nothing
+                }
                 getHeadIconMethod.setAccessible(false);
 
                 if (headIcon == -1) {
                     continue;
                 }
-
                 return HeadIcon.values()[headIcon];
             }
         }
@@ -279,13 +309,13 @@ public class EthanApiPlugin extends Plugin {
         boolean[][] visited = new boolean[104][104];
         int[][] flags = client.getCollisionMaps()[client.getPlane()].getFlags();
         WorldPoint playerLoc = client.getLocalPlayer().getWorldLocation();
-        int firstPoint = (playerLoc.getX()-client.getBaseX() << 16) | playerLoc.getY()-client.getBaseY();
+        int firstPoint = (playerLoc.getX() - client.getBaseX() << 16) | playerLoc.getY() - client.getBaseY();
         ArrayDeque<Integer> queue = new ArrayDeque<>();
         queue.add(firstPoint);
         while (!queue.isEmpty()) {
             int point = queue.poll();
-            short x =(short)(point >> 16);
-            short y = (short)point;
+            short x = (short) (point >> 16);
+            short y = (short) point;
             if (y < 0 || x < 0 || y > 104 || x > 104) {
                 continue;
             }
@@ -418,7 +448,7 @@ public class EthanApiPlugin extends Plugin {
     }
 
     @SneakyThrows
-    public static void invoke(int var0, int var1, int var2, int var3, int var4,int var5, String var6, String var7, int var8,
+    public static void invoke(int var0, int var1, int var2, int var3, int var4, int var5, String var6, String var7, int var8,
                               int var9) {
         if (doAction == null) {
             Field classes = ClassLoader.class.getDeclaredField("classes");
@@ -447,7 +477,7 @@ public class EthanApiPlugin extends Plugin {
             }
         }
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MAX_VALUE);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, Byte.MAX_VALUE);
         doAction.setAccessible(false);
     }
 
@@ -726,7 +756,7 @@ public class EthanApiPlugin extends Plugin {
                                                    HashSet<WorldPoint> impassible, HashSet<WorldPoint> dangerous,
                                                    HashSet<WorldPoint> walkable, HashSet<WorldPoint> walked) {
         Queue<List<WorldPoint>> queue = new LinkedList<>(paths);
-        if(queue.isEmpty()){
+        if (queue.isEmpty()) {
             queue.add(List.of(client.getLocalPlayer().getWorldLocation()));
         }
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
