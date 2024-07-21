@@ -1,5 +1,6 @@
 package com.example.EthanApiPlugin.Utility;
 
+import com.example.PacketUtils.PacketReflection;
 import net.runelite.api.CollisionData;
 import net.runelite.api.CollisionDataFlag;
 import net.runelite.api.GameObject;
@@ -12,7 +13,6 @@ import net.runelite.api.coords.WorldPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.PacketUtils.PacketReflection.client;
 
 public class WorldAreaUtility {
 
@@ -29,9 +29,9 @@ public class WorldAreaUtility {
             p = new Point(e.getLocalLocation().getSceneX(), e.getLocalLocation().getSceneY());
         }
         LocalPoint objectMinLocation = new LocalPoint(p.getX(), p.getY());
-        WorldPoint objectMinWorldPoint = WorldPoint.fromScene(client, objectMinLocation.getX(), objectMinLocation.getY(), e.getPlane());
+        WorldPoint objectMinWorldPoint = WorldPoint.fromScene(PacketReflection.getClient(), objectMinLocation.getX(), objectMinLocation.getY(), e.getPlane());
         LocalPoint areaMinCorner = new LocalPoint(p.getX() - 1, p.getY() - 1);
-        WorldPoint areaMinCornerWorldPoint = WorldPoint.fromScene(client, areaMinCorner.getX(), areaMinCorner.getY(), e.getPlane());
+        WorldPoint areaMinCornerWorldPoint = WorldPoint.fromScene(PacketReflection.getClient(), areaMinCorner.getX(), areaMinCorner.getY(), e.getPlane());
         List<WorldPoint> objectArea = new WorldArea(objectMinWorldPoint, x, y).toWorldPointList();
         int sx = x + 2;
         int sy = y + 2;
@@ -42,16 +42,16 @@ public class WorldAreaUtility {
         grownArea.remove(0);
         grownArea.removeAll(objectArea);
 
-        CollisionData[] collisionData = client.getCollisionMaps();
+        CollisionData[] collisionData = PacketReflection.getClient().getCollisionMaps();
         if (collisionData == null){
             return grownArea;
         }
 
-        int[][] planeData = collisionData[client.getPlane()].getFlags();
+        int[][] planeData = collisionData[PacketReflection.getClient().getPlane()].getFlags();
 
         for (int i = grownArea.size() - 1; i >= 0; i --){
             WorldPoint testPoint = grownArea.get(i);
-            LocalPoint localScenePoint = LocalPoint.fromWorld(client, testPoint);
+            LocalPoint localScenePoint = LocalPoint.fromWorld(PacketReflection.getClient(), testPoint);
             if (localScenePoint == null){
                 continue;
             }

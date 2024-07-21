@@ -195,20 +195,25 @@ public class PacketUtilsPlugin extends Plugin {
         Class<?>[] params = new Class[]{int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class};
         for (int i = 0; i < classesVector.size(); i++) {
             try {
-                System.out.println("class: " + classesVector.get(i));
+                //log.inf("class: " + classesVector.get(i));
                 if (classesVector.get(i).getName().equals("ac")) {
-                    System.out.print("skipping ac");
+                    //log.inf("skipping ac");
                     continue;
                 }
-                for (int i1 = 0; i1 < classesVector.get(i).getDeclaredMethods().length; i1++) {
-                    if (!Arrays.equals(Arrays.copyOfRange(classesVector.get(i).getDeclaredMethods()[i1].getParameterTypes(), 0, 10), params)) {
-                        continue;
+                try {
+                    for (int i1 = 0; i1 < classesVector.get(i).getDeclaredMethods().length; i1++) {
+                        if (!Arrays.equals(Arrays.copyOfRange(classesVector.get(i).getDeclaredMethods()[i1].getParameterTypes(), 0, 10), params)) {
+                            continue;
+                        }
+                        doActionClassName = classesVector.get(i).getSimpleName();
+                        doActionMethodName = classesVector.get(i).getDeclaredMethods()[i1].getName();
                     }
-                    doActionClassName = classesVector.get(i).getSimpleName();
-                    doActionMethodName = classesVector.get(i).getDeclaredMethods()[i1].getName();
+                } catch (NoClassDefFoundError error) {
+                    //log.inf("No class def found but continue");
+                    continue;
                 }
             } catch (Exception e) {
-                System.out.println("exception");
+                //log.inf("exception");
             }
         }
         System.out.print("finished");
