@@ -50,7 +50,7 @@ public class PacketUtilsPlugin extends Plugin {
     static Client staticClient;
     public static Method addNodeMethod;
     public static boolean usingClientAddNode = false;
-    public static final int CLIENT_REV = 223;
+    public static final int CLIENT_REV = 224;
     private static String loadedConfigName = "";
     @Inject
     private PluginManager pluginManager;
@@ -195,9 +195,7 @@ public class PacketUtilsPlugin extends Plugin {
         Class<?>[] params = new Class[]{int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class};
         for (int i = 0; i < classesVector.size(); i++) {
             try {
-                //log.inf("class: " + classesVector.get(i));
-                if (classesVector.get(i).getName().equals("ac")) {
-                    //log.inf("skipping ac");
+                if (classesVector.get(i).getSuperclass()!=null&&classesVector.get(i).getSuperclass().getName().contains("SSLSocketFactory")) {
                     continue;
                 }
                 try {
@@ -208,12 +206,11 @@ public class PacketUtilsPlugin extends Plugin {
                         doActionClassName = classesVector.get(i).getSimpleName();
                         doActionMethodName = classesVector.get(i).getDeclaredMethods()[i1].getName();
                     }
-                } catch (NoClassDefFoundError error) {
-                    //log.inf("No class def found but continue");
-                    continue;
+                } catch (NoClassDefFoundError | VerifyError ignored) {
+
                 }
             } catch (Exception e) {
-                //log.inf("exception");
+                log.info("exception");
             }
         }
         System.out.print("finished");
@@ -247,7 +244,7 @@ public class PacketUtilsPlugin extends Plugin {
         if ((length > 0 && Integer.parseInt(versionSplits[0]) > 1 || (length > 1) && (Integer.parseInt(versionSplits[1]) > 10) )|| (length > 2 && Integer.parseInt(versionSplits[2]) > 34)) {
             String url = "https://repo.runelite.net/net/runelite/injected-client/" + version + "/injected-client-" + version + ".jar";
             URL injectedURL = new URL(url);
-            log.info("Downloading vanilla client from " + injectedURL);
+            log.info("Downloading injected client from " + injectedURL);
             try (InputStream clientStream = injectedURL.openStream()) {
                 Files.copy(clientStream, patchedOutputPath, StandardCopyOption.REPLACE_EXISTING);
             }
