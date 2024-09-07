@@ -1,9 +1,10 @@
 # Release 1.0
 
-*Updated 07/17/2024 01:59 EST*
+*Updated 09/06/2024 21:21 EST*
 
 ## Instructions
-Run PluginTester.java within src/test/java/com/piggyplugins folder
+- OpenJDK 11
+- Run PluginTester.kt within src/test/java/com/piggyplugins folder
 
 
 https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e818fa68c59b

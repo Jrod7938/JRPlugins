@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.researchgate.release' version '2.8.1'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 allprojects {
@@ -79,6 +80,7 @@ dependencies {
     testImplementation project(':RSNHider')
     testImplementation project(':AutoLeviathanPrayers')
     testImplementation project(':AutoWhispererPrayers')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 sourceSets {
@@ -148,3 +150,16 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 targetCompatibility = JavaVersion.VERSION_11
+repositories {
+    mavenCentral()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}

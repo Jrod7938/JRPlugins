@@ -1,3 +1,8 @@
+pluginManagement {
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '1.9.20'
+    }
+}
 rootProject.name = 'example'
 include 'AoeWarn'
 include 'AutoJugHumidifier'

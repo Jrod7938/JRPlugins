@@ -126,7 +126,7 @@ public class PathingTesting extends Plugin {
     @Subscribe
     private void onGameTick(GameTick e) {
         if (goal != null && goal.equals(EthanApiPlugin.playerPosition())) {
-            System.out.println("reached goal");
+            //System.out.println("reached goal");
             goal = null;
             path = null;
             currentPathDestination = null;
@@ -134,7 +134,7 @@ public class PathingTesting extends Plugin {
         }
         if (path != null && path.size() >= 1) {
             if (currentPathDestination != null && !currentPathDestination.equals(EthanApiPlugin.playerPosition()) && !EthanApiPlugin.isMoving()) {
-                System.out.println("stopped walking. clicking destination again");
+                //System.out.println("stopped walking. clicking destination again");
                 MousePackets.queueClickPacket();
                 MovementPackets.queueMovement(currentPathDestination);
             }
@@ -150,7 +150,7 @@ public class PathingTesting extends Plugin {
                     }
                 }
                 if (isDoored(EthanApiPlugin.playerPosition(), path.get(0))) {
-                    System.out.println("doored");
+                    //System.out.println("doored");
                     WallObject wallObject = getTile(EthanApiPlugin.playerPosition()).getWallObject();
                     if (wallObject == null) {
                         wallObject = getTile(path.get(0)).getWallObject();
@@ -168,7 +168,7 @@ public class PathingTesting extends Plugin {
                 if (currentPathDestination.equals(EthanApiPlugin.playerPosition())) {
                     return;
                 }
-                System.out.println("taking a step");
+                //System.out.println("taking a step");
                 MousePackets.queueClickPacket();
                 MovementPackets.queueMovement(currentPathDestination);
             }
