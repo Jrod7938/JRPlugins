@@ -528,6 +528,7 @@ public final class ObfuscatedNames {
     public static final String RESUME_PAUSEBUTTON_METHOD_NAME2 = "em";
     public static final String[][] RESUME_PAUSEBUTTON_WRITES = new String[][]{
             {"a 128", "r 8"},
+            {"r 16", "r 24", "v", "r 8"},
     };
     public static final String offsetMultiplier = "-1864458299";
     public static final String indexMultiplier = "-1027766515";
@@ -548,7 +549,7 @@ public final class ObfuscatedNames {
     public static final String MouseHandler_lastPressedTimeMillisClass = "bj";
     public static final String MouseHandler_lastPressedTimeMillisField = "ay";
     public static final String clientMillisField = "dm";
-    public static final int getAnimationMultiplier = 1608353943;
+    public static final int getAnimationMultiplier = 1036457443;
     public static final int skullIconMultiplier = 0; // need these cba
     public static final String skullIconField = "null"; // need these cba
     public static final String doActionClassName = "qt";
