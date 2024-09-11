@@ -550,8 +550,8 @@ public final class ObfuscatedNames {
     public static final String MouseHandler_lastPressedTimeMillisField = "ay";
     public static final String clientMillisField = "dm";
     public static final int getAnimationMultiplier = 1036457443;
-    public static final int skullIconMultiplier = 0; // need these cba
-    public static final String skullIconField = "null"; // need these cba
+    public static final int skullIconMultiplier = 1608353943; // need these cba
+    public static final String skullIconField = "cq"; // need these cba
     public static final String doActionClassName = "qt";
     public static final String doActionMethodName = "mo";
 }

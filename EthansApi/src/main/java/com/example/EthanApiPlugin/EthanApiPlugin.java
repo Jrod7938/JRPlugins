@@ -107,7 +107,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("ag");
+            skullField = player.getClass().getDeclaredField(ObfuscatedNames.skullIconField);
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -115,7 +115,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * -227316761;
+            var1 = skullField.getInt(player) * ObfuscatedNames.skullIconMultiplier;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
