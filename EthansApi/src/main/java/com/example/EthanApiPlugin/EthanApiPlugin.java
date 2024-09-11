@@ -2,6 +2,7 @@ package com.example.EthanApiPlugin;
 
 import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.Collections.query.QuickPrayer;
+import com.example.PacketUtils.ObfuscatedNames;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -452,33 +453,35 @@ public class EthanApiPlugin extends Plugin {
     public static void invoke(int var0, int var1, int var2, int var3, int var4,int var5, String var6, String var7, int var8,
                               int var9) {
         if (doAction == null) {
+            Class<?> qtClass = null;
             Field classes = ClassLoader.class.getDeclaredField("classes");
             classes.setAccessible(true);
             ClassLoader classLoader = client.getClass().getClassLoader();
             Vector<Class<?>> classesVector = (Vector<Class<?>>) classes.get(classLoader);
-            Class<?>[] params = new Class[]{int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class};
-            for (int i = 0; i < classesVector.size(); i++) {
-                try {
-                    if (classesVector.get(i).getSuperclass()!=null&&classesVector.get(i).getSuperclass().getName().contains("SSLSocketFactory")) {
-                        continue;
-                    }
-                    try {
-                        for (int i1 = 0; i1 < classesVector.get(i).getDeclaredMethods().length; i1++) {
-                            if (!Arrays.equals(Arrays.copyOfRange(classesVector.get(i).getDeclaredMethods()[i1].getParameterTypes(), 0, 10), params)) {
-                                continue;
-                            }
-                            doAction = classesVector.get(i).getDeclaredMethods()[i1];
-                        }
-                    } catch (NoClassDefFoundError ignored) {
-                    }
-                } catch (Exception ignored) {
+
+            for (Class<?> clazz : classesVector) {
+                if (clazz.getName().equals(ObfuscatedNames.doActionClassName)) {
+                    qtClass = clazz;
+                    break;
                 }
             }
+
+            if (qtClass != null) {
+                try {
+                    doAction = qtClass.getDeclaredMethod(ObfuscatedNames.doActionMethodName, int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class);
+                } catch (NoSuchMethodException ignored) {
+                }
+            } else {
+                System.out.println("Cant find doAction");
+                return;
+            }
         }
+
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MAX_VALUE);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MIN_VALUE);
         doAction.setAccessible(false);
     }
+
 
     // BACKUP FOR OTHER PLUGINS I HAVE NOT UDPDATED/CBA
     // REMOVE LATER
