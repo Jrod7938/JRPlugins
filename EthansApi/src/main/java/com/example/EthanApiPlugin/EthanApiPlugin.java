@@ -217,25 +217,25 @@ public class EthanApiPlugin extends Plugin {
 //    }
     @SneakyThrows
     public static HeadIcon getHeadIcon(NPC npc) {
-        Field vi = npc.getClass().getDeclaredField("ap");
-        vi.setAccessible(true);
-        Object viObj = vi.get(npc);
-        if (viObj == null) {
-            vi.setAccessible(false);
+        Field aq = npc.getClass().getDeclaredField("aq");
+        aq.setAccessible(true);
+        Object aqObj = aq.get(npc);
+        if (aqObj == null) {
+            aq.setAccessible(false);
             return getOldHeadIcon(npc);
         }
-        Field adField = viObj.getClass().getDeclaredField("ad");
-        adField.setAccessible(true);
-        short[] ad = (short[]) adField.get(viObj);
-        adField.setAccessible(false);
-        vi.setAccessible(false);
-        if (ad == null) {
+        Field aeField = aqObj.getClass().getDeclaredField("ae");
+        aeField.setAccessible(true);
+        short[] ae = (short[]) aeField.get(aqObj);
+        aeField.setAccessible(false);
+        aq.setAccessible(false);
+        if (ae == null) {
             return getOldHeadIcon(npc);
         }
-        if (ad.length == 0) {
+        if (ae.length == 0) {
             return getOldHeadIcon(npc);
         }
-        short headIcon = ad[0];
+        short headIcon = ae[0];
         if (headIcon == -1) {
             return getOldHeadIcon(npc);
         }
@@ -244,23 +244,23 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static HeadIcon getOldHeadIcon(NPC npc) {
-        Method getHeadIconMethod = null;
-        for (Method declaredMethod : npc.getComposition().getClass().getDeclaredMethods()) {
-            if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short.class && declaredMethod.getParameterCount() == 1) {
+        Method getHeadIconMethod;
+        for (Method declaredMethod : npc.getClass().getDeclaredMethods()) {
+            if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short[].class && declaredMethod.getParameterCount() == 0) {
                 getHeadIconMethod = declaredMethod;
                 getHeadIconMethod.setAccessible(true);
-                short headIcon = -1;
+                short[] headIcon = null;
                 try {
-                    headIcon = (short) getHeadIconMethod.invoke(npc.getComposition(), 0);
+                    headIcon = (short[]) getHeadIconMethod.invoke(npc);
                 } catch (Exception e) {
                     //nothing
                 }
                 getHeadIconMethod.setAccessible(false);
 
-                if (headIcon == -1) {
+                if (headIcon == null) {
                     continue;
                 }
-                return HeadIcon.values()[headIcon];
+                return HeadIcon.values()[headIcon[0]];
             }
         }
         return null;
@@ -468,7 +468,7 @@ public class EthanApiPlugin extends Plugin {
 
             if (qtClass != null) {
                 try {
-                    doAction = qtClass.getDeclaredMethod(ObfuscatedNames.doActionMethodName, int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class);
+                    doAction = qtClass.getDeclaredMethod(ObfuscatedNames.doActionMethodName, int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class, int.class);
                 } catch (NoSuchMethodException ignored) {
                 }
             } else {
@@ -478,7 +478,7 @@ public class EthanApiPlugin extends Plugin {
         }
 
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MIN_VALUE);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, ObfuscatedNames.doActionGarbageValue);
         doAction.setAccessible(false);
     }
 

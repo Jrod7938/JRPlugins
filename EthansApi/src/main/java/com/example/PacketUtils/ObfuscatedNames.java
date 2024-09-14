@@ -554,4 +554,5 @@ public final class ObfuscatedNames {
     public static final String skullIconField = "cq"; // need these cba
     public static final String doActionClassName = "qt";
     public static final String doActionMethodName = "mo";
+    public static final int doActionGarbageValue = -886112733;
 }
