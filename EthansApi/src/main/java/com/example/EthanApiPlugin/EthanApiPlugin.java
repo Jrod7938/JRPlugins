@@ -2,6 +2,7 @@ package com.example.EthanApiPlugin;
 
 import com.example.EthanApiPlugin.Collections.*;
 import com.example.EthanApiPlugin.Collections.query.QuickPrayer;
+import com.example.PacketUtils.ObfuscatedNames;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -106,7 +107,7 @@ public class EthanApiPlugin extends Plugin {
     public static SkullIcon getSkullIcon(Player player) {
         Field skullField = null;
         try {
-            skullField = player.getClass().getDeclaredField("ag");
+            skullField = player.getClass().getDeclaredField(ObfuscatedNames.skullIconField);
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -114,7 +115,7 @@ public class EthanApiPlugin extends Plugin {
         }
         int var1 = -1;
         try {
-            var1 = skullField.getInt(player) * -227316761;
+            var1 = skullField.getInt(player) * ObfuscatedNames.skullIconMultiplier;
             skullField.setAccessible(false);
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
@@ -176,7 +177,7 @@ public class EthanApiPlugin extends Plugin {
                 }
                 int value = declaredField.getInt(npc);
                 declaredField.setInt(npc, 4795789);
-                if (npc.getAnimation() == -614178723 * 4795789) {
+                if (npc.getAnimation() == ObfuscatedNames.getAnimationMultiplier * 4795789) {
                     animationField = declaredField.getName();
                     declaredField.setInt(npc, value);
                     declaredField.setAccessible(false);
@@ -191,7 +192,7 @@ public class EthanApiPlugin extends Plugin {
         }
         Field animation = npc.getClass().getSuperclass().getDeclaredField(animationField);
         animation.setAccessible(true);
-        int anim = animation.getInt(npc) * -614178723;
+        int anim = animation.getInt(npc) * ObfuscatedNames.getAnimationMultiplier;
         animation.setAccessible(false);
         return anim;
     }
@@ -216,25 +217,25 @@ public class EthanApiPlugin extends Plugin {
 //    }
     @SneakyThrows
     public static HeadIcon getHeadIcon(NPC npc) {
-        Field vi = npc.getClass().getDeclaredField("ap");
-        vi.setAccessible(true);
-        Object viObj = vi.get(npc);
-        if (viObj == null) {
-            vi.setAccessible(false);
+        Field aq = npc.getClass().getDeclaredField("aq");
+        aq.setAccessible(true);
+        Object aqObj = aq.get(npc);
+        if (aqObj == null) {
+            aq.setAccessible(false);
             return getOldHeadIcon(npc);
         }
-        Field adField = viObj.getClass().getDeclaredField("ad");
-        adField.setAccessible(true);
-        short[] ad = (short[]) adField.get(viObj);
-        adField.setAccessible(false);
-        vi.setAccessible(false);
-        if (ad == null) {
+        Field aeField = aqObj.getClass().getDeclaredField("ae");
+        aeField.setAccessible(true);
+        short[] ae = (short[]) aeField.get(aqObj);
+        aeField.setAccessible(false);
+        aq.setAccessible(false);
+        if (ae == null) {
             return getOldHeadIcon(npc);
         }
-        if (ad.length == 0) {
+        if (ae.length == 0) {
             return getOldHeadIcon(npc);
         }
-        short headIcon = ad[0];
+        short headIcon = ae[0];
         if (headIcon == -1) {
             return getOldHeadIcon(npc);
         }
@@ -243,23 +244,23 @@ public class EthanApiPlugin extends Plugin {
 
     @SneakyThrows
     public static HeadIcon getOldHeadIcon(NPC npc) {
-        Method getHeadIconMethod = null;
-        for (Method declaredMethod : npc.getComposition().getClass().getDeclaredMethods()) {
-            if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short.class && declaredMethod.getParameterCount() == 1) {
+        Method getHeadIconMethod;
+        for (Method declaredMethod : npc.getClass().getDeclaredMethods()) {
+            if (declaredMethod.getName().length() == 2 && declaredMethod.getReturnType() == short[].class && declaredMethod.getParameterCount() == 0) {
                 getHeadIconMethod = declaredMethod;
                 getHeadIconMethod.setAccessible(true);
-                short headIcon = -1;
+                short[] headIcon = null;
                 try {
-                    headIcon = (short) getHeadIconMethod.invoke(npc.getComposition(), 0);
+                    headIcon = (short[]) getHeadIconMethod.invoke(npc);
                 } catch (Exception e) {
                     //nothing
                 }
                 getHeadIconMethod.setAccessible(false);
 
-                if (headIcon == -1) {
+                if (headIcon == null) {
                     continue;
                 }
-                return HeadIcon.values()[headIcon];
+                return HeadIcon.values()[headIcon[0]];
             }
         }
         return null;
@@ -452,33 +453,35 @@ public class EthanApiPlugin extends Plugin {
     public static void invoke(int var0, int var1, int var2, int var3, int var4,int var5, String var6, String var7, int var8,
                               int var9) {
         if (doAction == null) {
+            Class<?> qtClass = null;
             Field classes = ClassLoader.class.getDeclaredField("classes");
             classes.setAccessible(true);
             ClassLoader classLoader = client.getClass().getClassLoader();
             Vector<Class<?>> classesVector = (Vector<Class<?>>) classes.get(classLoader);
-            Class<?>[] params = new Class[]{int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class};
-            for (int i = 0; i < classesVector.size(); i++) {
-                try {
-                    if (classesVector.get(i).getSuperclass()!=null&&classesVector.get(i).getSuperclass().getName().contains("SSLSocketFactory")) {
-                        continue;
-                    }
-                    try {
-                        for (int i1 = 0; i1 < classesVector.get(i).getDeclaredMethods().length; i1++) {
-                            if (!Arrays.equals(Arrays.copyOfRange(classesVector.get(i).getDeclaredMethods()[i1].getParameterTypes(), 0, 10), params)) {
-                                continue;
-                            }
-                            doAction = classesVector.get(i).getDeclaredMethods()[i1];
-                        }
-                    } catch (NoClassDefFoundError ignored) {
-                    }
-                } catch (Exception ignored) {
+
+            for (Class<?> clazz : classesVector) {
+                if (clazz.getName().equals(ObfuscatedNames.doActionClassName)) {
+                    qtClass = clazz;
+                    break;
                 }
             }
+
+            if (qtClass != null) {
+                try {
+                    doAction = qtClass.getDeclaredMethod(ObfuscatedNames.doActionMethodName, int.class, int.class, int.class, int.class, int.class, int.class, String.class, String.class, int.class, int.class, int.class);
+                } catch (NoSuchMethodException ignored) {
+                }
+            } else {
+                System.out.println("Cant find doAction");
+                return;
+            }
         }
+
         doAction.setAccessible(true);
-        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, Byte.MAX_VALUE);
+        doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8,var9, ObfuscatedNames.doActionGarbageValue);
         doAction.setAccessible(false);
     }
+
 
     // BACKUP FOR OTHER PLUGINS I HAVE NOT UDPDATED/CBA
     // REMOVE LATER
