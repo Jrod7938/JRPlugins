@@ -56,7 +56,7 @@ public interface OptionsConfig extends Config {
             section = misc
     )
     default String avoidWorldsNumbers() {
-        return "302,330";
+        return "302,330,345,392,502,540,549,560,561,565,568,576,579";
     }
 
     @ConfigSection(

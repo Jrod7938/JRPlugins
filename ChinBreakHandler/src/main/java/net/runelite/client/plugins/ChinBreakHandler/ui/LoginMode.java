@@ -7,7 +7,7 @@ public enum LoginMode {
 
     public static LoginMode parse(String s) {
         if (s == null || s.isEmpty()) {
-            return LoginMode.MANUAL;
+            return LoginMode.LAUNCHER;
         }
 
         for (LoginMode mode : LoginMode.values()) {
@@ -16,6 +16,6 @@ public enum LoginMode {
             }
         }
 
-        return LoginMode.MANUAL;
+        return LoginMode.LAUNCHER;
     }
 }
