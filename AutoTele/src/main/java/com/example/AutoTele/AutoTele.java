@@ -184,7 +184,7 @@ public class AutoTele extends Plugin {
                     WidgetPackets.queueWidgetActionPacket(3, 25362456, -1, -1);
                 }
                 if (teleported) {
-                    teleportedFromSkulledPlayer = EthanApiPlugin.getSkullIcon(player) != null;
+                    teleportedFromSkulledPlayer = EthanApiPlugin.getSkullIcon(player) > -1;
                     if (teleportedFromSkulledPlayer) {
                         client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Teleported from skulled player", null);
                     } else {
