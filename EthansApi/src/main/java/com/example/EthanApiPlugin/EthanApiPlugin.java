@@ -104,14 +104,14 @@ public class EthanApiPlugin extends Plugin {
         return client.getLocalPlayer().getWorldLocation();
     }
 
-    public static SkullIcon getSkullIcon(Player player) {
+    public static int getSkullIcon(Player player) {
         Field skullField = null;
         try {
             skullField = player.getClass().getDeclaredField(ObfuscatedNames.skullIconField);
             skullField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
-            return null;
+            return -1;
         }
         int var1 = -1;
         try {
@@ -120,7 +120,11 @@ public class EthanApiPlugin extends Plugin {
         } catch (IllegalAccessException | NullPointerException e) {
             e.printStackTrace();
         }
-        switch (var1) {
+        return var1;
+    }
+
+    /*
+            switch (var1) {
             case 0:
                 return SkullIcon.SKULL;
             case 1:
@@ -144,7 +148,7 @@ public class EthanApiPlugin extends Plugin {
             case 12:
                 return SkullIcon.DEAD_MAN_ONE;
         }
-    }
+     */
 
     public static boolean isQuickPrayerActive(QuickPrayer prayer) {
         return (client.getVarbitValue(4102) & (int) Math.pow(2, prayer.getIndex())) == Math.pow(2, prayer.getIndex());
