@@ -1,9 +1,10 @@
 # Release 1.0
 
-*Updated 09/15/2024 00:30 EST*
+*Updated 09/25/2024 21:56 EST*
 
 ## Instructions
 - OpenJDK 11
+- Kotlin
 - Run PluginTester.kt within src/test/java/com/piggyplugins folder
 
 
