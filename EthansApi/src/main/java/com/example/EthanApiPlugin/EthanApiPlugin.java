@@ -466,7 +466,7 @@ public class EthanApiPlugin extends Plugin {
         doAction.invoke(null, var0, var1, var2, var3, var4, var5, var6, var7, var8, var9, -886112733);
         doAction.setAccessible(false);
     }
-//comeback to this
+
     @Deprecated
     public static TileObject findObject(int id) {
         ArrayList<TileObject> validObjects = new ArrayList<>();
