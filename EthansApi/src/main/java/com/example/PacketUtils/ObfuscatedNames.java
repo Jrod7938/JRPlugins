@@ -158,9 +158,9 @@ public final class ObfuscatedNames {
     public static final String MOVE_GAMECLICK_OBFUSCATEDNAME = "cg";
     public static final String MOVE_GAMECLICK_WRITE1 = "5";
     public static final String MOVE_GAMECLICK_METHOD_NAME1 = "br";
-    public static final String MOVE_GAMECLICK_WRITE2 = "worldPointX";
+    public static final String MOVE_GAMECLICK_WRITE2 = "worldPointY";
     public static final String MOVE_GAMECLICK_METHOD_NAME2 = "dv";
-    public static final String MOVE_GAMECLICK_WRITE3 = "worldPointY";
+    public static final String MOVE_GAMECLICK_WRITE3 = "worldPointX";
     public static final String MOVE_GAMECLICK_METHOD_NAME3 = "db";
     public static final String MOVE_GAMECLICK_WRITE4 = "ctrlDown";
     public static final String MOVE_GAMECLICK_METHOD_NAME4 = "br";

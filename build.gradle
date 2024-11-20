@@ -87,7 +87,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.4.3'
+version = '1.4.5'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
