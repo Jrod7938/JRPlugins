@@ -28,6 +28,9 @@ import net.runelite.client.util.HotkeyListener;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @PluginDescriptor(
         name = "<html><font color=\"#FF9DF9\">[PP]</font> Prayer Flicker</html>",
@@ -48,6 +51,9 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     private PrayerFlickerConfig config;
     @Inject
     PluginManager pluginManager;
+
+    private ExecutorService executorService;
+
     private final int quickPrayerWidgetID = WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId();
 
     @Provides
@@ -56,13 +62,17 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     }
 
     private void togglePrayer() {
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, quickPrayerWidgetID, -1, -1);
+        clientThread.invoke(() -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetActionPacket(1, quickPrayerWidgetID, -1, -1);
+        });
     }
 
     @Override
     @SneakyThrows
     public void startUp() {
+        executorService = Executors.newSingleThreadExecutor();
+
         if (client.getRevision() != PacketUtilsPlugin.CLIENT_REV) {
             SwingUtilities.invokeLater(() ->
             {
@@ -79,6 +89,9 @@ public class EthanPrayerFlickerPlugin extends Plugin {
 
     @Override
     public void shutDown() {
+        executorService.shutdownNow();
+        executorService = null;
+
         log.info("Shutdown");
         keyManager.unregisterKeyListener(prayerToggle);
         toggle = false;
@@ -96,15 +109,24 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     boolean toggle;
 
     public void switchAndUpdatePrayers(int i) {
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 5046276, -1, i);
-        togglePrayer();
-        togglePrayer();
+        clientThread.invoke(() -> {
+            MousePackets.queueClickPacket();
+            WidgetPackets.queueWidgetActionPacket(1, 5046276, -1, i);
+        });
+        updatePrayers();
     }
 
     public void updatePrayers() {
-        togglePrayer();
-        togglePrayer();
+        executorService.submit(() -> {
+            try {
+                Thread.sleep(ThreadLocalRandom.current().nextInt(0, 100));
+                togglePrayer();
+                Thread.sleep(ThreadLocalRandom.current().nextInt(60, 270));
+                togglePrayer();
+            } catch (InterruptedException e) {
+
+            }
+        });
     }
 
     @Subscribe
@@ -135,9 +157,24 @@ public class EthanPrayerFlickerPlugin extends Plugin {
         if (toggle) {
             if (client.getBoostedSkillLevel(Skill.PRAYER) < 1) return;
             if (client.getVarbitValue(Varbits.QUICK_PRAYER) == 1) {
-                togglePrayer();
+                executorService.submit(() -> {
+                    try {
+                        Thread.sleep(ThreadLocalRandom.current().nextInt(10, 80));
+                        togglePrayer();
+                        Thread.sleep(ThreadLocalRandom.current().nextInt(50, 210));
+                    } catch (InterruptedException e) {
+
+                    }
+                });
             }
-            togglePrayer();
+            executorService.submit(() -> {
+                try {
+                    Thread.sleep(ThreadLocalRandom.current().nextInt(10, 80));
+                    togglePrayer();
+                } catch (InterruptedException e) {
+
+                }
+            });
         }
     }
 
