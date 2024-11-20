@@ -96,6 +96,9 @@ task FatJar(type: Jar) {
     }
     baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude('META-INF/versions/**')
+    exclude('META-INF/proguard/**')
+    exclude('META-INF/maven/**')
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
