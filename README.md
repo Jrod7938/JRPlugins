@@ -4,12 +4,8 @@ RuneLite Automation Plugins
 
 # Discord
 
-[![Join our Discord](https://img.shields.io/discord/1124614852187533322?style=flat-square&logo=discord&logoColor=white&label=Join%20our%20Server&color=7289DA)](https://discord.gg/piggyplugins)
+[![Join our Discord](https://img.shields.io/discord/1124614852187533322?style=flat-square&logo=discord&logoColor=white&label=Join%20our%20Server&color=7289DA)](https://discord.gg/kwYBYEg4uu)
 
-
-
-# Release 3.3
-*Updated 7/4/2024 7:32 AM EST*
 
 **Free Plugins**:
 - Piggy Guardians Of The Rift
