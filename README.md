@@ -7,10 +7,9 @@
 - Kotlin
 - Run PluginTester.kt within src/test/java/com/piggyplugins folder
 
-# Discord
-
 https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e818fa68c59b
 
+# Discord
 
 [![Join our Discord](https://img.shields.io/discord/1124614852187533322?style=flat-square&logo=discord&logoColor=white&label=Join%20our%20Server&color=7289DA)](https://discord.gg/kwYBYEg4uu)
 
