@@ -97,7 +97,7 @@ sourceSets {
 }
 
 group = 'com.piggyplugins'
-version = '1.4.3'
+version = '1.4.5'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {
@@ -106,6 +106,9 @@ task FatJar(type: Jar) {
     }
     baseName = 'piggy-plugins-aio'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude('META-INF/versions/**')
+    exclude('META-INF/proguard/**')
+    exclude('META-INF/maven/**')
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
