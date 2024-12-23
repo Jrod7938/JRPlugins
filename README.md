@@ -59,8 +59,3 @@ https://github.com/Jrod7938/JRPlugins/assets/46418742/77dc6b85-5d54-4842-b760-e8
 - xKylee's PrayAgainstPlayer
 - xKylee's LeftClickBlackjack
 - SpoonLite's Hotkey Walker Under
-
-
-[![FAQ](https://img.shields.io/badge/FAQ-FF0000?style=for-the-badge)](https://discord.com/channels/1124614852187533322/1253908554616934521)
-
-[![Donate at ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/0hutch)
