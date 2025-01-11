@@ -1,6 +1,5 @@
 package com.example.PacketUtils;
 
-import com.google.archivepatcher.applier.FileByFileV1DeltaApplier;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import lombok.SneakyThrows;
@@ -16,7 +15,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginInstantiationException;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.rs.ClientLoader;
 import org.benf.cfr.reader.Main;
 
 import javax.inject.Inject;
@@ -229,7 +227,7 @@ public class PacketUtilsPlugin extends Plugin {
         System.out.println(doActionFinalClassName);
         try (JarFile patchedJar = new JarFile(patchedOutputPath.toFile())) {
             patchedJar.entries().asIterator().forEachRemaining(jarEntry -> {
-                System.out.println("jar entry: " + jarEntry.getName());
+                //System.out.println("jar entry: " + jarEntry.getName());
                 if (jarEntry.getName().equals(doActionFinalClassName + ".class")) {
                     try (InputStream inputStream = patchedJar.getInputStream(jarEntry)) {
                         Files.copy(inputStream, doActionOutputPath, StandardCopyOption.REPLACE_EXISTING);
