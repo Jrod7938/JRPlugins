@@ -1,6 +1,6 @@
 # Release 1.0
 
-*Updated 12/04/2024 16:14 EST*
+*Updated 01/11/2025 00:54 PST*
 
 ## Instructions
 - OpenJDK 11

@@ -96,10 +96,7 @@ public class PowerSkillerPlugin extends Plugin {
                         return;
                     });
                     NPCs.search().withAction("Bank").nearestToPlayer().ifPresent(npc -> {
-                        if (EthanApiPlugin.pathToGoal(npc.getWorldLocation(), new HashSet<>()) != null) {
-                            NPCInteraction.interact(npc, "Bank");
-                        }
-                        return;
+                        NPCInteraction.interact(npc, "Bank");
                     });
                     TileObjects.search().withName("Bank chest").nearestToPlayer().ifPresent(tileObject -> {
                         TileObjectInteraction.interact(tileObject, "Use");
