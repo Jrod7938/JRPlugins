@@ -52,8 +52,6 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     @Inject
     PluginManager pluginManager;
 
-    private ExecutorService executorService;
-
     private final int quickPrayerWidgetID = WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId();
 
     @Provides
@@ -71,8 +69,6 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     @Override
     @SneakyThrows
     public void startUp() {
-        executorService = Executors.newSingleThreadExecutor();
-
         if (client.getRevision() != PacketUtilsPlugin.CLIENT_REV) {
             SwingUtilities.invokeLater(() ->
             {
@@ -89,8 +85,6 @@ public class EthanPrayerFlickerPlugin extends Plugin {
 
     @Override
     public void shutDown() {
-        executorService.shutdownNow();
-        executorService = null;
 
         log.info("Shutdown");
         keyManager.unregisterKeyListener(prayerToggle);
@@ -117,16 +111,8 @@ public class EthanPrayerFlickerPlugin extends Plugin {
     }
 
     public void updatePrayers() {
-        executorService.submit(() -> {
-            try {
-                Thread.sleep(ThreadLocalRandom.current().nextInt(0, 100));
-                togglePrayer();
-                Thread.sleep(ThreadLocalRandom.current().nextInt(60, 270));
-                togglePrayer();
-            } catch (InterruptedException e) {
-
-            }
-        });
+        togglePrayer();
+        togglePrayer();
     }
 
     @Subscribe
@@ -157,24 +143,9 @@ public class EthanPrayerFlickerPlugin extends Plugin {
         if (toggle) {
             if (client.getBoostedSkillLevel(Skill.PRAYER) < 1) return;
             if (client.getVarbitValue(Varbits.QUICK_PRAYER) == 1) {
-                executorService.submit(() -> {
-                    try {
-                        Thread.sleep(ThreadLocalRandom.current().nextInt(10, 80));
-                        togglePrayer();
-                        Thread.sleep(ThreadLocalRandom.current().nextInt(50, 210));
-                    } catch (InterruptedException e) {
-
-                    }
-                });
+                togglePrayer();
             }
-            executorService.submit(() -> {
-                try {
-                    Thread.sleep(ThreadLocalRandom.current().nextInt(10, 80));
-                    togglePrayer();
-                } catch (InterruptedException e) {
-
-                }
-            });
+            togglePrayer();
         }
     }
 
