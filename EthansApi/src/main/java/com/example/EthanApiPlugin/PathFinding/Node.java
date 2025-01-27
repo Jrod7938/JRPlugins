@@ -14,6 +14,7 @@ public class Node {
         this.data = null;
         this.previous = null;
     }
+
     public Node(WorldPoint data, Node previous) {
         this.data = data;
         this.previous = previous;

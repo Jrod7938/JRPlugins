@@ -96,7 +96,10 @@ public class PowerSkillerPlugin extends Plugin {
                         return;
                     });
                     NPCs.search().withAction("Bank").nearestToPlayer().ifPresent(npc -> {
-                        NPCInteraction.interact(npc, "Bank");
+                        if (EthanApiPlugin.pathToGoalFromPlayerNoCustomTiles(npc.getWorldLocation()) != null) {
+                            NPCInteraction.interact(npc, "Bank");
+                        }
+                        return;
                     });
                     TileObjects.search().withName("Bank chest").nearestToPlayer().ifPresent(tileObject -> {
                         TileObjectInteraction.interact(tileObject, "Use");
@@ -307,7 +310,7 @@ public class PowerSkillerPlugin extends Plugin {
             return;
         }
         started = !started;
-        if(started){
+        if(!started){
             breakHandler.stopPlugin(this);
         }else{
             breakHandler.startPlugin(this);

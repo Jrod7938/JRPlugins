@@ -12,6 +12,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+@Slf4j
 public class PacketReflection {
     public static Client getClient(){
         return RuneLite.getInjector().getInstance(Client.class);
@@ -131,6 +133,12 @@ public class PacketReflection {
         }
         getPacketBufferNode.setAccessible(false);
         List<String> params = null;
+        if (def.type == PacketType.OPHELDD) {
+            params = List.of("selectedWidgetId", "sourceSlot", "selectedWidgetItemId", "destWidgetId", "destSlot", "destWidgetItemId");
+        }
+        if (def.type == PacketType.RESUME_COUNTDIALOG) {
+            params = List.of("var0");
+        }
         if (def.type == PacketType.RESUME_PAUSEBUTTON) {
             params = List.of("var0", "var1");
         }
@@ -263,5 +271,4 @@ public class PacketReflection {
     private static int modInverse(int val) {
         return modInverse(BigInteger.valueOf(val)).intValue();
     }
-
 }
