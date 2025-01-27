@@ -155,6 +155,7 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 targetCompatibility = JavaVersion.VERSION_11
+
 repositories {
     mavenCentral()
 }
