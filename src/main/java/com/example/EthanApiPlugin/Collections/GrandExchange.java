@@ -10,7 +10,6 @@ import net.runelite.api.ItemComposition;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.WorldType;
 import net.runelite.api.gameval.InterfaceID;
-import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.RuneLite;
 import net.runelite.client.util.Text;
@@ -30,24 +29,14 @@ public class GrandExchange {
 
     private static final Client client = RuneLite.getInjector().getInstance(Client.class);
 
-
-    /**
-     * Checks if the Grand Exchange offer slots are full.
-     * @return true if the slots are full, false otherwise.
-     */
     public static boolean isFull() {
         boolean isMember = client.getWorldType().contains(WorldType.MEMBERS);
         return getOffers().size() > (isMember ? (P2P_SLOTS - 1) : (F2P_SLOTS - 1));
     }
 
-    /**
-     * Starts a buy offer in the Grand Exchange.
-     * @param itemId the ID of the item to buy.
-     * @param amount the number of items to buy.
-     * @param percentIncrease positive for increasing the price by 5%,
-     *                            negative for decreasing by 5%.
-     */
-    public static void startBuyOffer(int itemId, int amount, int percentIncrease, boolean thirty) {
+    // must have a number set to the larger increase to use largeIncrease
+    // it's the 2nd +% button
+    public static void startBuyOffer(int itemId, int amount, int percentIncrease, boolean largeIncrease) {
         if (!isOpen() || isFull()) {
             return;
         }
@@ -64,25 +53,24 @@ public class GrandExchange {
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, slot.getId(), -1, slot.getBuyChild());  // Select free slot
-        setItem(itemId);  // Set item to buy
-        setItemQuantity(amount);  // Set quantity to buy
+        WidgetPackets.queueWidgetActionPacket(1, slot.getId(), -1, slot.getBuyChild());
+        setItem(itemId);
+        setItemQuantity(amount);
 
         int ticker;
         if (percentIncrease < 0) {
-            ticker = thirty ? 56 : 10;
+            ticker = largeIncrease ? 56 : 10;
             percentIncrease = percentIncrease * -1;
         } else {
-            ticker = thirty ? 57 : 13;
+            ticker = largeIncrease ? 57 : 13;
         }
         int finalFive = percentIncrease;
 
         for (int i = 0; i < finalFive; i++) {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP_DESC, -1, ticker);  // Adjust price
+            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, ticker);
         }
 
-        // Confirm the offer
         Widgets.search().withAction("Confirm").first().ifPresent(widget -> {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, widget.getId(), -1, -1);
@@ -106,9 +94,9 @@ public class GrandExchange {
 
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetActionPacket(1, slot.getId(), -1, slot.getBuyChild());
-        setItem(itemId);  // Set item to buy
+        setItem(itemId);
         setItemPrice(price);
-        setItemQuantity(amount);  // Set quantity to buy
+        setItemQuantity(amount);
         Widgets.search().withAction("Confirm").first().ifPresent(w -> {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, w.getId(), -1, -1);
@@ -117,13 +105,6 @@ public class GrandExchange {
         return true;
     }
 
-    /**
-     * Starts a buy offer based on the item name (supports wildcards).
-     * @param itemName the name of the item to buy (case insensitive, supports wildcard *).
-     * @param amount the number of items to buy.
-     * @param fivePercentIncrease positive for increasing the price by 5%,
-     *                            negative for decreasing by 5%.
-     */
     public static void startBuyOffer(String itemName, int amount, int fivePercentIncrease) {
         Map.Entry<Integer, ItemComposition> entry = EthanApiPlugin.itemDefs.asMap()
                 .entrySet()
@@ -132,19 +113,15 @@ public class GrandExchange {
                 .findFirst().orElse(null);
 
         if (entry == null) {
-            return;  // Item not found
+            return;
         }
 
         startBuyOffer(entry.getValue().getId(), amount, fivePercentIncrease, false);
     }
 
-    /**
-     * Starts a sell offer for all of a specific item in the inventory.
-     * @param widget the widget representing the item in the inventory.
-     * @param percentChange positive for increasing the price by 5%,
-     *                            negative for decreasing by 5%.
-     */
-    public static void startSellOffer(Widget widget, int percentChange, boolean thirty) {
+    // must have the large percent setup to use largeDecrease
+    // it's the 2nd -% button
+    public static void startSellOffer(Widget widget, int percentChange, boolean largeDecrease) {
         if (!isOpen() || isFull()) {
             return;
         }
@@ -169,24 +146,20 @@ public class GrandExchange {
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffersSide.ITEMS, itemId, widget.getIndex());
 
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP_DESC, -1, 6);  // Adjust price
-
         int ticker;
         if (percentChange < 0) {
-            ticker = thirty ? 56 : 10;
+            ticker = largeDecrease ? 56 : 10;
             percentChange = percentChange * -1;
         } else {
-            ticker = thirty ? 57 : 13;
+            ticker = largeDecrease ? 57 : 13;
         }
         int finalFive = percentChange;
 
         for (int i = 0; i < finalFive; i++) {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP_DESC, -1, ticker);  // Adjust price
+            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, ticker);
         }
 
-        // Confirm the offer
         Widgets.search().withAction("Confirm").first().ifPresent(w -> {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetActionPacket(1, w.getId(), -1, -1);
@@ -197,69 +170,37 @@ public class GrandExchange {
         startSellOffer(widget, fivePercentDecrease, false);
     }
 
-    /**
-     * Checks if the Grand Exchange window is currently open and visible.
-     * @return true if the window is open, false otherwise.
-     */
     public static boolean isOpen() {
         return getPage() != Page.CLOSED && getPage() != Page.UNKNOWN;
     }
 
-    /**
-     * Checks if the Grand Exchange offer window (buying/selling) is currently open.
-     * @return true if an offer window is open, false otherwise.
-     */
     public static boolean isOfferOpen() {
         return getPage() == Page.BUYING || getPage() == Page.SELLING;
     }
 
-    /**
-     * Retrieves a list of all active Grand Exchange offers.
-     * @return a list of active Grand Exchange offers.
-     */
     public static List<GrandExchangeOffer> getOffers() {
         return Arrays.stream(client.getGrandExchangeOffers())
                 .filter(offer -> offer.getItemId() > 0)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Checks if there are any active offers in the Grand Exchange.
-     * @return true if there are no offers, false otherwise.
-     */
     public static boolean isEmpty() {
         return getOffers().isEmpty();
     }
 
-    /**
-     * Interacts with the 'Collect' button in the Grand Exchange to collect all items.
-     * Does not check for offer status or visibility beforehand.
-     */
     public static void collectAll() {
         if (!readyToCollect()) {
-            return;  // No 'Collect' button found
+            return;
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.COLLECTALL, -1, 0);  // Interact with 'Collect' button
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.COLLECTALL, -1, 0);
     }
-
-    /**
-     * Checks if there are any completed offers in the Grand Exchange.
-     * @return true if there are offers ready to collect
-     */
 
     public static boolean readyToCollect() {
         return !Widgets.search().hiddenState(false).withText("Collect").empty();
     }
 
-    /**
-     * Checks if a Grand Exchange offer contains the specified item in at least the given quantity.
-     *
-     * @param itemId the ID of the item to check for
-     * @param amount the minimum quantity of the item required
-     * @return true if the item exists in any Grand Exchange offer with at least the specified quantity, false otherwise
-     */
     public static boolean hasItem(int itemId, int amount) {
         for (GrandExchangeOffer offer : getOffers()) {
             if (offer.getItemId() == itemId
@@ -271,25 +212,10 @@ public class GrandExchange {
         return false;
     }
 
-    /**
-     * Checks if a Grand Exchange offer contains the specified item in at least 1 quantity.
-     *
-     * @param itemId the ID of the item to check for
-     * @return true if the item exists in any Grand Exchange offer with at least 1 quantity, false otherwise
-     */
     public static boolean hasItem(int itemId) {
         return hasItem(itemId, 1);
     }
 
-    /**
-     * Checks if a Grand Exchange offer contains the specified item by name in at least the given quantity.
-     * The method first resolves the item ID by matching the item name, ignoring tags and case, and then
-     * verifies if the item is present in an offer.
-     *
-     * @param itemName the name of the item to check for
-     * @param amount the minimum quantity of the item required
-     * @return true if the item exists in any Grand Exchange offer with at least the specified quantity, false otherwise
-     */
     public static boolean hasItem(String itemName, int amount) {
         Map.Entry<Integer, ItemComposition> entry = EthanApiPlugin.itemDefs.asMap()
                 .entrySet()
@@ -305,14 +231,6 @@ public class GrandExchange {
         return hasItem(entry.getValue().getId(), amount);
     }
 
-    /**
-     * Checks if a Grand Exchange offer contains the specified item by name in at least 1 quantity.
-     * The method first resolves the item ID by matching the item name, ignoring tags and case, and then
-     * verifies if the item is present in an offer.
-     *
-     * @param itemName the name of the item to check for
-     * @return true if the item exists in any Grand Exchange offer with at least 1 quantity, false otherwise
-     */
     public static boolean hasItem(String itemName) {
         return hasItem(itemName, 1);
     }
@@ -330,7 +248,7 @@ public class GrandExchange {
         return client.getVarpValue(VarPlayer.CURRENT_GE_ITEM);
     }
 
-    private static void setItem(int id) { // possibly might need to invoke this on client thread
+    private static void setItem(int id) {
         MousePackets.queueClickPacket();
         client.runScript(754, id, 84);
     }
@@ -344,37 +262,33 @@ public class GrandExchange {
     }
 
     private static void setItemPrice(int price) {
-        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP_DESC);
+        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP);
         if (offerWidget != null && offerWidget.getChild(12) != null) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetAction(offerWidget.getChild(12), "Enter price");
-            client.setVarcStrValue(359,Integer.toString(price));
-            client.setVarcIntValue(5,7);
-            client.runScript(681);
+            WidgetPackets.queueResumeCount(price);
             return;
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP_DESC, -1, 12);
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, 12);
     }
 
     private static void setItemQuantity(int quantity) {
-        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP_DESC);
+        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP);
         if (offerWidget != null && offerWidget.getChild(7) != null) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetAction(offerWidget.getChild(7), "Enter quantity");
-            client.setVarcStrValue(359,Integer.toString(quantity));
-            client.setVarcIntValue(5,7);
-            client.runScript(681);
+            WidgetPackets.queueResumeCount(quantity);
             return;
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP_DESC, -1, 7);
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, 7);
     }
 
     private static Page getPage() {
-        Widget offerContainer = client.getWidget(InterfaceID.GeOffers.SETUP_DESC);
+        Widget offerContainer = client.getWidget(InterfaceID.GeOffers.SETUP);
 
         if (offerContainer != null && !offerContainer.isHidden()) {
             String text = offerContainer.getChild(20).getText();
