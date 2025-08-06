@@ -2,35 +2,35 @@ package com.example.PacketUtils;
 
 public final class ObfuscatedNames {
 
-    public static final String EVENT_MOUSE_CLICK_OBFUSCATEDNAME = "cv";
-    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseInfo";
-    public static final String EVENT_MOUSE_CLICK_METHOD_NAME1 = "xg";
-    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseY";
-    public static final String EVENT_MOUSE_CLICK_METHOD_NAME2 = "xg";
-    public static final String EVENT_MOUSE_CLICK_WRITE3 = "mouseX";
-    public static final String EVENT_MOUSE_CLICK_METHOD_NAME3 = "xg";
-    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][] {
-            {"r 8", "v"},
-            {"r 8", "v"},
-            {"r 8", "v"}
-    };
+//    public static final String EVENT_MOUSE_CLICK_OBFUSCATEDNAME = "cv";
+//    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseInfo";
+//    public static final String EVENT_MOUSE_CLICK_METHOD_NAME1 = "xg";
+//    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseY";
+//    public static final String EVENT_MOUSE_CLICK_METHOD_NAME2 = "xg";
+//    public static final String EVENT_MOUSE_CLICK_WRITE3 = "mouseX";
+//    public static final String EVENT_MOUSE_CLICK_METHOD_NAME3 = "xg";
+//    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][] {
+//            {"r 8", "v"},
+//            {"r 8", "v"},
+//            {"r 8", "v"}
+//    };
 
     // when officially live we switch to MOUSE_V2 packet
-    //    public static final String EVENT_MOUSE_CLICK_OBFUSCATEDNAME = "ch";
-    //    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseX";
-    //    public static final String EVENT_MOUSE_CLICK_METHOD_NAME1 = "dy";
-    //    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseInfo";
-    //    public static final String EVENT_MOUSE_CLICK_METHOD_NAME2 = "kl";
-    //    public static final String EVENT_MOUSE_CLICK_WRITE3 = "0";
-    //    public static final String EVENT_MOUSE_CLICK_METHOD_NAME3 = "bg";
-    //    public static final String EVENT_MOUSE_CLICK_WRITE4 = "mouseY";
-    //    public static final String EVENT_MOUSE_CLICK_METHOD_NAME4 = "kl";
-    //    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][] {
-    //            {"v", "r 8"},
-    //            {"a 128", "r 8"},
-    //            {"v"},
-    //            {"a 128", "r 8"},
-    //    };
+    public static final String EVENT_MOUSE_CLICK_OBFUSCATEDNAME = "ch";
+    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseX";
+    public static final String EVENT_MOUSE_CLICK_METHOD_NAME1 = "dy";
+    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseInfo";
+    public static final String EVENT_MOUSE_CLICK_METHOD_NAME2 = "kl";
+    public static final String EVENT_MOUSE_CLICK_WRITE3 = "0";
+    public static final String EVENT_MOUSE_CLICK_METHOD_NAME3 = "bg";
+    public static final String EVENT_MOUSE_CLICK_WRITE4 = "mouseY";
+    public static final String EVENT_MOUSE_CLICK_METHOD_NAME4 = "kl";
+    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][] {
+            {"v", "r 8"},
+            {"a 128", "r 8"},
+            {"v"},
+            {"a 128", "r 8"},
+    };
 
     public static final String IF_BUTTONT_OBFUSCATEDNAME = "cn";
     public static final String IF_BUTTONT_WRITE1 = "destinationItemId";

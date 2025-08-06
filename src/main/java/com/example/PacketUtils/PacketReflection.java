@@ -168,7 +168,7 @@ public class PacketReflection {
                     "ctrlDown");
         }
         if (def.type == PacketType.EVENT_MOUSE_CLICK) {
-            params = List.of("mouseInfo", "mouseX", "mouseY");
+            params = List.of("mouseInfo", "mouseX", "mouseY", "0");
         }
         if (def.type == PacketType.MOVE_GAMECLICK) {
             params = List.of("worldPointX", "worldPointY", "ctrlDown", "5");

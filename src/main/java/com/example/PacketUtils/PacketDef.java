@@ -191,7 +191,7 @@ public class PacketDef {
     }
 
     public static PacketDef getEventMouseClick() {
-        String[] writeData = new String[]{ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE1, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE2, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE3};
+        String[] writeData = new String[]{ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE1, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE2, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE3, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE4};
         String[][] writeMethods = ObfuscatedNames.EVENT_MOUSE_CLICK_WRITES;
         return new PacketDef(ObfuscatedNames.EVENT_MOUSE_CLICK_OBFUSCATEDNAME, writeData, writeMethods, PacketType.EVENT_MOUSE_CLICK);
     }
