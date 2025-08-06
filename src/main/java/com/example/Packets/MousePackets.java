@@ -47,7 +47,7 @@ public class MousePackets{
             deltaMs = 32767L;
         }
         int mouseInfo = ((int) deltaMs << 1);
-        PacketReflection.sendPacket(PacketDef.getEventMouseClick(), mouseInfo, x, y);
+        PacketReflection.sendPacket(PacketDef.getEventMouseClick(), mouseInfo, x, y, 0);
         if (checkIdleLogout()) {
             randomDelay = randomDelay();
             Executors.newSingleThreadExecutor()
