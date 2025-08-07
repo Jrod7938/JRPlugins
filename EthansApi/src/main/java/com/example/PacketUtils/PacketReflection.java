@@ -145,6 +145,9 @@ public class PacketReflection {
         if (def.type == PacketType.IF_BUTTON) {
             params = List.of("widgetId", "slot", "itemId");
         }
+        if (def.type == PacketType.IF_BUTTONX) {
+            params = List.of("widgetId", "slot", "itemId", "opCode");
+        }
         if (def.type == PacketType.IF_SUBOP) {
             params = List.of("widgetId", "slot", "itemId", "menuIndex", "subActionIndex");
         }
@@ -165,7 +168,7 @@ public class PacketReflection {
                     "ctrlDown");
         }
         if (def.type == PacketType.EVENT_MOUSE_CLICK) {
-            params = List.of("mouseInfo", "mouseX", "mouseY");
+            params = List.of("mouseInfo", "mouseX", "mouseY", "0");
         }
         if (def.type == PacketType.MOVE_GAMECLICK) {
             params = List.of("worldPointX", "worldPointY", "ctrlDown", "5");

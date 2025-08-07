@@ -9,7 +9,7 @@ import net.runelite.api.GrandExchangeOfferState;
 import net.runelite.api.ItemComposition;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.WorldType;
-import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.RuneLite;
 import net.runelite.client.util.Text;
@@ -29,13 +29,14 @@ public class GrandExchange {
 
     private static final Client client = RuneLite.getInjector().getInstance(Client.class);
 
-
     public static boolean isFull() {
         boolean isMember = client.getWorldType().contains(WorldType.MEMBERS);
         return getOffers().size() > (isMember ? (P2P_SLOTS - 1) : (F2P_SLOTS - 1));
     }
 
-    public static void startBuyOffer(int itemId, int amount, int percentIncrease, boolean thirty) {
+    // must have a number set to the larger increase to use largeIncrease
+    // it's the 2nd +% button
+    public static void startBuyOffer(int itemId, int amount, int percentIncrease, boolean largeIncrease) {
         if (!isOpen() || isFull()) {
             return;
         }
@@ -56,18 +57,18 @@ public class GrandExchange {
         setItem(itemId);
         setItemQuantity(amount);
 
-        int difference;
+        int ticker;
         if (percentIncrease < 0) {
-            difference = thirty ? 56 : 10;
+            ticker = largeIncrease ? 56 : 10;
             percentIncrease = percentIncrease * -1;
         } else {
-            difference = thirty ? 57 : 13;
+            ticker = largeIncrease ? 57 : 13;
         }
         int finalFive = percentIncrease;
 
         for (int i = 0; i < finalFive; i++) {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, difference);
+            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, ticker);
         }
 
         Widgets.search().withAction("Confirm").first().ifPresent(widget -> {
@@ -118,8 +119,9 @@ public class GrandExchange {
         startBuyOffer(entry.getValue().getId(), amount, fivePercentIncrease, false);
     }
 
-
-    public static void startSellOffer(Widget widget, int percentChange, boolean thirty) {
+    // must have the large percent setup to use largeDecrease
+    // it's the 2nd -% button
+    public static void startSellOffer(Widget widget, int percentChange, boolean largeDecrease) {
         if (!isOpen() || isFull()) {
             return;
         }
@@ -142,23 +144,20 @@ public class GrandExchange {
         MousePackets.queueClickPacket();
         WidgetPackets.queueWidgetActionPacket(1, slot.getId(), -1, slot.getSellChild());
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, ComponentID.GRAND_EXCHANGE_INVENTORY_INVENTORY_ITEM_CONTAINER, itemId, widget.getIndex());
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffersSide.ITEMS, itemId, widget.getIndex());
 
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, 6);
-
-        int difference;
+        int ticker;
         if (percentChange < 0) {
-            difference = thirty ? 56 : 10;
-            percentChange = Math.abs(percentChange);
+            ticker = largeDecrease ? 56 : 10;
+            percentChange = percentChange * -1;
         } else {
-            difference = thirty ? 57 : 13;
+            ticker = largeDecrease ? 57 : 13;
         }
         int finalFive = percentChange;
 
         for (int i = 0; i < finalFive; i++) {
             MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, difference);
+            WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, ticker);
         }
 
         Widgets.search().withAction("Confirm").first().ifPresent(w -> {
@@ -167,45 +166,9 @@ public class GrandExchange {
         });
     }
 
-    public static void startSellOfferPrice(Widget widget, int price) {
-        startSellOfferPrice(widget, -1, price);
-    }
-
-    public static void startSellOfferPrice(Widget widget, int amount, int price) {
-        int slotNumber = freeSlot();
-
-        if (slotNumber == -1) {
-            return;
-        }
-
-        GrandExchangeSlot slot = GrandExchangeSlot.getBySlot(slotNumber);
-        if (slot == null) {
-            return;
-        }
-
-        int itemId = widget.getItemId();
-
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, slot.getId(), -1, slot.getSellChild());
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, ComponentID.GRAND_EXCHANGE_INVENTORY_INVENTORY_ITEM_CONTAINER, itemId, widget.getIndex());
-
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, 12);
-        WidgetPackets.queueResumeCount(price);
-        if (amount != -1) {
-            MousePackets.queueClickPacket();
-            WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, 7);
-            WidgetPackets.queueResumeCount(amount);
-        }
-        MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474269, -1, -1);
-    }
-
     public static void startSellOffer(Widget widget, int fivePercentDecrease) {
         startSellOffer(widget, fivePercentDecrease, false);
     }
-
 
     public static boolean isOpen() {
         return getPage() != Page.CLOSED && getPage() != Page.UNKNOWN;
@@ -231,9 +194,8 @@ public class GrandExchange {
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474246, -1, 0);
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.COLLECTALL, -1, 0);
     }
-
 
     public static boolean readyToCollect() {
         return !Widgets.search().hiddenState(false).withText("Collect").empty();
@@ -253,7 +215,6 @@ public class GrandExchange {
     public static boolean hasItem(int itemId) {
         return hasItem(itemId, 1);
     }
-
 
     public static boolean hasItem(String itemName, int amount) {
         Map.Entry<Integer, ItemComposition> entry = EthanApiPlugin.itemDefs.asMap()
@@ -301,37 +262,33 @@ public class GrandExchange {
     }
 
     private static void setItemPrice(int price) {
-        Widget offerWidget = client.getWidget(ComponentID.GRAND_EXCHANGE_OFFER_CONTAINER);
+        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP);
         if (offerWidget != null && offerWidget.getChild(12) != null) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetAction(offerWidget.getChild(12), "Enter price");
-            client.setVarcStrValue(359,Integer.toString(price));
-            client.setVarcIntValue(5,7);
-            client.runScript(681);
+            WidgetPackets.queueResumeCount(price);
             return;
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, 12);
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, 12);
     }
 
     private static void setItemQuantity(int quantity) {
-        Widget offerWidget = client.getWidget(ComponentID.GRAND_EXCHANGE_OFFER_CONTAINER);
+        Widget offerWidget = client.getWidget(InterfaceID.GeOffers.SETUP);
         if (offerWidget != null && offerWidget.getChild(7) != null) {
             MousePackets.queueClickPacket();
             WidgetPackets.queueWidgetAction(offerWidget.getChild(7), "Enter quantity");
-            client.setVarcStrValue(359,Integer.toString(quantity));
-            client.setVarcIntValue(5,7);
-            client.runScript(681);
+            WidgetPackets.queueResumeCount(quantity);
             return;
         }
 
         MousePackets.queueClickPacket();
-        WidgetPackets.queueWidgetActionPacket(1, 30474265, -1, 7);
+        WidgetPackets.queueWidgetActionPacket(1, InterfaceID.GeOffers.SETUP, -1, 7);
     }
 
     private static Page getPage() {
-        Widget offerContainer = client.getWidget(ComponentID.GRAND_EXCHANGE_OFFER_CONTAINER);
+        Widget offerContainer = client.getWidget(InterfaceID.GeOffers.SETUP);
 
         if (offerContainer != null && !offerContainer.isHidden()) {
             String text = offerContainer.getChild(20).getText();
@@ -350,7 +307,7 @@ public class GrandExchange {
             return Page.UNKNOWN;
         }
 
-        Widget homeContainer = client.getWidget(ComponentID.GRAND_EXCHANGE_WINDOW_CONTAINER);
+        Widget homeContainer = client.getWidget(InterfaceID.GeOffers.CONTENTS);
 
         if (homeContainer != null && !homeContainer.isHidden()) {
             return Page.HOME;

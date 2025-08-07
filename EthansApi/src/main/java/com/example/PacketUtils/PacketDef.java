@@ -18,29 +18,12 @@ public class PacketDef {
         return new PacketDef(ObfuscatedNames.OPOBJ1_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPOBJ);
     }
 
-    public static PacketDef getIfButton9() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON9_WRITE1, ObfuscatedNames.IF_BUTTON9_WRITE2, ObfuscatedNames.IF_BUTTON9_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON9_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON9_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
-
-    public static PacketDef getIfButton8() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON8_WRITE1, ObfuscatedNames.IF_BUTTON8_WRITE2, ObfuscatedNames.IF_BUTTON8_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON8_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON8_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
-
     public static PacketDef getOpObj5() {
         String[] writeData = new String[]{ObfuscatedNames.OPOBJ5_WRITE1, ObfuscatedNames.OPOBJ5_WRITE2, ObfuscatedNames.OPOBJ5_WRITE3, ObfuscatedNames.OPOBJ5_WRITE4};
         String[][] writeMethods = ObfuscatedNames.OPOBJ5_WRITES;
         return new PacketDef(ObfuscatedNames.OPOBJ5_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPOBJ);
     }
 
-    public static PacketDef getIfButton5() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON5_WRITE1, ObfuscatedNames.IF_BUTTON5_WRITE2, ObfuscatedNames.IF_BUTTON5_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON5_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON5_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
 
     public static PacketDef getOpObj4() {
         String[] writeData = new String[]{ObfuscatedNames.OPOBJ4_WRITE1, ObfuscatedNames.OPOBJ4_WRITE2, ObfuscatedNames.OPOBJ4_WRITE3, ObfuscatedNames.OPOBJ4_WRITE4};
@@ -48,11 +31,6 @@ public class PacketDef {
         return new PacketDef(ObfuscatedNames.OPOBJ4_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPOBJ);
     }
 
-    public static PacketDef getIfButton4() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON4_WRITE1, ObfuscatedNames.IF_BUTTON4_WRITE2, ObfuscatedNames.IF_BUTTON4_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON4_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON4_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
 
     public static PacketDef getOpObj3() {
         String[] writeData = new String[]{ObfuscatedNames.OPOBJ3_WRITE1, ObfuscatedNames.OPOBJ3_WRITE2, ObfuscatedNames.OPOBJ3_WRITE3, ObfuscatedNames.OPOBJ3_WRITE4};
@@ -60,11 +38,6 @@ public class PacketDef {
         return new PacketDef(ObfuscatedNames.OPOBJ3_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPOBJ);
     }
 
-    public static PacketDef getIfButton7() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON7_WRITE1, ObfuscatedNames.IF_BUTTON7_WRITE2, ObfuscatedNames.IF_BUTTON7_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON7_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON7_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
 
     public static PacketDef getOpObj2() {
         String[] writeData = new String[]{ObfuscatedNames.OPOBJ2_WRITE1, ObfuscatedNames.OPOBJ2_WRITE2, ObfuscatedNames.OPOBJ2_WRITE3, ObfuscatedNames.OPOBJ2_WRITE4};
@@ -72,11 +45,6 @@ public class PacketDef {
         return new PacketDef(ObfuscatedNames.OPOBJ2_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPOBJ);
     }
 
-    public static PacketDef getIfButton6() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON6_WRITE1, ObfuscatedNames.IF_BUTTON6_WRITE2, ObfuscatedNames.IF_BUTTON6_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON6_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON6_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
 
     public static PacketDef getOpLocT() {
         String[] writeData = new String[]{ObfuscatedNames.OPLOCT_WRITE1, ObfuscatedNames.OPLOCT_WRITE2, ObfuscatedNames.OPLOCT_WRITE3, ObfuscatedNames.OPLOCT_WRITE4, ObfuscatedNames.OPLOCT_WRITE5, ObfuscatedNames.OPLOCT_WRITE6, ObfuscatedNames.OPLOCT_WRITE7};
@@ -222,35 +190,12 @@ public class PacketDef {
         return new PacketDef(ObfuscatedNames.MOVE_GAMECLICK_OBFUSCATEDNAME, writeData, writeMethods, PacketType.MOVE_GAMECLICK);
     }
 
-    public static PacketDef getIfButton1() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON1_WRITE1, ObfuscatedNames.IF_BUTTON1_WRITE2, ObfuscatedNames.IF_BUTTON1_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON1_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON1_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
-
-    public static PacketDef getIfButton3() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON3_WRITE1, ObfuscatedNames.IF_BUTTON3_WRITE2, ObfuscatedNames.IF_BUTTON3_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON3_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON3_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
-
-    public static PacketDef getIfButton2() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON2_WRITE1, ObfuscatedNames.IF_BUTTON2_WRITE2, ObfuscatedNames.IF_BUTTON2_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON2_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON2_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
-
     public static PacketDef getEventMouseClick() {
-        String[] writeData = new String[]{ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE1, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE2, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE3};
+        String[] writeData = new String[]{ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE1, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE2, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE3, ObfuscatedNames.EVENT_MOUSE_CLICK_WRITE4};
         String[][] writeMethods = ObfuscatedNames.EVENT_MOUSE_CLICK_WRITES;
         return new PacketDef(ObfuscatedNames.EVENT_MOUSE_CLICK_OBFUSCATEDNAME, writeData, writeMethods, PacketType.EVENT_MOUSE_CLICK);
     }
 
-    public static PacketDef getIfButton10() {
-        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTON10_WRITE1, ObfuscatedNames.IF_BUTTON10_WRITE2, ObfuscatedNames.IF_BUTTON10_WRITE3};
-        String[][] writeMethods = ObfuscatedNames.IF_BUTTON10_WRITES;
-        return new PacketDef(ObfuscatedNames.IF_BUTTON10_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTON);
-    }
 
     public static PacketDef getIfSubOp() {
         String[] writeData = new String[]{ObfuscatedNames.IF_SUBOP_WRITE1, ObfuscatedNames.IF_SUBOP_WRITE2, ObfuscatedNames.IF_SUBOP_WRITE3,
@@ -276,5 +221,12 @@ public class PacketDef {
                 ObfuscatedNames.OPHELDD_WRITE4, ObfuscatedNames.OPHELDD_WRITE5, ObfuscatedNames.OPHELDD_WRITE6};
         String[][] writeMethods = ObfuscatedNames.OPHELDD_WRITES;
         return new PacketDef(ObfuscatedNames.OPHELDD_OBFUSCATEDNAME, writeData, writeMethods, PacketType.OPHELDD);
+    }
+
+    public static PacketDef getIfButtonX() {
+        String[] writeData = new String[]{ObfuscatedNames.IF_BUTTONX_WRITE1, ObfuscatedNames.IF_BUTTONX_WRITE2, ObfuscatedNames.IF_BUTTONX_WRITE3,
+                ObfuscatedNames.IF_BUTTONX_WRITE4};
+        String[][] writeMethods = ObfuscatedNames.IF_BUTTONX_WRITES;
+        return new PacketDef(ObfuscatedNames.IF_BUTTONX_OBFUSCATEDNAME, writeData, writeMethods, PacketType.IF_BUTTONX);
     }
 }

@@ -16,127 +16,55 @@ import java.util.stream.Collectors;
 public class WidgetPackets {
     @SneakyThrows
     public static void queueWidgetActionPacket(int actionFieldNo, int widgetId, int itemId, int childId) {
-        switch (actionFieldNo) {
-            case 1:
-                PacketReflection.sendPacket(PacketDef.getIfButton1(), widgetId, childId, itemId);
-                break;
-            case 2:
-                PacketReflection.sendPacket(PacketDef.getIfButton2(), widgetId, childId, itemId);
-                break;
-            case 3:
-                PacketReflection.sendPacket(PacketDef.getIfButton3(), widgetId, childId, itemId);
-                break;
-            case 4:
-                PacketReflection.sendPacket(PacketDef.getIfButton4(), widgetId, childId, itemId);
-                break;
-            case 5:
-                PacketReflection.sendPacket(PacketDef.getIfButton5(), widgetId, childId, itemId);
-                break;
-            case 6:
-                PacketReflection.sendPacket(PacketDef.getIfButton6(), widgetId, childId, itemId);
-                break;
-            case 7:
-                PacketReflection.sendPacket(PacketDef.getIfButton7(), widgetId, childId, itemId);
-                break;
-            case 8:
-                PacketReflection.sendPacket(PacketDef.getIfButton8(), widgetId, childId, itemId);
-                break;
-            case 9:
-                PacketReflection.sendPacket(PacketDef.getIfButton9(), widgetId, childId, itemId);
-                break;
-            case 10:
-                PacketReflection.sendPacket(PacketDef.getIfButton10(), widgetId, childId, itemId);
-                break;
-        }
+        PacketReflection.sendPacket(PacketDef.getIfButtonX(), widgetId, childId, itemId, actionFieldNo & 65535);
     }
 
     @SneakyThrows
-    public static void queueWidgetSubAction(Widget widget, String... actions) {
-        if (widget == null || widget.getItemId() == -1
-                || widget.getActions() == null || widget.getActions().length == 0) {
+    public static void queueWidgetSubAction(Widget widget, String menu, String action) {
+        if (widget == null || widget.getItemId() == -1) {
             return;
         }
 
         ItemComposition composition = EthanApiPlugin.getClient().getItemDefinition(widget.getItemId());
-
         String[][] subOps = composition.getSubops();
-        List<String> actionList = Arrays.stream(widget.getActions()).collect(Collectors.toList());
-        List<String> subActionList = new ArrayList<>(10);
-        for (int i = 0; i < 10; i++) {
-            subActionList.add(null);
+        List<String> actions = Arrays.stream(widget.getActions()).collect(Collectors.toList());
+
+        int menuIndex = -1;
+        int actionIndex = -1;
+
+        if (subOps == null) {
+            return;
         }
 
         for (String[] subOp : subOps) {
-            if (subOp == null) {
-                continue;
+            if (actionIndex != -1) {
+                break;
             }
-
-            int length = subOp.length;
-
-            for (int i = 0; i < length; i++) {
-                String subOpAction = subOp[i];
-                if (subOpAction == null) {
-                    continue;
-                }
-
-                subActionList.set(i, Text.removeTags(subOpAction).toLowerCase());
-            }
-        }
-
-        int subActionFieldNo = -1;
-
-        for (String subOpAction : subActionList) {
-            for (String action : actions) {
-                if (subOpAction != null && subOpAction.equalsIgnoreCase(action)) {
-                    subActionFieldNo = subActionList.lastIndexOf(action.toLowerCase());
+            if (subOp != null) {
+                for (int i = 0; i < subOp.length; i++) {
+                    String op = subOp[i];
+                    if (op != null && op.equalsIgnoreCase(action)) {
+                        actionIndex = i;
+                        break;
+                    }
                 }
             }
         }
 
-        if (subActionFieldNo < 1 || subActionFieldNo > 10) {
-            return;
-        }
-
-        int menuFieldNo = -1;
-        final int finalActionFieldNo = subActionFieldNo;
-
-        if (subActionList.get(finalActionFieldNo) == null) {
-            return;
-        }
-
-        for (int i = 0; i < subOps.length; i++) {
-            if (subOps[i] == null) {
-                continue;
-            }
-
-            if (Arrays.stream(subOps[i])
-                    .anyMatch(s -> subActionList.get(finalActionFieldNo).equalsIgnoreCase(s))) {
-                menuFieldNo = i;
+        for (int i = 0; i < actions.size(); i++) {
+            String a = actions.get(i);
+            if (a != null && a.equalsIgnoreCase(menu)) {
+                menuIndex = i + 1;
                 break;
             }
         }
 
-        int pos = 0;
-
-        for (int i = 0; i < actionList.size(); i++) {
-            if (actionList.get(i) == null) {
-                continue;
-            }
-
-            pos++;
-
-            if (pos == menuFieldNo) {
-                menuFieldNo = i + 1;
-                break;
-            }
-        }
-
-        if (menuFieldNo == -1) {
+        if (menuIndex == -1 || actionIndex == -1) {
             return;
         }
 
         PacketReflection.sendPacket(PacketDef.getIfSubOp(), widget.getId(), widget.getIndex(),
-                widget.getItemId(), menuFieldNo, subActionFieldNo);
+                widget.getItemId(), menuIndex, actionIndex);
     }
 
     @SneakyThrows
@@ -160,7 +88,6 @@ public class WidgetPackets {
         }
 
         if (num < 1 || num > 10) {
-            queueWidgetSubAction(widget, actionlist);
             return;
         }
         queueWidgetActionPacket(num, widget.getId(), widget.getItemId(), widget.getIndex());
