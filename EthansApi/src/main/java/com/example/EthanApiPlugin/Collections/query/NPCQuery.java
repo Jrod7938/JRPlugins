@@ -94,7 +94,7 @@ public class NPCQuery {
         return this;
     }
 
-    public NPCQuery withinBounds(WorldPoint min, WorldPoint max){
+    public NPCQuery withinBounds(WorldPoint min, WorldPoint max) {
         int x1 = min.getX();
         int x2 = max.getX();
         int y1 = min.getY();
