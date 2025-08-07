@@ -17,7 +17,7 @@ allprojects {
         jcenter()
     }
 
-def runeLiteVersion = '1.11.13'
+def runeLiteVersion = 'latest.release'
 
     plugins.withType(JavaPlugin) {
         dependencies {

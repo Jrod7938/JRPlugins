@@ -73,7 +73,7 @@ public class GlobalCollisionMap {
                 }
                 Collections.reverse(ret);
                 ret.remove(0);
-                System.out.println("Path took " + (System.currentTimeMillis() - start) + "ms");
+                //System.out.println("Path took " + (System.currentTimeMillis() - start) + "ms");
                 return ret;
             }
             //west

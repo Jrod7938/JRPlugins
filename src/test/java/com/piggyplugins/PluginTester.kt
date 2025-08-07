@@ -8,6 +8,7 @@ import com.example.PathingTesting.PathingTesting
 import com.example.PrayerFlicker.EthanPrayerFlickerPlugin
 import com.example.RunEnabler.RunEnabler
 import com.example.UpkeepPlugin.UpkeepPlugin
+import com.example.gauntletFlicker.gauntletFlicker
 import com.example.harpoon2ticker.SwordFish2Tick
 import com.jrplugins.AutoChop.AutoChop
 import com.jrplugins.autoVorkath.AutoVorkathPlugin
@@ -77,7 +78,8 @@ object PluginTester {
             AutoLeviathanPrayer::class.java,
             AutoWhispererPrayer::class.java,
             CannonPlugin::class.java,
-            LeftClickBlackJackPlugin::class.java
+            LeftClickBlackJackPlugin::class.java,
+            gauntletFlicker::class.java
         )
         RuneLite.main(args)
     }
